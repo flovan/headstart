@@ -1,0 +1,14 @@
+@import "compass/css3";
+
+
+@mixin fontFace($name, $url) {
+	@include font-face($name,
+		
+		font-files(
+		$url+".woff", 
+		$url+".ttf", 
+		$url+".svg#webfont"
+	),  $url+".eot", 
+
+	"normal", "normal");
+}

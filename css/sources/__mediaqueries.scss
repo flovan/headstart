@@ -1,0 +1,10 @@
+@import "compass/css3";
+
+
+@mixin mediaQuery($width) {
+	@media screen and (min-width: $width) { 
+		
+		@content; 
+		
+	}
+}

@@ -1,0 +1,133 @@
+//
+// CSS FOR TABLET + DESKTOP ----------------------------------------------------------
+//
+// To be used with the Mobile First setup
+// Loads conditionally (only on tablets & desktop)
+//
+// Runs on Sass + Compass
+// http://sass-lang.com
+// http://compass-style.org
+//
+
+@charset "utf-8";
+@import "compass/css3";
+
+@import "__mediaqueries";
+@import "__retinasupport";
+
+
+// MEDIA QUERIES
+// Defaults to mobile (to override some styles)
+// includes mixin for tablet-portrait
+// includes mixin for tablet-landscape
+// includes mixin for desktop
+$tablet-portrait  : 768px;
+$tablet-landscape : 1024px;
+$desktop          : 1025px;
+
+
+// BASE64 ENCODED IMAGES
+// Note: Encoded images must be smaller then 32kb (or IE won't show them)
+// http://www.askapache.com/online-tools/base64-image-converter
+// background: url(data:image/__typegoeshere__;base64,____);
+
+
+// COMPASS VENDOR-PREFIXES
+// @include experimental("{{__PROPERTY__}}", {{__VALUE__}}, not -webkit, not -moz, -o, -ms, -khtml, official);
+
+
+//
+// GENERAL ---------------------------------------------------------------------------
+//
+// Override some mobile styles here from responsive/fluid design
+// In other words add your :hover states here
+//
+
+html {
+
+}
+
+a:hover, 
+a:active {
+	text-decoration: none;	
+}
+
+
+// Add .no-touch class to the HTML tag if touchEvents are not supported
+// This way we can disable :hover states on touch-devices
+// Note: javascript will add it for you - see js/dev/app.js
+.no-touch {
+		
+}
+
+
+
+
+
+
+
+
+//
+// TABLET PORTRAIT -------------------------------------------------------------------
+//
+
+@include mediaQuery($tablet-portrait) {
+
+}
+
+
+
+
+
+
+
+
+//
+// TABLET LANDSCAPE ------------------------------------------------------------------
+//
+
+@include mediaQuery($tablet-landscape) {
+
+}
+
+
+
+
+
+
+
+
+//
+// DESKTOP ---------------------------------------------------------------------------
+//
+
+@include mediaQuery($desktop) {
+
+}
+
+
+
+
+
+
+
+
+//
+// RETINA SUPPORT FOR HDPI SCREENS ---------------------------------------------------
+//
+// Include hdpi images for retina screens here
+// Note: if you specify a non-retina image + retina image you'll download 2 images (!)
+// If you want to enable fluid/responsive images without loading assets 2 times
+// take a look at js/dev/responsiveImages.js
+//
+
+@include retinaSupport() { 
+
+}
+
+
+
+
+
+
+

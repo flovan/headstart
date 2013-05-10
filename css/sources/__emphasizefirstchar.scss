@@ -1,0 +1,9 @@
+@import "compass/css3";
+
+
+@mixin emphasizeFirstChar($size) {
+	&:first-letter { 
+		font-size: $size;
+		font-weight: bold;
+	}
+}

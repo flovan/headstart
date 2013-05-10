@@ -1,0 +1,10 @@
+@import "compass/css3";
+
+
+@mixin trim {
+	white-space: nowrap;
+	overflow: hidden;
+	-ms-text-overflow: ellipsis;
+     -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+}

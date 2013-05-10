@@ -1,0 +1,116 @@
+//
+// CSS FOR IE8 + IE7 -----------------------------------------------------------------
+//
+// To be used with the Mobile First setup
+// Loads conditionally (doesn't get loaded on modern browsers)
+// Dependencies: js/libs/require.js (to enable MediaQueries)
+//
+// Use regular CSS for IE8 > html { property: value; }
+// Prefix with * for IE7 > html { *property: value; }
+//
+// Runs on Sass + Compass
+// http://sass-lang.com
+// http://compass-style.org
+//
+
+@charset "utf-8";
+@import "compass/css3";
+
+@import "__mediaqueries";
+
+
+// MEDIA QUERIES
+// Defaults to mobile-portrait
+// includes mixin for mobile-landscape
+// includes mixin for tablet-landscape
+// includes mixin for desktop
+$mobile-landscape : 480px;
+$tablet-portrait  : 768px;
+$tablet-landscape : 1024px;
+$desktop          : 1025px;
+
+
+// BASE 64 ENCODED IMAGES
+// Note: Encoded images must be smaller then 32kb (or IE won't show them)
+// http://www.askapache.com/online-tools/base64-image-converter
+// background: url(data:image/__typegoeshere__;base64,____);
+
+
+// COMPASS VENDOR-PREFIXES
+// @include experimental("{{__PROPERTY__}}", {{__VALUE__}}, not -webkit, not -moz, -o, -ms, -khtml, official);
+
+
+//
+// GENERAL ---------------------------------------------------------------------------
+//
+
+html {
+
+}
+
+
+
+
+
+
+
+
+//
+// MOBILE LANDSCAPE ------------------------------------------------------------------
+//
+
+@include mediaQuery($mobile-landscape) { 
+
+}
+
+
+
+
+
+
+
+
+//
+// TABLET PORTRAIT -------------------------------------------------------------------
+//
+
+@include mediaQuery($tablet-portrait) {
+
+}
+
+
+
+
+
+
+
+
+//
+// TABLET LANDSCAPE ------------------------------------------------------------------
+//
+
+@include mediaQuery($tablet-landscape) {
+
+}
+
+
+
+
+
+
+
+
+//
+// DESKTOP ---------------------------------------------------------------------------
+//
+
+@include mediaQuery($desktop) {
+
+}
+
+
+
+
+
+
+

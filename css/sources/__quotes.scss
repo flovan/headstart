@@ -1,0 +1,7 @@
+@import "compass/css3";
+
+
+@mixin quotes {
+	&:before { content: '\201C'; }
+	&:after{ content: '\201D'; }
+}
