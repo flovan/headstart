@@ -90,45 +90,6 @@ audio, video {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 // BASE 64 ENCODED IMAGES
 // Note: Encoded images must be smaller then 32kb (or IE won't show them)
@@ -228,11 +189,11 @@ audio, video {
 // Prevent something from being selected with the mouse/touch
 */
 .non-selectable {
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-         -o-user-select: none;
-            user-select: none;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	     -o-user-select: none;
+	        user-select: none;
 }
 
 /*
@@ -294,7 +255,7 @@ body {
 	font-size: 16px;
 
 	/*
-	// if the viewport meta tag is not included: use min-width for correct 
+	// If the viewport meta tag is not included: use min-width for correct 
 	// scaling on orientationchange (IOS default page-width: 980px)
 	*/
 	min-width: 980px;
@@ -444,7 +405,7 @@ hr {
        only screen and (min-resolution: 192dpi), 
        only screen and (min-resolution: 2dppx) {
 
-    /* Retina images go here */
+    /* Retina optimized styles go here */
 }
 
 

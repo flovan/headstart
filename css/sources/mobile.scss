@@ -1,9 +1,7 @@
 //
 // CSS FOR SMARTPHONES + SMALLER TABLETS (< 768px) -----------------------------------
 //
-// To be used with the Mobile First setup
-//
-// Runs on Sass + Compass
+// Dependencies: Sass + Compass
 // http://sass-lang.com
 // http://compass-style.org
 //
@@ -11,16 +9,10 @@
 @charset "utf-8";
 @import "compass/css3";
 
-
-// CSS RESET
-// Based on HTML5 Boilerplate & Compass Reset
-// https://github.com/h5bp/html5-boilerplate
-// http://compass-style.org/reference/compass/reset
-@import "__cssreset";
-
-@import "__mediaqueries";
+@import "__reset";
+@import "__media-queries";
 @import "__retinasupport";
-@import "__fontface";
+@import "__font-face";
 @import "__trim";
 @import "__quotes";
 @import "__emphasizefirstchar";
@@ -29,8 +21,7 @@
 
 
 // MEDIA QUERIES
-// Defaults to mobile-portrait
-// includes mixin for mobile-landscape
+// Default: mobile-portrait
 $mobile-landscape : 480px;
 
 
@@ -48,12 +39,11 @@ $mobile-landscape : 480px;
 // CUSTOM WEBFONTS -------------------------------------------------------------------
 //
 // A custom webfont needs 4 file-types: .woff, .ttf, .svg, .eot
-// all files need to be stored in ../fonts/
+// All files need to be stored in ../fonts/
 // http://www.fontsquirrel.com/tools/webfont-generator
 //
 
 @include fontFace("{{__My awesome font name__}}", "{{__my-awesome-font-name-(file-name-without-extension)__}}");
-@include fontFace("{{__Some other font name__}}", "{{__some-other-font-name-(file-name-without-extension)__}}");
 
 
 

@@ -1,7 +1,7 @@
 //
 // NON-MOBILE FIRST CSS SETUP --------------------------------------------------------
 //
-// Runs on Sass + Compass
+// Dependencies: Sass + Compass
 // http://sass-lang.com
 // http://compass-style.org
 //
@@ -9,16 +9,10 @@
 @charset "utf-8";
 @import "compass/css3";
 
-
-// CSS RESET
-// Based on HTML5 Boilerplate & Compass Reset
-// https://github.com/h5bp/html5-boilerplate
-// http://compass-style.org/reference/compass/reset
-@import "__cssreset";
-
-@import "__mediaqueries";
+@import "__reset";
+@import "__media-queries";
 @import "__retinasupport";
-@import "__fontface";
+@import "__font-face";
 @import "__trim";
 @import "__quotes";
 @import "__emphasizefirstchar";
@@ -27,10 +21,7 @@
 
 
 // MEDIA QUERIES
-// Defaults to mobile-portrait
-// includes mixin for mobile-landscape
-// includes mixin for tablet-landscape
-// includes mixin for desktop
+// Default: mobile-portrait
 $mobile-landscape : 480px;
 $tablet-portrait  : 768px;
 $tablet-landscape : 1024px;
@@ -51,12 +42,11 @@ $desktop          : 1025px;
 // CUSTOM WEBFONTS -------------------------------------------------------------------
 //
 // A custom webfont needs 4 file-types: .woff, .ttf, .svg, .eot
-// all files need to be stored in ../fonts/
+// All files need to be stored in ../fonts/
 // http://www.fontsquirrel.com/tools/webfont-generator
 //
 
 @include fontFace("{{__My awesome font name__}}", "{{__my-awesome-font-name-(file-name-without-extension)__}}");
-@include fontFace("{{__Some other font name__}}", "{{__some-other-font-name-(file-name-without-extension)__}}");
 
 
 
@@ -140,7 +130,7 @@ body {
 	font-family: Helvetica, Arial, Verdana, sans-serif;	
 	font-size: 16px;
 
-	// if the viewport meta tag is not included: use min-width for correct 
+	// If the viewport meta tag is not included: use min-width for correct 
 	// scaling on orientationchange (IOS default page-width: 980px)
 	min-width: 980px;
 }

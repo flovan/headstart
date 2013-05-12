@@ -1,10 +1,7 @@
 //
 // CSS FOR TABLET + DESKTOP ----------------------------------------------------------
 //
-// To be used with the Mobile First setup
-// Loads conditionally (only on tablets & desktop)
-//
-// Runs on Sass + Compass
+// Dependencies: Sass + Compass
 // http://sass-lang.com
 // http://compass-style.org
 //
@@ -12,15 +9,12 @@
 @charset "utf-8";
 @import "compass/css3";
 
-@import "__mediaqueries";
+@import "__media-queries";
 @import "__retinasupport";
 
 
 // MEDIA QUERIES
-// Defaults to mobile (to override some styles)
-// includes mixin for tablet-portrait
-// includes mixin for tablet-landscape
-// includes mixin for desktop
+// Default: mobile-portrait (override/add some desktop specific styles)
 $tablet-portrait  : 768px;
 $tablet-landscape : 1024px;
 $desktop          : 1025px;
@@ -39,7 +33,7 @@ $desktop          : 1025px;
 //
 // GENERAL ---------------------------------------------------------------------------
 //
-// Override some mobile styles here from responsive/fluid design
+// Add some desktop specific styles here when working with responsive/fluid design
 // In other words add your :hover states here
 //
 
