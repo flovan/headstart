@@ -1,11 +1,10 @@
 //
-// CUSTOM CSS RESET
+// CSS RESET -------------------------------------------------------------------------
 //
 // Based on HTML5 Boilerplate and Compass CSS Reset
 // https://github.com/h5bp/html5-boilerplate
 // http://compass-style.org/reference/compass/reset
 //
-
 
 html, body, div, span, object, iframe, canvas,
 h1, h2, h3, h4, h5, h6, p, a, img,
@@ -14,44 +13,43 @@ ol, ul, li,
 form, label, table, tr, td,
 audio, video {
 	margin: 0;
- 	padding: 0;
- 	border: 0;
+	padding: 0;
+	border: 0;
 	outline: none;
-  	font: inherit;
-  	font-size: 100%;
-  	vertical-align: baseline;
+	font-family: inherit;
+	font-size: 100%;
+	vertical-align: baseline;
 
-  	// enable smooth fonts
+	// Enable smooth fonts
 	-webkit-text-stroke: 1px transparent;
 	-webkit-font-smoothing: antialiased;
-       -moz-font-smoothing: antialiased;
-         -o-font-smoothing: antialiased;
-            font-smoothing: antialiased;
+	   -moz-font-smoothing: antialiased;
+	     -o-font-smoothing: antialiased;
+	        font-smoothing: antialiased;
 
-    // improve image scaling
+	// Improve image scaling
 	// https://developer.mozilla.org/nl/docs/CSS/image-rendering
 	image-rendering: auto;
 	-ms-interpolation-mode: bicubic;
 
-	// override the semitransparent color overlay when a user clicks something, 
+	// Override the semitransparent color overlay when a user clicks something
 	// to disable it set value to 'transparent' or 'rgba(0,0,0,0)'
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-	// prevent iOS text size adjust on focus or after orientation change
-	// without disabling zoom with the viwport meta-tag
+	// Prevent iOS text size adjust on focus or after orientation change
+	// without disabling zoom with the viewport meta-tag
 	// https://developer.mozilla.org/en-US/docs/CSS/text-size-adjust
 	-webkit-text-size-adjust: 100%;
 	   -moz-text-size-adjust: 100%;
 	    -ms-text-size-adjust: 100%;
 
-	// enable javascript pointer events on IE Mobile by disabling events in CSS
+	// Enable javascript pointer events on IE Mobile by disabling events in CSS
 	// http://msdn.microsoft.com/en-us/library/ie/hh673557(v=vs.85).aspx
 	-ms-touch-action: none;
 }
 
-
-// fix broken box-model 
-// !! doesn't work in IE7
+// FIX BROKEN BOX-MODEL 
+// Note: doesn't work in IE7 (padding is still added to the box width/height)
 // https://developer.mozilla.org/en-US/docs/CSS/box-sizing
 *, *:before, *:after {
 	-webkit-box-sizing: border-box;
@@ -59,22 +57,24 @@ audio, video {
 	        box-sizing: border-box;
 }
 
-
-// clearfix
+// CLEARFIX
+// Note: still supports IE7
 // http://www.css-101.org/articles/clearfix/latest-new-clearfix-so-far.php
 .clear:before, .clear:after {
-	content: " ";
+	content: "";
 	display: table;
 }
 .clear:after {
 	clear: both;
 }
 .clear {
-	*zoom: 1; // for IE7
+	*zoom: 1;
 }
 
+//
+// COMMON STYLES ---------------------------------------------------------------------
+//
 
-// basic styles
 html {
 	line-height: 1;
 	height: 100%;
