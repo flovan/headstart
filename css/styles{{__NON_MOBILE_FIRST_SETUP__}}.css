@@ -87,7 +87,7 @@ a img {
   font-style: "normal";
 }
 
-/* line 66, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 63, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .trim {
   white-space: nowrap;
   overflow: hidden;
@@ -95,7 +95,7 @@ a img {
   text-overflow: ellipsis;
 }
 
-/* line 74, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 71, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .break-word {
   -ms-word-break: break-all;
   word-break: break-all;
@@ -105,27 +105,27 @@ a img {
   hyphens: auto;
 }
 
-/* line 5, sources/__quotes.scss */
+/* line 12, sources/__quotes.scss */
 .quotes:before {
-  content: '\201C';
+  content: "\201C";
 }
-/* line 6, sources/__quotes.scss */
+/* line 13, sources/__quotes.scss */
 .quotes:after {
-  content: '\201D';
+  content: "\201D";
 }
 
-/* line 5, sources/__emphasizefirstchar.scss */
+/* line 13, sources/__emphasize-first-character.scss */
 .emphasize:first-letter {
   font-size: 180%;
   font-weight: bold;
 }
 
-/* line 92, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 91, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .no-popup {
   -webkit-touch-callout: none;
 }
 
-/* line 98, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 97, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .non-selectable {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -134,13 +134,13 @@ a img {
   user-select: none;
 }
 
-/* line 104, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 103, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .CSS3Animation {
-  -webkit-transform: translateZ(0);
-  -moz-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  -o-transform: translateZ(0);
-  transform: translateZ(0);
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
   -webkit-transition: all 300ms cubic-bezier(0.445, 0.045, 0.0355, 1);
   -moz-transition: all 300ms cubic-bezier(0.445, 0.045, 0.0355, 1);
   -ms-transition: all 300ms cubic-bezier(0.445, 0.045, 0.0355, 1);
@@ -150,58 +150,52 @@ a img {
   -webkit-perspective: 1000;
 }
 
-/* line 111, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 110, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .CSS3HardwareAcceleration {
-  -webkit-transform: translateZ(0);
-  -moz-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  -o-transform: translateZ(0);
-  transform: translateZ(0);
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
-/* line 130, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 129, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 body {
   font-family: Helvetica, Arial, Verdana, sans-serif;
   font-size: 16px;
   min-width: 980px;
 }
 
-/* line 139, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 138, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 h1 {
   font-size: 2.2em;
   line-height: 1.5em;
 }
 
-/* line 144, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 143, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 h2 {
   font-size: 1.8em;
   line-height: 1.5em;
 }
 
-/* line 149, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 148, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 h3 {
   font-size: 1.4em;
   line-height: 1.5em;
 }
 
-/* line 154, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
-h4 {
-  font-size: 1.2em;
-  line-height: 1.5em;
-}
-
-/* line 159, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 153, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 p {
   font-size: 1em;
   line-height: 1.5em;
 }
 
-/* line 164, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 158, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 a {
   text-decoration: underline;
 }
 
-/* line 168, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 162, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 hr {
   height: 1px;
   margin: 1.5em 0;
@@ -211,7 +205,7 @@ hr {
   display: block;
 }
 
-/* line 177, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 171, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .smaller {
   font-size: 70%;
 }

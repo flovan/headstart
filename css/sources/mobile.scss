@@ -13,11 +13,9 @@
 @import "__font-face";
 @import "__retina-support";
 @import "__trim";
-
 @import "__quotes";
-@import "__emphasizefirstchar";
-@import "__touchcallout";
-@import "__css3animation";
+@import "__emphasize-first-character";
+@import "__css3-animations";
 
 
 // MEDIA QUERIES
@@ -72,21 +70,23 @@ $mobile-landscape : 480px;
 }
 
 // QUOTES
-// Adds "double quotes" to text
+// Adds "quotes" to text
 .quotes {
 	@include quotes;
 }
 
 // EMPHASIZE
 // Bigger, bold first character
+// Note: doesn't work on inline elements (eg <span>)
 .emphasize { 
-	@include emphasizeFirstChar(180%);
+	@include emphasizeFirstCharacter(180%);
 }
 
 // NO TOUCH CALLOUT
-// Prevent a popup menu (IOS) on touch & hold
+// Prevent a popup menu on mobile devices on touch & hold
+// http://davidwalsh.name/webkit-css
 .no-popup {
-	@include noTouchCallout;
+	-webkit-touch-callout: none;
 }
 
 // NON-SELECTABLE
@@ -102,8 +102,8 @@ $mobile-landscape : 480px;
 }
 
 // ENABLE HARDWARE ACCELERATION
-// Mixin for -webkit-transform: translate3d(0,0,0)
-// which kicks in hardware acceleration (better performance on mobile)
+// Kick in hardware acceleration (better performance on mobile)
+// http://blog.teamtreehouse.com/increase-your-sites-performance-with-hardware-accelerated-css
 .CSS3HardwareAcceleration {
 	@include experimental("transform", translateZ(0));
 }
@@ -147,11 +147,6 @@ h2 {
 
 h3 {
 	font-size: 1.4em;
-	line-height: 1.5em;
-}
-
-h4 {
-	font-size: 1.2em;
 	line-height: 1.5em;
 }
 

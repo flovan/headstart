@@ -1,0 +1,19 @@
+//
+// CSS3 ANIMATION MIXIN --------------------------------------------------------------
+//
+// Combined Compass mixins to a custom mixin for CSS3 animations
+// http://blog.teamtreehouse.com/increase-your-sites-performance-with-hardware-accelerated-css
+//
+
+@import "compass/css3";
+
+
+@mixin css3Animation($prop, $time, $easing) {
+	// enable hardware acceleration
+	@include experimental("transform", translate3d(0, 0, 0));
+	// animate
+	@include experimental("transition", $prop $time $easing);	
+	// prevent flickering in animation 
+	-webkit-backface-visibility: hidden;
+  	-webkit-perspective: 1000;
+}
