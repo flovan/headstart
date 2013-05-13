@@ -12,6 +12,6 @@
 @mixin trim {
 	white-space: nowrap;
 	overflow: hidden;
-     -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	   text-overflow: ellipsis;
 }

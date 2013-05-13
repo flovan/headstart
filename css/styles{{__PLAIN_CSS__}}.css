@@ -402,7 +402,6 @@ hr {
 @media
 only screen and (-webkit-min-device-pixel-ratio: 2),
 only screen and (min-resolution: 192dpi) {
-
     /* Retina optimized styles go here */
 }
 
