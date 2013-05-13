@@ -9,8 +9,7 @@
 @charset "utf-8";
 @import "compass/css3";
 
-@import "__media-queries";
-@import "__retinasupport";
+@import "__retina-support";
 
 
 // MEDIA QUERIES
@@ -65,7 +64,7 @@ a:active {
 // TABLET PORTRAIT -------------------------------------------------------------------
 //
 
-@include mediaQuery($tablet-portrait) {
+@media screen and (min-width: $tablet-portrait) {
 
 }
 
@@ -80,7 +79,7 @@ a:active {
 // TABLET LANDSCAPE ------------------------------------------------------------------
 //
 
-@include mediaQuery($tablet-landscape) {
+@media screen and (min-width: $tablet-landscape) {
 
 }
 
@@ -95,7 +94,7 @@ a:active {
 // DESKTOP ---------------------------------------------------------------------------
 //
 
-@include mediaQuery($desktop) {
+@media screen and (min-width: $desktop) {
 
 }
 

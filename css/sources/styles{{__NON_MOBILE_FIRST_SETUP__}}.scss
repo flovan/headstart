@@ -10,9 +10,9 @@
 @import "compass/css3";
 
 @import "__reset";
-@import "__media-queries";
-@import "__retinasupport";
 @import "__font-face";
+@import "__retina-support";
+
 @import "__trim";
 @import "__quotes";
 @import "__emphasizefirstchar";
@@ -188,7 +188,7 @@ hr {
 // MOBILE LANDSCAPE ------------------------------------------------------------------
 //
 
-@include mediaQuery($mobile-landscape) { 
+@media screen and (min-width: $mobile-landscape) { 
 
 }
 
@@ -203,7 +203,7 @@ hr {
 // TABLET PORTRAIT -------------------------------------------------------------------
 //
 
-@include mediaQuery($tablet-portrait) {
+@media screen and (min-width: $tablet-portrait) {
 
 }
 
@@ -218,7 +218,7 @@ hr {
 // TABLET LANDSCAPE ------------------------------------------------------------------
 //
 
-@include mediaQuery($tablet-landscape) {
+@media screen and (min-width: $tablet-landscape) {
 
 }
 
@@ -233,7 +233,7 @@ hr {
 // DESKTOP ---------------------------------------------------------------------------
 //
 
-@include mediaQuery($desktop) {
+@media screen and (min-width: $desktop) {
 
 }
 

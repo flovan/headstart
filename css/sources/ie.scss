@@ -15,8 +15,6 @@
 @charset "utf-8";
 @import "compass/css3";
 
-@import "__media-queries";
-
 
 // MEDIA QUERIES
 // Default: mobile-portrait
@@ -55,7 +53,7 @@ html {
 // MOBILE LANDSCAPE ------------------------------------------------------------------
 //
 
-@include mediaQuery($mobile-landscape) { 
+@media screen and (min-width: $mobile-landscape) { 
 
 }
 
@@ -70,7 +68,7 @@ html {
 // TABLET PORTRAIT -------------------------------------------------------------------
 //
 
-@include mediaQuery($tablet-portrait) {
+@media screen and (min-width: $tablet-portrait) {
 
 }
 
@@ -85,7 +83,7 @@ html {
 // TABLET LANDSCAPE ------------------------------------------------------------------
 //
 
-@include mediaQuery($tablet-landscape) {
+@media screen and (min-width: $tablet-landscape) {
 
 }
 
@@ -100,7 +98,7 @@ html {
 // DESKTOP ---------------------------------------------------------------------------
 //
 
-@include mediaQuery($desktop) {
+@media screen and (min-width: $desktop) {
 
 }
 

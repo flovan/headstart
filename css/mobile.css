@@ -87,7 +87,7 @@ a img {
   font-style: "normal";
 }
 
-/* line 63, sources/mobile.scss */
+/* line 62, sources/mobile.scss */
 .trim {
   white-space: nowrap;
   overflow: hidden;
@@ -96,7 +96,7 @@ a img {
   text-overflow: ellipsis;
 }
 
-/* line 70, sources/mobile.scss */
+/* line 69, sources/mobile.scss */
 .break-word {
   -ms-word-break: break-all;
   word-break: break-all;
@@ -121,12 +121,12 @@ a img {
   font-weight: bold;
 }
 
-/* line 88, sources/mobile.scss */
+/* line 87, sources/mobile.scss */
 .no-popup {
   -webkit-touch-callout: none;
 }
 
-/* line 94, sources/mobile.scss */
+/* line 93, sources/mobile.scss */
 .non-selectable {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -135,7 +135,7 @@ a img {
   user-select: none;
 }
 
-/* line 100, sources/mobile.scss */
+/* line 99, sources/mobile.scss */
 .CSS3Animation {
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
@@ -151,7 +151,7 @@ a img {
   -webkit-perspective: 1000;
 }
 
-/* line 107, sources/mobile.scss */
+/* line 106, sources/mobile.scss */
 .CSS3HardwareAcceleration {
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
@@ -160,49 +160,49 @@ a img {
   transform: translateZ(0);
 }
 
-/* line 129, sources/mobile.scss */
+/* line 128, sources/mobile.scss */
 body {
   font-family: Helvetica, Arial, Verdana, sans-serif;
   font-size: 16px;
   min-width: 980px;
 }
 
-/* line 138, sources/mobile.scss */
+/* line 137, sources/mobile.scss */
 h1 {
   font-size: 2.2em;
   line-height: 1.5em;
 }
 
-/* line 143, sources/mobile.scss */
+/* line 142, sources/mobile.scss */
 h2 {
   font-size: 1.8em;
   line-height: 1.5em;
 }
 
-/* line 148, sources/mobile.scss */
+/* line 147, sources/mobile.scss */
 h3 {
   font-size: 1.4em;
   line-height: 1.5em;
 }
 
-/* line 153, sources/mobile.scss */
+/* line 152, sources/mobile.scss */
 h4 {
   font-size: 1.2em;
   line-height: 1.5em;
 }
 
-/* line 158, sources/mobile.scss */
+/* line 157, sources/mobile.scss */
 p {
   font-size: 1em;
   line-height: 1.5em;
 }
 
-/* line 163, sources/mobile.scss */
+/* line 162, sources/mobile.scss */
 a {
   text-decoration: underline;
 }
 
-/* line 167, sources/mobile.scss */
+/* line 166, sources/mobile.scss */
 hr {
   height: 1px;
   margin: 1.5em 0;
@@ -212,7 +212,7 @@ hr {
   display: block;
 }
 
-/* line 176, sources/mobile.scss */
+/* line 175, sources/mobile.scss */
 .smaller {
   font-size: 70%;
 }

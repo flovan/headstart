@@ -1,0 +1,21 @@
+//
+// RETINA SUPPORT MIXIN --------------------------------------------------------------
+//
+// CSS support for high pixel density devices
+// Note: this will not prevent assets getting loaded 2x (normal + hdpi)
+// http://www.sitepoint.com/support-retina-displays
+// http://www.brettjankord.com/2012/11/28/cross-browser-retinahigh-resolution-media-queries
+//
+
+@import "compass/css3";
+
+
+@mixin retinaSupport {
+	@media
+	only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (min-resolution: 192dpi) { 
+
+		@content;
+
+	}
+}

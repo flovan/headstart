@@ -10,8 +10,7 @@
 @import "compass/css3";
 
 @import "__reset";
-@import "__media-queries";
-@import "__retinasupport";
+@import "__retina-support";
 @import "__font-face";
 @import "__trim";
 @import "__quotes";
@@ -188,7 +187,7 @@ hr {
 // MOBILE LANDSCAPE ------------------------------------------------------------------
 //
 
-@include mediaQuery($mobile-landscape) { 
+@media screen and (min-width: $mobile-landscape) { 
 
 }
 
