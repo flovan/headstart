@@ -13,10 +13,10 @@
 		$name,
 
 		font-files(
-		$url+".woff", 
-		$url+".ttf", 
-		$url+".svg#webfont"),
-		$url+".eot",
+		$url +".woff", 
+		$url +".ttf", 
+		$url +".svg#webfont"),
+		$url +".eot",
 
 		"normal", "normal"
 	);

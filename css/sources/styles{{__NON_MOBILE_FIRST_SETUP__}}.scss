@@ -12,8 +12,8 @@
 @import "__reset";
 @import "__font-face";
 @import "__retina-support";
-
 @import "__trim";
+
 @import "__quotes";
 @import "__emphasizefirstchar";
 @import "__touchcallout";
@@ -69,7 +69,8 @@ $desktop          : 1025px;
 
 // BREAK WORDS
 // Prevent longwordsorurlswithoutspacesfrombreaking your layout
-// http://webdesignerwall.com/tutorials/word-wrap-force-text-to-wrap
+// http://blog.kenneth.io/blog/2012/03/04/word-wrapping-hypernation-using-css
+// http://compass-style.org/reference/compass/css3/hyphenation
 .break-word { 
 	@include hyphenation;
 }
@@ -95,7 +96,7 @@ $desktop          : 1025px;
 // NON-SELECTABLE
 // Prevent something from being selected with the mouse/touch
 .non-selectable {
-    @include experimental("user-select", none);
+	@include experimental("user-select", none);
 }
 
 // CSS3 ANIMATIONS

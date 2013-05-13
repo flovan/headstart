@@ -1,10 +1,17 @@
+//
+// TRIM MIXIN ------------------------------------------------------------------------
+//
+// Mixin to trim a text-element and add ellipsis (...)
+// Note: only works with a fixed width & single line text
+// http://www.electrictoolbox.com/ellipsis-html-css
+//
+
 @import "compass/css3";
 
 
 @mixin trim {
 	white-space: nowrap;
 	overflow: hidden;
-	-ms-text-overflow: ellipsis;
      -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
 }

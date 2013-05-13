@@ -131,13 +131,11 @@ audio, video {
 /*
 // TRIM TEXT
 // Trims & add ellipsis (...)
-// Note: width of the element needs to be defined
-// only works with single-line-text
+// Note: only works with a fixed width & single line text
 */
 .trim {
 	white-space: nowrap;
 	overflow: hidden;
-	-ms-text-overflow: ellipsis;
 	 -o-text-overflow: ellipsis;
 	    text-overflow: ellipsis;
 }
@@ -145,7 +143,7 @@ audio, video {
 /*
 // BREAK WORDS
 // Prevent longwordsorurlswithoutspacesfrombreaking your layout
-// http://webdesignerwall.com/tutorials/word-wrap-force-text-to-wrap
+// http://blog.kenneth.io/blog/2012/03/04/word-wrapping-hypernation-using-css
 */
 .break-word { 
 	-ms-word-break: break-all;

@@ -91,12 +91,11 @@ a img {
 .trim {
   white-space: nowrap;
   overflow: hidden;
-  -ms-text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
 
-/* line 73, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 74, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .break-word {
   -ms-word-break: break-all;
   word-break: break-all;
@@ -121,12 +120,12 @@ a img {
   font-weight: bold;
 }
 
-/* line 91, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 92, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .no-popup {
   -webkit-touch-callout: none;
 }
 
-/* line 97, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 98, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .non-selectable {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -135,7 +134,7 @@ a img {
   user-select: none;
 }
 
-/* line 103, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 104, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .CSS3Animation {
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
@@ -151,7 +150,7 @@ a img {
   -webkit-perspective: 1000;
 }
 
-/* line 110, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 111, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .CSS3HardwareAcceleration {
   -webkit-transform: translateZ(0);
   -moz-transform: translateZ(0);
@@ -160,49 +159,49 @@ a img {
   transform: translateZ(0);
 }
 
-/* line 129, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 130, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 body {
   font-family: Helvetica, Arial, Verdana, sans-serif;
   font-size: 16px;
   min-width: 980px;
 }
 
-/* line 138, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 139, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 h1 {
   font-size: 2.2em;
   line-height: 1.5em;
 }
 
-/* line 143, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 144, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 h2 {
   font-size: 1.8em;
   line-height: 1.5em;
 }
 
-/* line 148, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 149, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 h3 {
   font-size: 1.4em;
   line-height: 1.5em;
 }
 
-/* line 153, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 154, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 h4 {
   font-size: 1.2em;
   line-height: 1.5em;
 }
 
-/* line 158, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 159, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 p {
   font-size: 1em;
   line-height: 1.5em;
 }
 
-/* line 163, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 164, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 a {
   text-decoration: underline;
 }
 
-/* line 167, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 168, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 hr {
   height: 1px;
   margin: 1.5em 0;
@@ -212,7 +211,7 @@ hr {
   display: block;
 }
 
-/* line 176, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
+/* line 177, sources/styles{{__NON_MOBILE_FIRST_SETUP__}}.scss */
 .smaller {
   font-size: 70%;
 }

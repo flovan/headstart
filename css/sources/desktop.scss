@@ -19,7 +19,7 @@ $tablet-landscape : 1024px;
 $desktop          : 1025px;
 
 
-// BASE64 ENCODED IMAGES
+// BASE 64 ENCODED IMAGES
 // Note: Encoded images must be smaller then 32kb (or IE won't show them)
 // http://www.askapache.com/online-tools/base64-image-converter
 // background: url(data:image/__typegoeshere__;base64,____);
@@ -33,7 +33,7 @@ $desktop          : 1025px;
 // GENERAL ---------------------------------------------------------------------------
 //
 // Add some desktop specific styles here when working with responsive/fluid design
-// In other words add your :hover states here
+// In other words add your :hover states here (there not supported on mobile)
 //
 
 html {

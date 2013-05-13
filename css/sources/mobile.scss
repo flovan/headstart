@@ -10,9 +10,10 @@
 @import "compass/css3";
 
 @import "__reset";
-@import "__retina-support";
 @import "__font-face";
+@import "__retina-support";
 @import "__trim";
+
 @import "__quotes";
 @import "__emphasizefirstchar";
 @import "__touchcallout";
@@ -57,15 +58,15 @@ $mobile-landscape : 480px;
 
 // TRIM TEXT
 // Trims & add ellipsis (...)
-// Note: width of the element needs to be defined
-// only works with single-line-text
+// Note: only works with a fixed width & single line text
 .trim {
 	@include trim;
 }
 
 // BREAK WORDS
 // Prevent longwordsorurlswithoutspacesfrombreaking your layout
-// http://webdesignerwall.com/tutorials/word-wrap-force-text-to-wrap
+// http://blog.kenneth.io/blog/2012/03/04/word-wrapping-hypernation-using-css
+// http://compass-style.org/reference/compass/css3/hyphenation
 .break-word { 
 	@include hyphenation;
 }
@@ -91,7 +92,7 @@ $mobile-landscape : 480px;
 // NON-SELECTABLE
 // Prevent something from being selected with the mouse/touch
 .non-selectable {
-    @include experimental("user-select", none);
+	@include experimental("user-select", none);
 }
 
 // CSS3 ANIMATIONS
