@@ -8,7 +8,7 @@ $(document).ready(function()
 	// or copy/paste it manually
 	//
 	// Important: __utils.js sets up a global namespace for all utilities
-	// so add this snippet first before adding any other utilities
+	// Add this snippet before adding any other utilities
 	//
 
 	// @codekit-prepend "__utils.js"
@@ -17,9 +17,12 @@ $(document).ready(function()
 
 
 
+	//
+    // INIT ------------------------------------------------------------------------------
+    //
 
-
-
-
+    // Feature detection
+    // If not on mobile (touch-devices), add 'no-touch' class
+    if(!Utils.client.isTouch) $('html').addClass('no-touch');
 
 });

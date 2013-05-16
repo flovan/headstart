@@ -3,10 +3,10 @@
 //
 // Note: If you're not using CodeKit to include snippets, you can
 // prepend snippets with Grunt, some other build script/suite
-// or copy/paste it manually
+// or copy/paste manually
 //
 // Important: __utils.js sets up a global namespace for all utilities
-// so add this snippet first before adding any other utilities
+// Add this snippet before adding any other utilities
 //
 
 // @codekit-prepend "__utils.js"
@@ -18,94 +18,63 @@
 //
 // REQUIRE CONFIG --------------------------------------------------------------------
 //
+// Async setup using AMD loading
 // http://requirejs.org/docs/api.html#config
 //
 
 require.config({
 
-	// Dependencies - main entry point of the application
-	deps: ['app{{__REQUIRE__}}.min']
+	// Main entry point of the application
 
+	deps: ['app{{__REQUIRE__}}.min'],
 
+    // Path mappings for modules
+    // Note: relative to js/app.min.js
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-	paths:
+    paths:
     {
-        dom: (isIE ? ['http://code.jquery.com/jquery.min', 'libs/jquery-1.9.0.min'] :
-                     ['http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0rc1/zepto.min', 'libs/zepto.min'])
+        // This setup uses Zepto (10kb) as default DOM library
+        // For IE we fallback to jQuery.js (93kb) as Zepto doesn't support IE
+        // Note: Zepto doesn't support $(el).fadeIn(), $(el).fadeOut() -> use $(el).animate({ 'opacity': value })
+        // Note: Zepto doesn't support $(el).slideDown(), $(el).slideUp() either
+        // See http://zeptojs.com for full spec
 
+        'dom': (Utils.client.isIE ? 'libs/jquery-1.9.0.min' : 'libs/zepto.min'),
 
-	/  *
-        ,
+        // Backbone, using Lo-Dash instead of Underscore
+        // http://lodash.com
 
-        // backbone
-        json2:       ['http://cdnjs.cloudflare.com/ajax/libs/json2/20121008/json2', 'libs/json2.min'],
-        underscore:  ['http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min', 'libs/underscore.min'],
-        backbone:    ['http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.9/backbone-min', 'libs/backbone.min'],
-
-        // zynga custom scroll (un-minified)
-        animate:    'libs/zynga/animate',
-        render:     'libs/zynga/render',
-        zynga:      'libs/zynga/scroller',
-
-        // utils
-        utils:      'utils/utils',
-        events:     'utils/events',
-		
-        // plugins
-        add2home:   'libs/add2home'
-
-        *  /
-
+        'json2':      'libs/json2.min',
+        'underscore': 'libs/lodash-1.2.1.min',
+        'backbone':   'libs/backbone-1.0.0.min'
     },
+
+    // Configure dependencies & exports
+
     shim:
     {
-        // Zepto doesn't support AMD loading, jQuery supports it as of version 1.7.
-        // to do this, it defines a module named 'jquery' which passes back a reference to the jQuery object
-        // when you define your path to jquery with another name (eg 'jqueryA'), things aren't working
+        // Since the DOM library is client dependant, we need to export its module name
         // http://stackoverflow.com/questions/8735674/in-requirejs-cannot-alias-jquery-name-in-path
-        dom:
+
+        'dom':
         {
-            exports: (isIE ? 'jQuery' : 'Zepto')
-        }
+            exports: (Utils.client.ieIE ? 'jQuery' : 'Zepto')
+        },
 
-		/  *
-        ,
+        // Backbone depends on json2 (IE7), Underscore (Lo-Dash) & a DOM library
+        // Dependencies need to be loaded, then export the module name
 
-        // backbone depends on json2, underscore & a dom library
-        // dependencies need to be loaded before backbones inititializes
-        // once they've been loaded, export 'Backbone' as the module value
-        backbone:
+        'backbone':
         {
             deps: ['json2', 'underscore', 'dom'],
             exports: 'Backbone'
         },
 
-        // Zynga scroller depends on animate, render & a dom library
-        // loaded in that specific order
-        zynga:
+        // Underscore (Lo-Dash)
+
+        'underscore':
         {
-            deps: ['animate', 'render', 'dom']
+            exports: '_'
         }
-        *   /
-
     }
-    */
-
 });
