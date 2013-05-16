@@ -1,103 +1,62 @@
 //
 // CLIENT DETECTION ------------------------------------------------------------------
 //
-// All utility snippets are part of the global 'Utils' namespace
-// So each snippets needs to check existence of the namespace
-// http://addyosmani.com/blog/essential-js-namespacing
+// The most common way to get browser info is by useragent sniffing
+// A better way of doing this is by detecting supported features (browser agnostic approach)
+// https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
 //
-
-var Utils = Utils || (Utils = {});
-
+// Note: this setup will test the browser agnostic approach
+// we only have to sniff for IE because Zepto.js doesn't support IE
+//
+// Check CSS support in your browser:
+// console.log(document.body.style)
+//
 
 Utils.client =
 {
     init: function()
     {
-        this.isIE                  = navigator.appName === 'Microsoft Internet Explorer';
-        this.isSafari              = this.searchString('safari') && !this.searchString('chrome');
-        this.isChrome              = this.searchString('chrome');
-        this.isFireFox             = this.searchString('firefox');
+        this.isIE                  = !('__proto__' in {});
 
-        this.isIEMobile            = this.searchString('windows phone');
-        this.isAndroid             = this.searchString('android');
-        this.isIpad                = this.searchString('ipad');
-        this.isIphone              = this.searchString('iphone');
+        // this.isIE               = this.searchString('MSIE');
+        // this.isSafari           = this.searchString('safari') && !this.searchString('chrome');
+        // this.isChrome           = this.searchString('chrome');
+        // this.isFireFox          = this.searchString('firefox');
 
-        this.isTouch               = "ontouchstart" in document || navigator.msPointerEnabled || false;
+        // this.isIEMobile         = this.searchString('windows phone');
+        // this.isAndroid          = this.searchString('android');
+        // this.isIpad             = this.searchString('ipad');
+        // this.isIphone           = this.searchString('iphone');
+
+        this.isTouch               = 'ontouchstart' in document || navigator.msPointerEnabled || false;
         this.isPhone               = this.isTouch && window.innerWidth < 768;
         this.isTablet              = this.isTouch && !this.isPhone;
         this.isStandalone          = navigator.standalone || false;
 
-        this.hasCSS3Transition     = null;
-        this.hasCSS3Transform      = null;
-        this.hasCSS3BackgroundSize = null;
-
+        this.hasCSSTransition      = this.checkSupport('Transition');
+        this.hasCSSTransform       = this.checkSupport('Transform');
+        this.hasCSSBackgroundSize  = this.checkSupport('backgroundSize');
     },
 
+    /*
     searchString: function(string)
     {
         return navigator.userAgent.toLowerCase().indexOf(string) > -1;
+    },
+    */
+
+    checkSupport: function(prop)
+    {
+        var vendors = ['webkit', 'Moz', 'O', 'ms', ''], i = vendors.length;
+
+        while(i--) if((vendors[i] + prop) in document.body.style) return true;
+        return false;
     }
 };
 
+
+// Auto to initiate
 Utils.client.init();
-
-
-
-
-
-
-
-
-
-/*
-
-    var ua = navigator.userAgent.toLowerCase();
-
-
-
-
-    // check CSS3 property support
-    function checkCSS3Suppport(prop, e)
-    {
-        var p, properties = ['Webkit'+prop, 'Moz'+prop, 'O'+prop, 'ms'+prop, prop];
-        while(p = properties.shift())
-        {
-            if(typeof e.style[p] !== 'undefined') return true;
-        }
-        return false;
-    }
-
-
-
-
-    $.client =
-    {
-        isIE         : navigator.appName === 'Microsoft Internet Explorer',
-        isSafari     : ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1,
-        isChrome     : ua.indexOf('chrome') > -1,
-        isFireFox    : ua.indexOf('firefox') > -1,
-
-        isIEMobile   : ua.indexOf('windows phone') > -1,
-        isAndroid    : ua.indexOf('android') > -1,
-        isIpad       : ua.indexOf('ipad') > -1,
-        isIphone     : ua.indexOf('iphone') > -1,
-
-        isTouch      : 'ontouchstart' in document || false,
-        isStandAlone : navigator.standalone || false,
-        isSmartphone : ('ontouchstart' in document && window.innerWidth < 768) || false,
-
-        hasCSS3TransitionSupport     : checkCSS3Suppport('Transition', document.body),
-        hasCSS3TransformSupport      : checkCSS3Suppport('Transform', document.body),
-        hasCSS3BackgroundSizeSupport : checkCSS3Suppport('background-size', document.body)
-    };
-
-*/
-
-
-
-
-
 
 
 
@@ -113,9 +72,11 @@ Utils.client.init();
 //
 // ADVANCED CLIENT DETECTION ---------------------------------------------------------
 //
+// Advanced browser detection, fully based on useragent sniffing
 // http://www.quirksmode.org/js/detect.html
 //
 /*
+
 var BrowserDetect = {};
 
 BrowserDetect.init = function()
@@ -368,6 +329,5 @@ BrowserDetect.TABLET = false;
 BrowserDetect.TRANSLATE3D_SUPPORT = 'WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix();
 
 BrowserDetect.init();
-
 
 */

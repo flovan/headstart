@@ -1,11 +1,15 @@
 //
-// ADD CLIENT DETECTION --------------------------------------------------------------
+// CORE UTILS ------------------------------------------------------------------------
 //
 // Note: If you're not using CodeKit to include snippets, you can
 // prepend snippets with Grunt, some other build script/suite
 // or copy/paste it manually
 //
+// Important: __utils.js sets up a global namespace for all utilities
+// so add this snippet first before adding any other utilities
+//
 
+// @codekit-prepend "__utils.js"
 // @codekit-prepend "__utils.clientdetection.js"
 
 
@@ -19,7 +23,7 @@
 
 require.config({
 
-	// Dependencies - main entry point of the app
+	// Dependencies - main entry point of the application
 	deps: ['app{{__REQUIRE__}}.min']
 
 
