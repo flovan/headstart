@@ -55,7 +55,7 @@ Utils.client =
 };
 
 
-// Auto to initiate
+// Auto-call to initiate
 Utils.client.init();
 
 
