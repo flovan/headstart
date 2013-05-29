@@ -10,6 +10,7 @@
 
 
 @mixin trim {
+	position: relative;
 	white-space: nowrap;
 	overflow: hidden;
 	-o-text-overflow: ellipsis;
