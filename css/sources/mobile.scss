@@ -13,6 +13,7 @@
 @import "__font-face";
 @import "__retina-support";
 @import "__trim";
+@import "__line-clamp";
 @import "__quotes";
 @import "__emphasize-first-character";
 @import "__css3-animations";
@@ -59,6 +60,13 @@ $mobile-landscape : 480px;
 // Note: only works with a fixed width & single line text
 .trim {
 	@include trim;
+}
+
+// TRIM MULTILINE TEXT
+// Trims & add ellipsis (...) to multiline text
+// Note: only works with in Webkit browsers & Safari
+.line-clamp {
+	@include line-clamp(3);
 }
 
 // BREAK WORDS

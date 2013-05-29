@@ -135,10 +135,27 @@ audio, video {
 // http://www.electrictoolbox.com/ellipsis-html-css
 */
 .trim {
+	position: relative;
 	white-space: nowrap;
 	overflow: hidden;
 	 -o-text-overflow: ellipsis;
 	    text-overflow: ellipsis;
+}
+
+/*
+// TRIM MULTILINE TEXT
+// Trims & add ellipsis (...) to multiline text
+// Note: only works in Webkit browsers & Safari
+// http://www.css-101.org/articles/line-clamp/line-clamp_for_non_webkit-based_browsers.php
+*/
+.line-clamp {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+
+	/* number of lines to show */
+	-webkit-line-clamp: 3;
 }
 
 /*
