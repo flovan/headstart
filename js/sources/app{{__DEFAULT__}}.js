@@ -13,16 +13,17 @@ $(document).ready(function()
 
 	// @codekit-prepend "__utils.js"
 	// @codekit-prepend "__utils.clientdetection.js"
+	// @codekit-prepend "__utils.cookies.js"
 
 
 
 
 	//
-    // INIT ------------------------------------------------------------------------------
-    //
+	// INIT ------------------------------------------------------------------------------
+	//
 
-    // Feature detection
-    // If not on mobile (touch-devices), add 'no-touch' class
-    if(!Utils.client.isTouch) $('html').addClass('no-touch');
+	// Feature detection
+	// If not on mobile (touch-devices), add 'no-touch' class
+	if(!Utils.client.isTouch) $('html').addClass('no-hover');
 
 });

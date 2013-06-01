@@ -1,12 +1,28 @@
 define([
 
-	'dom',
-	'underscore',
+    'dom',
+    'underscore',
     'backbone'
 
 ], function($, _, Backbone)
 {
 	//
+    // CORE UTILS ------------------------------------------------------------------------
+    //
+    // Note: If you're not using CodeKit to include snippets, you can
+    // prepend snippets with Grunt, some other build script/suite
+    // or copy/paste it manually
+    //
+    // Note: global namespace for all utilities and clientdetection
+    // are already present (we add those in config{{__REQUIRE__}}.js)
+    //
+
+    // @codekit-prepend "__utils.cookies.js"
+
+
+
+
+    //
     // INIT ------------------------------------------------------------------------------
     //
 
