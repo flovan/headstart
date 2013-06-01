@@ -101,7 +101,9 @@ audio, video {
 /*
 // USING REM-UNITS vs EM-UNITS
 // Not integrating this for the moment, but it's something to keep in mind
+// rem-units are supported by all major browsers (except IE7, IE8)
 // http://drublic.de/blog/rem-fallback-sass-less
+// http://caniuse.com/#search=rem
 */
 
 

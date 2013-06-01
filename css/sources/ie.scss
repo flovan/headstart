@@ -34,6 +34,13 @@ $desktop          : 1025px;
 // @include experimental("{{__PROPERTY__}}", {{__VALUE__}}, not -webkit, not -moz, -o, -ms, -khtml, official);
 
 
+// USING REM-UNITS vs EM-UNITS
+// Not integrating this for the moment, but it's something to keep in mind
+// rem-units are supported by all major browsers (except IE7, IE8)
+// http://drublic.de/blog/rem-fallback-sass-less
+// http://caniuse.com/#search=rem
+
+
 //
 // GENERAL ---------------------------------------------------------------------------
 //

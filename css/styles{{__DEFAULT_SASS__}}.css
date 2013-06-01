@@ -87,7 +87,7 @@ a img {
   font-style: "normal";
 }
 
-/* line 64, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 71, sources/styles{{__DEFAULT_SASS__}}.scss */
 .trim {
   position: relative;
   white-space: nowrap;
@@ -96,7 +96,7 @@ a img {
   text-overflow: ellipsis;
 }
 
-/* line 71, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 78, sources/styles{{__DEFAULT_SASS__}}.scss */
 .line-clamp {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -105,7 +105,7 @@ a img {
   -webkit-line-clamp: 3;
 }
 
-/* line 79, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 86, sources/styles{{__DEFAULT_SASS__}}.scss */
 .break-word {
   -ms-word-break: break-all;
   word-break: break-all;
@@ -130,12 +130,12 @@ a img {
   font-weight: bold;
 }
 
-/* line 99, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 106, sources/styles{{__DEFAULT_SASS__}}.scss */
 .no-popup {
   -webkit-touch-callout: none;
 }
 
-/* line 105, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 112, sources/styles{{__DEFAULT_SASS__}}.scss */
 .non-selectable {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -144,7 +144,7 @@ a img {
   user-select: none;
 }
 
-/* line 111, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 118, sources/styles{{__DEFAULT_SASS__}}.scss */
 .CSS3Animation {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
@@ -160,7 +160,7 @@ a img {
   -webkit-perspective: 1000;
 }
 
-/* line 118, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 125, sources/styles{{__DEFAULT_SASS__}}.scss */
 .CSS3HardwareAcceleration {
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
@@ -169,43 +169,43 @@ a img {
   transform: translate3d(0, 0, 0);
 }
 
-/* line 137, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 144, sources/styles{{__DEFAULT_SASS__}}.scss */
 body {
   font-family: Helvetica, Arial, Verdana, sans-serif;
   font-size: 16px;
   min-width: 980px;
 }
 
-/* line 146, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 153, sources/styles{{__DEFAULT_SASS__}}.scss */
 h1 {
   font-size: 2.2em;
   line-height: 1.5em;
 }
 
-/* line 151, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 158, sources/styles{{__DEFAULT_SASS__}}.scss */
 h2 {
   font-size: 1.8em;
   line-height: 1.5em;
 }
 
-/* line 156, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 163, sources/styles{{__DEFAULT_SASS__}}.scss */
 h3 {
   font-size: 1.4em;
   line-height: 1.5em;
 }
 
-/* line 161, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 168, sources/styles{{__DEFAULT_SASS__}}.scss */
 p {
   font-size: 1em;
   line-height: 1.5em;
 }
 
-/* line 166, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 173, sources/styles{{__DEFAULT_SASS__}}.scss */
 a {
   text-decoration: underline;
 }
 
-/* line 170, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 177, sources/styles{{__DEFAULT_SASS__}}.scss */
 hr {
   height: 1px;
   margin: 1.5em 0;
@@ -215,7 +215,7 @@ hr {
   display: block;
 }
 
-/* line 179, sources/styles{{__DEFAULT_SASS__}}.scss */
+/* line 186, sources/styles{{__DEFAULT_SASS__}}.scss */
 .smaller {
   font-size: 70%;
 }
