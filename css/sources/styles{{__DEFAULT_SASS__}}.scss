@@ -187,7 +187,12 @@ hr {
 	font-size: 70%;
 }
 
-
+// Add .no-touch class to the HTML tag if touchEvents are not supported
+// This way we can disable :hover states on touch-devices
+// Note: javascript will add it for you - see js/sources/app.js
+.no-touch {
+		
+}
 
 
 
