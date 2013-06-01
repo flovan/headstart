@@ -34,6 +34,11 @@ $mobile-landscape : 480px;
 // @include experimental("{{__PROPERTY__}}", {{__VALUE__}}, not -webkit, not -moz, -o, -ms, -khtml, official);
 
 
+// USING REM-UNITS vs EM-UNITS
+// Not integrating this for the moment, but it's something to keep in mind
+// http://drublic.de/blog/rem-fallback-sass-less
+
+
 //
 // CUSTOM WEBFONTS -------------------------------------------------------------------
 //

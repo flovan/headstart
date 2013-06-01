@@ -99,6 +99,13 @@ audio, video {
 
 
 /*
+// USING REM-UNITS vs EM-UNITS
+// Not integrating this for the moment, but it's something to keep in mind
+// http://drublic.de/blog/rem-fallback-sass-less
+*/
+
+
+/*
 // CUSTOM WEBFONTS -------------------------------------------------------------------
 //
 // A custom webfont needs 4 file-types: .woff, .ttf, .svg, .eot
