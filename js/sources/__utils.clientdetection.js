@@ -36,6 +36,7 @@ Utils.client =
         this.hasCSSTransition      = this.checkSupport('Transition');
         this.hasCSSTransform       = this.checkSupport('Transform');
         this.hasCSSBackgroundSize  = this.checkSupport('backgroundSize');
+        this.hasCSSLineClamp       = this.checkSupport('webkitLineClamp');
     },
 
     /*
