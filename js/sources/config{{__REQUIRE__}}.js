@@ -19,6 +19,7 @@
 // REQUIRE CONFIG --------------------------------------------------------------------
 //
 // Async setup using AMD loading
+// Note: using CDN with local fallback
 // http://requirejs.org/docs/api.html#config
 //
 
@@ -43,14 +44,16 @@ require.config({
         // Note: Zepto doesn't support $(el).slideDown(), $(el).slideUp() either
         // See http://zeptojs.com for full spec
 
-        'dom': (Utils.client.isIE ? 'libs/jquery-1.10.0.min' : 'libs/zepto.min'),
+        'dom': (Utils.client.isIE ?
+            ['//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.0/jquery.min', 'libs/jquery-1.10.0.min'] :
+            ['//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min', 'libs/zepto.min']),
 
         // Backbone, using Lo-Dash instead of Underscore
         // http://lodash.com
 
-        'json2':      'libs/json2.min',
-        'underscore': 'libs/lodash-1.2.1.min',
-        'backbone':   'libs/backbone-1.0.0.min'
+        'json2':      ['//cdnjs.cloudflare.com/ajax/libs/json2/20121008/json2', 'libs/json2.min'],
+        'underscore': ['//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.2.1/lodash.min', 'libs/lodash-1.2.1.min'],
+        'backbone':   ['//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min', 'libs/backbone-1.0.0.min']
     },
 
     //
