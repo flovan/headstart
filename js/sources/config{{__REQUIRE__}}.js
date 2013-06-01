@@ -24,12 +24,16 @@
 
 require.config({
 
-	// Main entry point of the application
+    //
+    // MAIN ENTRY POINT OF THE APPLICATION -------------------------------------------
+    //
 
-	deps: ['app{{__REQUIRE__}}.min'],
+    deps: ['app{{__REQUIRE__}}.min'],
 
-    // Path mappings for modules
+    //
+    // PATH MAPPINGS FOR MODULES -----------------------------------------------------
     // Note: relative to js/app.min.js
+    //
 
     paths:
     {
@@ -39,7 +43,7 @@ require.config({
         // Note: Zepto doesn't support $(el).slideDown(), $(el).slideUp() either
         // See http://zeptojs.com for full spec
 
-        'dom': (Utils.client.isIE ? 'libs/jquery-1.9.0.min' : 'libs/zepto.min'),
+        'dom': (Utils.client.isIE ? 'libs/jquery-1.10.0.min' : 'libs/zepto.min'),
 
         // Backbone, using Lo-Dash instead of Underscore
         // http://lodash.com
@@ -49,7 +53,9 @@ require.config({
         'backbone':   'libs/backbone-1.0.0.min'
     },
 
-    // Configure dependencies & exports
+    //
+    // CONFIGURE DEPENDENCIES & EXPORTS ----------------------------------------------
+    //
 
     shim:
     {
