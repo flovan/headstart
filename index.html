@@ -3,17 +3,29 @@
 <head>
 
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!--
+    DNS Prefetching resolves & caches domain names
+    This results in faster download initialization
+    https://github.com/h5bp/html5-boilerplate/blob/master/doc/extend.md
+    http://daker.me/2013/05/5-html5-features-you-need-to-know.html
+    -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//ajax.googleapis.com" />
+    <link rel="dns-prefetch" href="//www.google-analytics.com" />
+
+
+    <!-- SEO /////////////////////////////////////////////////////////////////////// -->
 
     <title>Boilerplate 0.2</title>
 
     <meta name="description" content="{{__PAGE_DESCRIPTION__}}" />
     <meta name="keywords" content="{{__PAGE_KEYWORDS__}}" />
 
-
-    <!-- SEO /////////////////////////////////////////////////////////////////////// -->
-
     <!-- 
     Add canonical url when dealing with duplicate content
+    Signal to search engines to Use this URL for this page
     http://support.google.com/webmasters/bin/answer.py?hl=nl&answer=139394&topic=2371375&ctx=topic
     http://support.google.com/webmasters/bin/answer.py?hl=nl&answer=139066&topic=2371375&ctx=topic
     -->
@@ -54,24 +66,18 @@
     http://www.mobilexweb.com/blog/iphone-5-ios-6-html5-developers
     -->
 
-    <meta name="apple-itunes-app" content="app-id={{__XXXXXX__}}" />
+    <meta name="apple-itunes-app" content="app-id={{__XXXXXX__}}, app-argument={{__APP_DESCRIPTION__}}" />
 
     <!-- 
     Let spiders know this page is optimized for mobile
     Set the viewport for IE Mobile
+    Enable smooth font rendering on IE Mobile
     http://www.metatags.nl/mobiele_metatags_voor_de_smartphone
     -->
 
     <meta name="HandheldFriendly" content="true" />
     <meta name="MobileOptimized" content="320" />
-
-    <!--
-    Enable smooth font rendering on IE Mobile
-    Force IE to use the latest render or ChromeFrame if installed
-    -->
-
     <meta http-equiv="cleartype" content="on" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 
 
     <!-- G+ AND FACEBOOK /////////////////////////////////////////////////////////// -->
@@ -125,13 +131,15 @@
 
     <!-- 
     Tile icon for Win8
+    Disable link highlighting upon tap in IE10
     http://blogs.msdn.com/b/ie/archive/2012/06/08/high-quality-visuals-for-pinned-sites-in-windows-8.aspx
     -->
 
     <meta name="application-name" content="{{__PAGE_TITLE__}}" />
-    <meta name="msapplication-tooltip" content="{{__PAGE_TITLE__}}" />
+    <meta name="msapplication-tooltip" content="{{__PAGE_DESCRIPTION__}}" />
     <meta name="msapplication-TileImage" content="icons/144x144.png" />
     <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="msapplication-tap-highlight" content="no" />
     
     <!--
     For IOS startup images, see HTML5 Mobile Boilerplate
@@ -165,6 +173,15 @@
         <link rel="stylesheet" href="css/ie.css" />
         <script src="js/libs/respond.min.js"></script>
     <![endif]-->
+
+
+    <!-- SILENT PRELOADING ///////////////////////////////////////////////////////// -->
+
+    <!--
+    Specify pages or assets you want to silently preload after this page has finished loading
+    http://daker.me/2013/05/5-html5-features-you-need-to-know.html
+    -->
+    <link rel="prefetch" href="{{__SOME_OTHER_PAGE_OR_IMAGE__}}" />
 
 </head>
 <body>
@@ -209,12 +226,12 @@
     <!-- JQUERY ONLY SETUP ///////////////////////////////////////////////////////// -->
 
     <!-- 
-    Non-async loading - using jQuery 1.9 (note: jQuery 2.0 branch dropped support for IE6, IE7 & IE8)
-    http://blog.jquery.com/2013/01/15/jquery-1-9-final-jquery-2-0-beta-migrate-final-released
+    Non-async loading - using jQuery 1.10.0 (note: jQuery 2.0 branch dropped support for IE6, IE7 & IE8)
+    http://blog.jquery.com/
     -->
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.9.0.min.js"><\/script>')</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.10.0.min.js"><\/script>')</script>
 
     <!-- Your scripts -->
 
