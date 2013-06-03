@@ -16,6 +16,7 @@
 @import "__line-clamp";
 @import "__quotes";
 @import "__emphasize-first-character";
+@import "__embedded-content";
 @import "__css3-animations";
 
 
@@ -95,6 +96,16 @@ $mobile-landscape : 480px;
 // Note: doesn't work on inline elements (eg <span>)
 .emphasize { 
 	@include emphasizeFirstCharacter(180%);
+}
+
+// EMBEDDED CONTENT
+// Wrapper for fluid embedded content (vimeo, youtube, slideshare, ...) @16:9 ratio
+// For this to work, use the following HTML-structure:
+// <div class="embed-content">
+//     Embedded code...
+// </div>
+.embedded-content { 
+	@include embedded-content;
 }
 
 // NO TOUCH CALLOUT
