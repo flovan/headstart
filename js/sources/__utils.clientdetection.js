@@ -30,6 +30,7 @@ Utils.client =
 
         // Windows 8 uses navigator.msPointerEnabled to detect pointer events
         // Still need to explore this further to determine the best approach
+        // since Window 8 can have touch-enabled screens with mouse input
 
         this.isTouch               = 'ontouchstart' in document || false;
         this.isPhone               = this.isTouch && window.innerWidth < 768;
