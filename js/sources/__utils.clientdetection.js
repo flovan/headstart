@@ -28,7 +28,10 @@ Utils.client =
         // this.isIpad             = this.searchString('ipad');
         // this.isIphone           = this.searchString('iphone');
 
-        this.isTouch               = 'ontouchstart' in document || navigator.msPointerEnabled || false;
+        // Windows 8 uses navigator.msPointerEnabled to detect pointer events
+        // Still need to explore this further to determine the best approach
+
+        this.isTouch               = 'ontouchstart' in document || false;
         this.isPhone               = this.isTouch && window.innerWidth < 768;
         this.isTablet              = this.isTouch && !this.isPhone;
         this.isStandalone          = navigator.standalone || false;
