@@ -26,8 +26,8 @@ Utils.setCookie = function(key, value, days)
 Utils.getCookie = function(key)
 {
 	var n = key + '=',
-	    v = document.cookie.split(';'),
-	    i = v.length;
+		v = document.cookie.split(';'),
+		i = v.length;
 
 	while(i--)
 	{
