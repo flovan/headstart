@@ -29,7 +29,7 @@ $(document).ready(function()
 	// Feature detection
     // If not on mobile (touch-devices), add 'no-touch' class to the HTML-tag
     // Note: you don't need a DOM library for that (it's even faster without one)
-    // http://remysharp.com/2013/04/19/i-know-jquery-now-what
+    // http://remysharp.com/2013/04/19/i-know-jquery-now-what/
     if(!Utils.client.isTouch) document.documentElement.className = 'no-touch';
 
 });
