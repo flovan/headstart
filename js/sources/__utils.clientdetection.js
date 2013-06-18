@@ -60,7 +60,7 @@ Utils.client =
 };
 
 
-// Auto-call to initiate
+// Self-initiate
 Utils.client.init();
 
 
