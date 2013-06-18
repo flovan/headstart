@@ -17,11 +17,12 @@ define([
     // are already present (we added those in config{{__REQUIRE__}}.js)
     //
     // If Underscore/Lo-Dash is included in your project
-    // you can use _.debounce(callback, wait) instead
+    // you can use _.debounce(callback, wait) and _.throttle(callback, time)
     //
 
     // @codekit-prepend "__utils.cookies.js"
     // @codekit-prepend "__utils.debounce.js"
+    // @codekit-prepend "__utils.throttle.js"
 
 
 
