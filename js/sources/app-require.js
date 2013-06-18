@@ -20,6 +20,7 @@ define([
     // you can use _.debounce(callback, wait) and _.throttle(callback, time)
     //
 
+    // @codekit-prepend "__utils.requestAnimationFrame.js"
     // @codekit-prepend "__utils.cookies.js"
     // @codekit-prepend "__utils.debounce.js"
     // @codekit-prepend "__utils.throttle.js"
