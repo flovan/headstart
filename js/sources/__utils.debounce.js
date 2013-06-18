@@ -1,8 +1,8 @@
 //
 // DEBOUNCE --------------------------------------------------------------------------
 //
-// Debounce method to prevent callback methods getting called
-// too many times in a given timeframe (e.g. browser resize event in IE)
+// Debounce method to guarantee that a callback method will only ever
+// be executed once in a given timeframe (<-> browser resize event in IE which fires continuously)
 // http://davidwalsh.name/function-debounce
 //
 // Note: if Underscore/Lo-Dash is included in your project you can use _.debounce(callback, wait)
