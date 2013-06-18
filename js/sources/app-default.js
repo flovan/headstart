@@ -20,6 +20,7 @@ $(document).ready(function()
 	// @codekit-prepend "__utils.cookies.js"
 	// @codekit-prepend "__utils.debounce.js"
 	// @codekit-prepend "__utils.throttle.js"
+	// @codekit-prepend "__utils.strings.trim.js"
 
 
 
