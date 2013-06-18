@@ -15,7 +15,8 @@ $(document).ready(function()
 	//
 
 	// @codekit-prepend "__utils.js"
-	// @codekit-prepend "__utils.clientdetection.js"
+	// @codekit-prepend "__utils.clientDetection.js"
+	// @codekit-prepend "__utils.requestAnimationFrame.js"
 	// @codekit-prepend "__utils.cookies.js"
 	// @codekit-prepend "__utils.debounce.js"
 	// @codekit-prepend "__utils.throttle.js"

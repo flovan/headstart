@@ -10,7 +10,7 @@
 //
 
 // @codekit-prepend "__utils.js"
-// @codekit-prepend "__utils.clientdetection.js"
+// @codekit-prepend "__utils.clientDetection.js"
 
 
 
