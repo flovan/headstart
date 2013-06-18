@@ -8,9 +8,9 @@
 // http://lodash.com/docs#throttle
 //
 
-Utils.throttle = function(callback, time)
+Utils.throttle = function(callback, wait)
 {
-	var lastTimeCalled = new Date().getTime() - time;
+	var lastTimeCalled = new Date().getTime() - wait;
 
 	return function()
 	{
@@ -19,7 +19,7 @@ Utils.throttle = function(callback, time)
 			now  = new Date().getTime(),
 			diff = now - lastTimeCalled;
 
-		if(diff > time)
+		if(diff > wait)
 		{
 			lastTimeCalled = now;
 			callback.apply(obj, args);
