@@ -3,6 +3,7 @@
 //
 // Debounce method to guarantee that a callback method will only ever
 // be executed once in a given timeframe (<-> browser resize event in IE which fires continuously)
+// http://www.paulirish.com/2009/throttled-smartresize-jquery-event-handler
 // http://davidwalsh.name/function-debounce
 //
 // Note: if Underscore/Lo-Dash is included in your project you can use _.debounce(callback, wait)
