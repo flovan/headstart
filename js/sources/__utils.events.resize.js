@@ -17,17 +17,17 @@ Utils.onWindowResize = function(callback)
 
     if(!debounce) console.log("ALERT: Can't find _.debounce or Utils.debounce (__utils.events.resize.js)");
 
-	function resize()
-	{
-		var width  = document.documentElement.clientWidth,
-			height = document.documentElement.clientHeight;
+    function resize()
+    {
+        var width  = document.documentElement.clientWidth,
+            height = document.documentElement.clientHeight;
 
-		callback(width, height);
-	}
+        callback(width, height);
+    }
 
-	if(window.attachEvent) window.attachEvent('onresize', debounce(resize, wait));
-	if(window.addEventListener) window.addEventListener('resize', debounce(resize, wait), false);
-	if(window.orientationchange) window.addEventListener('orientationchange', debounce(resize, wait), false);
+    if(window.attachEvent) window.attachEvent('onresize', debounce(resize, wait));
+    if(window.addEventListener) window.addEventListener('resize', debounce(resize, wait), false);
+    if(window.orientationchange) window.addEventListener('orientationchange', debounce(resize, wait), false);
 
     resize();
 };
