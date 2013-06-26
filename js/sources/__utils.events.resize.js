@@ -12,7 +12,7 @@
 
 Utils.onWindowResize = function(callback)
 {
-	var debounce = typeof _ === 'function' ? _.debounce : !!Utils.debounce ? Utils.debounce : null,
+    var debounce = typeof _ === 'function' ? _.debounce : !!Utils.debounce ? Utils.debounce : null,
         wait = 75;
 
     if(!debounce) console.log("ALERT: Can't find _.debounce or Utils.debounce (__utils.events.resize.js)");
