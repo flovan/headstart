@@ -16,14 +16,16 @@ define([
     // Note: global namespace for all utilities and clientdetection
     // are already present (we added those in config{{__REQUIRE__}}.js)
     //
-    // If Underscore/Lo-Dash is included in your project
-    // you can use _.debounce(callback, wait) and _.throttle(callback, time)
+    // Note: If Underscore/Lo-Dash is included in your project
+    // you can also use _.debounce(callback, wait) and _.throttle(callback, time)
+    // instead of Utils.debounce(callback, wait) and Utils.throttle(callback, wait)
     //
 
     // @codekit-prepend "__utils.requestAnimationFrame.js"
     // @codekit-prepend "__utils.cookies.js"
     // @codekit-prepend "__utils.debounce.js"
     // @codekit-prepend "__utils.throttle.js"
+    // @codekit-prepend "__utils.events.resize.js"
     // @codekit-prepend "__utils.strings.trim.js"
     // @codekit-prepend "__utils.strings.capitalize.js"
 
@@ -42,6 +44,13 @@ define([
 
 
 
+
+    // Debounced browser resize
+    // Note: also called on orientationChange (on mobile)
+    Utils.onWindowResize(function(width, height)
+    {
+        // Do stuff
+    });
 
 
 
