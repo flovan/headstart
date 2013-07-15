@@ -30,6 +30,6 @@ This template comes with predefined row and column classes. Containers are perce
  + Zepto for modern browsers
  + jQuery + Respond + Selectivizr for IE browsers
  + Modernizr feature detection
- + Debounce-able resize and scroll event
+ + Debounce-able resize and scroll event (touchmove for iOS compatibility)
  
  
