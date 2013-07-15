@@ -21,11 +21,10 @@ This template comes with predefined row and column classes. Containers are perce
  
  With these classes any common grid lay-out can be achieved. Classes can also be nested.
  
-## Good practises
+## Features
  
- Some of the features:
  + DNS prefetching
- + Meta date for SEO and social sharing
+ + Meta data for SEO and social sharing
  + Mobile display meta tags
  + Icons (iOS, WP8, favicon)
  + Zepto for modern browsers
