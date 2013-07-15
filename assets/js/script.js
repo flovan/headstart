@@ -176,9 +176,9 @@ var Application = function ()
 											
 					switch(page)
 					{
-						/*case 'homepagecontent':
+						/*case 'homepage':
 						
-						break:*/
+						break;*/
 					}
 				},
 				
