@@ -100,7 +100,7 @@ input { outline: none; }
 	.col.span-3 { width: 73.75%; }
 	
 	.row { margin-bottom: 2em; /* Change to prefs ---------------------------------! */ }
-		.row .col:first-of-type { margin-left: 0; }
+		.row .col:first-child { margin-left: 0; }
 		.row .col:last-of-type { overflow: hidden; overflow: visible; }
 }
 
