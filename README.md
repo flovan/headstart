@@ -6,7 +6,7 @@ My personal mobile-to-desktop template. Combination of snippets and plugins for 
 
 This template comes with predefined row and column classes. Containers are percentage based and all dimensions are defined as em's. Usage explained in example below:
 
- ```html
+```html
 <!-- .container can also be a .row -->
 <section class="container">
   <div class="row">
@@ -15,11 +15,11 @@ This template comes with predefined row and column classes. Containers are perce
 		<div class="col col-2">Content</div>
 	</div>
 </section>
- ```
+```
  
- Available classes are: _col-2_, _col-3_ and _span-2_, _col-4_ and _span-3_.
+Available classes are: _col-2_, _col-3_ and _span-2_, _col-4_ and _span-3_.
  
- With these classes any common grid lay-out can be achieved. Classes can also be nested.
+With these classes any common grid lay-out can be achieved. Classes can also be nested.
  
 ## Features
  
@@ -32,4 +32,8 @@ This template comes with predefined row and column classes. Containers are perce
  + Modernizr feature detection
  + Debounce-able resize and scroll event (touchmove for iOS compatibility)
  
- 
+## Placeholders
+
+In the /assets/ folder you will find a subfolder 'placeholder'. Use the included class and .htaccess (don't forget to change the extension!) to generate customisable dummmy placeholders.
++ ./assets/placeholder/300
++ ./assets/placeholder/400x250/EAEAEA/333333&text=Dummytext
