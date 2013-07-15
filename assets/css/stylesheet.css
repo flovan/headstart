@@ -1,0 +1,138 @@
+/*
+   ==========================================
+   BASE STYLES
+   ==========================================
+*/
+
+*, *:after, *:before {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+
+body
+{
+    font-family: Helvetica, "Helvetica", sans-serif;
+    font-size: 100%;
+    line-height: 1.5;
+}
+
+.container
+{
+	width: 88%;
+	margin: 0 auto;
+	max-width: 1140px; /* change to prefs ----------------------------------! */
+	*zoom: 1;
+}
+
+textarea { resize:  none; }
+input { outline: none; }
+
+/* Selection color */
+
+::-moz-selection
+{
+    background: #000000;
+    text-shadow: none;
+}
+
+::selection
+{
+    background: #000000;
+    text-shadow: none;
+}
+
+/*
+   ==========================================
+   HELPER CLASSES
+   ==========================================
+*/
+
+.hide { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+.bold { font-weight: bold; }
+.underline { text-decoration: underline; }
+.italic { font-style: italic; }
+.caps { text-transform: uppercase; }
+.smallcaps { font-variant: small-caps; }
+.clearfix:before, .clearfix:after, .row:before, .row:after { content: " "; display: table; }
+.clearfix:after, .row:after { clear: both; }
+.clearfix, .row { *zoom: 1; }
+
+/*
+   ==========================================
+   GRID LAYOUT CLASSES
+   ==========================================
+*/
+
+.col
+{
+	position: relative;
+	margin-left: 0;
+	float: left;
+	display: inline;
+	margin-bottom: 2em; /* Change to prefs ---------------------------------! */
+}
+.container img
+{
+	max-width: 100%;
+    height: auto;
+    width: auto\9; /* IE8 */
+}
+
+/*
+   ==========================================
+   CUSTOM STYLES
+   ==========================================
+*/
+
+
+
+/*
+   ==========================================
+   MEDIA QUERIES
+   ==========================================
+*/
+
+/*700px*/
+@media screen and (min-width: 43.75em)
+{
+	.col { margin-left: 5%; margin-bottom: 0; }
+	.col.col-2 { width: 46%; margin-left: 8%; }
+	.col.col-3 { width: 30%; }
+	.col.span-2 { width: 65%; }
+	.col.col-4 { width: 21.25%; }
+	.col.span-3 { width: 73.75%; }
+	
+	.row { margin-bottom: 2em; /* Change to prefs ---------------------------------! */ }
+		.row .col:first-of-type { margin-left: 0; }
+		.row .col:last-of-type { overflow: hidden; overflow: visible; }
+}
+
+/* Retina-ish and up */
+@media screen and (-webkit-min-device-pixel-ratio: 1.5), screen and (min-resolution: 144dpi)
+{ 
+    
+}
+
+@media print
+{
+    *
+    {
+        background: transparent !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    a, a:visited { text-decoration: underline; }
+    a[href]:after { content: " (" attr(href) ")"; }
+    abbr[title]:after { content: " (" attr(title) ")"; }
+	.ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
+    pre,
+    blockquote
+    {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+    thead { display: table-header-group; }
+    tr, img { page-break-inside: avoid; }
+    img { max-width: 100% !important; }
+    @page { margin: 0.5cm; }
+    p, h2, h3 { orphans: 3; widows: 3; }
+    h2, h3 { page-break-after: avoid; }
+}
