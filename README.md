@@ -1,4 +1,4 @@
-# Fluid Boilerplate 0.1
+# Responsive Boilerplate 0.1
 
 My personal mobile-to-desktop template. Combination of snippets and plugins for fast and easy front-end development. Mainly consists of code from the [HTML5 Boilerplate](http://html5boilerplate.com), but expanded with snippets from [Gwen Vanhee's boilerplate](https://github.com/gwenvanhee/Boilerplate-0.2) and other bits and pieces from around the interwebz.
 
