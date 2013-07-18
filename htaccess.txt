@@ -1,11 +1,18 @@
-# caching
-ExpiresActive On
-ExpiresByType image/gif "access plus 6 months"
-ExpiresByType image/jpeg "access plus 6 months"
-ExpiresByType image/png "access plus 6 months"
-ExpiresByType text/css "access plus 6 months"
-ExpiresByType text/javascript "access plus 6 months"
-ExpiresByType application/javascript "access plus 6 months"
+# Placeholder generator
 
-# gzip
-AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript
+RewriteEngine on
+RewriteRule assets/placeholder/([^/]*)/([^/]*)/([^/]*)$ assets/placeholder/index.php?d=$1&bg=$2&color=$3 [QSA]
+
+# Caching
+
+# ExpiresActive On
+# ExpiresByType image/gif "access plus 6 months"
+# ExpiresByType image/jpeg "access plus 6 months"
+# ExpiresByType image/png "access plus 6 months"
+# ExpiresByType text/css "access plus 6 months"
+# ExpiresByType text/javascript "access plus 6 months"
+# ExpiresByType application/javascript "access plus 6 months"
+
+# Gzip
+
+# AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript
