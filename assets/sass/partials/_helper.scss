@@ -1,0 +1,9 @@
+.hide { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+.bold { font-weight: bold; }
+.underline { text-decoration: underline; }
+.italic { font-style: italic; }
+.caps { text-transform: uppercase; }
+.smallcaps { font-variant: small-caps; }
+.clearfix:before, .clearfix:after, .row:before, .row:after { content: " "; display: table; }
+.clearfix:after, .row:after { clear: both; }
+.clearfix, .row { *zoom: 1; }

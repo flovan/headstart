@@ -1,0 +1,21 @@
+.container
+{
+	width: 88%;
+	margin: 0 auto;
+	max-width: 1140px;
+	*zoom: 1;
+}
+	.container img
+	{
+		max-width: 100%;
+	    height: auto;
+	    width: auto\9; /* IE8 */
+	}
+.col
+{
+	position: relative;
+	margin-left: 0;
+	float: left;
+	display: inline;
+	margin-bottom: pxtoem(20,16);
+}
