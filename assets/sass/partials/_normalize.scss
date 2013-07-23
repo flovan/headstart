@@ -515,6 +515,18 @@ textarea {
     vertical-align: top; /* 2 */
 }
 
+/**
+ * Make textareas resize vertically only
+ */
+ 
+textarea { resize:  vertical; }
+
+/**
+ * Hide the outline of inputs and textareas
+ */
+ 
+input, textarea { outline: none; }
+
 /* ==========================================================================
    Tables
    ========================================================================== */

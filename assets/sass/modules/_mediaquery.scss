@@ -1,0 +1,15 @@
+@mixin media-query($value, $operator: 'min-width', $query: 'screen')
+{
+	@media #{$query} and (#{$operator}: #{$value})
+	{
+		@content;
+	}
+}
+
+@mixin highres()
+{ 
+    @media screen and (-webkit-min-device-pixel-ratio: 1.5), screen and (min-resolution: 144dpi)
+    { 
+        @content
+    }
+}
