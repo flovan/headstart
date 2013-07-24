@@ -4,6 +4,8 @@
 .italic { font-style: italic; }
 .caps { text-transform: uppercase; }
 .smallcaps { font-variant: small-caps; }
+.f-right { float: right; }
+.f-left { float: left; }
 .clearfix:before, .clearfix:after, .row:before, .row:after { content: " "; display: table; }
 .clearfix:after, .row:after { clear: both; }
 .clearfix, .row { *zoom: 1; }

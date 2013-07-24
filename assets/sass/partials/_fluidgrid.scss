@@ -16,6 +16,7 @@
 	position: relative;
 	margin-left: 0;
 	float: left;
-	display: inline;
+	display: inline-block;
+	width: 100%;
 	margin-bottom: pxtoem(20,16);
 }
