@@ -117,7 +117,7 @@ var Application = function ()
 	    resizeFct();
 	};
 	
-	/* Debounce-able resize event */
+	/* Debounce-able scroll event */
 	
 	var scroll = function(callback, debounce)
 	{

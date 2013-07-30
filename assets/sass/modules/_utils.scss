@@ -1,18 +1,11 @@
 /* FUNCTIONS */
 
-@function pxtoem($target, $context)
+@function em($target, $context: $doc-em-factor)
 {
 	@return ($target/$context)+0em;
 }
 
-@function emtopx($target, $context)
+@function px($target, $context)
 {
 	@return ($target*$context)+0px;
-}
-
-/* MIXINS */
-
-@mixin background-opacity($color, $opacity: 0.3) {
-    background: $color; /* The Fallback */
-    background: rgba($color, $opacity);
 }

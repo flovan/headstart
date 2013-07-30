@@ -9,25 +9,8 @@ html, body { height: 100%; }
 body
 {
     font-family: Helvetica Neue, Helvetica, sans-serif;
-    font-size: 100%;
+    font-size: $doc-font-size;
     line-height: 1.5;
+    background-color: $doc-bg-color;
+    color: $doc-text-color;
 }
-
-/* Selection color */
-
-::-moz-selection
-{
-    background: $black;
-    text-shadow: none;
-}
-
-::selection
-{
-    background: $black;
-    text-shadow: none;
-}
-
-/* Make p and label tags behave */
-
-p, label { margin: 0 0 1em; }
-p:last-of-type, label:last-of-type { margin-bottom: 0; }

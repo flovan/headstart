@@ -1,0 +1,66 @@
+.report, p.report
+{
+	color: #333333;
+	padding: em(10) em(20); 
+	position: relative;
+}
+.report.hide, p.report.hide
+{
+	padding: 0;
+}
+.info
+{
+	background: #DAE5F0;
+	border: em(1) solid #90B1D2; 
+}
+.error
+{
+	background: #FADCD7;
+	border: em(1) solid #F39B88; 
+}
+.warning
+{
+	background: #FCF5D6;
+	border: em(1) solid #F7E287; 
+}
+.success
+{
+	background: #DEF1DD;
+	border: em(1) solid #A2D69A;
+}
+	.report .closebtn, .report .closebtn:active, .report .closebtn:visited, .report .closebtn:hover
+	{
+		/* TODO: REPLACE WITH IMAGE */
+		
+		position: absolute;
+		top: em(15); 
+		right: em(15); 
+		text-decoration: none;
+		display: inline-block;
+		line-height: 1;
+		padding: em(1) em(4) em(2) em(4); 
+		text-align: center;
+		border-radius: 50%;
+		font-family: Helvetica, sans-serif;
+		font-weight: bold;
+	}
+	.info .closebtn
+	{
+		background-color: #90B1D2;
+		color: #DAE5F0;
+	}
+	.error .closebtn
+	{
+		background-color: #F39B88;
+		color: #FADCD7;
+	}
+	.warning .closebtn
+	{
+		background-color: #F7E287;
+		color: #FCF5D6;
+	}
+	.success .closebtn
+	{
+		background-color: #A2D69A;
+		color: #DEF1DD;
+	}
