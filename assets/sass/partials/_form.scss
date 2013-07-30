@@ -1,0 +1,29 @@
+label
+{
+	display: block;
+	
+	input
+	{
+		margin-top: em(5);
+	}
+}
+input, textarea { font-family: Helvetica Neue, Helvetica, sans-serif; }
+input[type=text], input[type=password], textarea
+{
+	border: em(1) solid $black;
+	background: $black;
+	border-radius: em(5);
+	color: $black;
+	padding: em(10) em(20) em(8);
+	line-height: 1.5;
+	
+	&:focus
+	{
+		background-color: transparent;
+	}
+	&:focus + i:before
+	{
+		color: $black;
+	}
+}
+form p:last-of-type { margin-top: em(15); }

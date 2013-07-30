@@ -1,0 +1,39 @@
+/* Selection color */
+
+::-moz-selection
+{
+    background: $black;
+    text-shadow: none;
+}
+
+::selection
+{
+    background: $black;
+    text-shadow: none;
+}
+
+/* Headings */
+
+h1, h2, h3, h4
+{
+	margin-top: 0;
+	color: $heading-color;
+}
+
+/* Make p and label tags behave */
+
+p, label { margin: 0 0 em($doc-em-factor); }
+p:last-of-type, label:last-of-type { margin-bottom: 0; }
+
+/* Links */
+
+a, a:visited, a.col h3
+{
+	color: $link-color;
+	text-decoration: none;
+}
+a:hover, a.col:hover h3
+{
+	color: $link-hover-color;
+	text-decoration: underline;
+}

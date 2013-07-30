@@ -5,6 +5,10 @@
 */
 
 /* Include here */
+/*
+** Don't forget to add this family to partials/doc if this is a body type
+** If so ... add it to partials/form also to use it in inputs and what not
+*/
 
 /*
    ==========================================
@@ -17,6 +21,18 @@
 @import "partials/doc";
 @import "partials/fluidgrid";
 @import "partials/helper";
+/*@import "partials/reporting";*/
+/*@import "partials/form";*/
+/*@import "partials/button";*/
+@import "partials/text";
+
+/*
+   ==========================================
+   COMMON STYLES
+   ==========================================
+*/
+
+/* Things like header, footer, ... keeping it DRY */
 
 /*
    ==========================================
@@ -28,12 +44,19 @@
 
 /*
    ==========================================
+   VENDOR IMPORTS
+   ==========================================
+*/
+
+/*@import "vendor/....";*/
+
+/*
+   ==========================================
    MEDIA QUERIES
    ==========================================
 */
 
-$bp700: pxtoem(700, 16);
-@include media-query($bp700)
+@include media-query(em(700))
 {
 	.col { margin-left: 5%; margin-bottom: 0; }
 	.col.col-2 { width: 46%; margin-left: 8%; }
@@ -42,7 +65,7 @@ $bp700: pxtoem(700, 16);
 	.col.col-4 { width: 21.25%; }
 	.col.span-3 { width: 73.75%; }
 
-	.row { margin-bottom: 2em; }
+	/*.row { margin-bottom: 2em; }*/
 		.row .col:first-child, .row > .col-2:nth-of-type(3n), .row > .col-3:nth-of-type(3n + 1),
 		.row > .col-4:nth-of-type(4n + 1) { margin-left: 0; }
 		.row > .col-2:nth-of-type(3n), .row > .col-3:nth-of-type(3n + 1),
