@@ -27,10 +27,10 @@ With these classes any common grid lay-out can be achieved. Classes can also be 
  + Meta data for SEO and social sharing
  + Mobile display meta tags
  + Icons (iOS, WP8, favicon)
- + Zepto for modern browsers
- + jQuery + Respond + Selectivizr for IE browsers
+ + Respond + Selectivizr for IE browsers
  + Modernizr feature detection
  + Debounce-able resize and scroll event (touchmove for iOS compatibility)
+ + SASS/SCSS based style architecture (working on a better structure..)
  
 ## Placeholders
 
