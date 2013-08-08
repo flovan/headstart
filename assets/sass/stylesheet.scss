@@ -56,7 +56,8 @@
    ==========================================
 */
 
-@viewport { width: device-width; } /* IE10 viewport fix */
+@-ms-viewport { width: device-width; } /* IE10 viewport fix */
+@viewport { width: device-width; }
 
 @include media-query(em(700))
 {
