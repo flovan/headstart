@@ -36,7 +36,7 @@ var Services = function()
 			};
 			
 		// extend with params	
-		$.extend(options, defaults);
+		$.extend(defaults, options);
 		
 		// cancel if no route is set
 		if(!options.route || options.route == '') return false;
