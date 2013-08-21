@@ -74,6 +74,7 @@
 		.row > .col-4:nth-of-type(4n + 1) { margin-left: 0; }
 		.row > .col-2:nth-of-type(3n), .row > .col-3:nth-of-type(3n + 1),
 		.row > .col-4:nth-of-type(4n + 1) { clear: left; }
+		.row > .span-2 + .col-3, .row > .span-3 + .col-4 { clear: none; }
 		.row .col:last-of-type { overflow: hidden; overflow: visible; }
 }
 
