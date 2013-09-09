@@ -1,8 +1,3 @@
-# Placeholder generator
-
-RewriteEngine on
-RewriteRule assets/placeholder/([^/]*)/([^/]*)/([^/]*)$ assets/placeholder/index.php?d=$1&bg=$2&color=$3 [QSA]
-
 # Webfont mimetypes
 
 AddType application/vnd.ms-fontobject .eot
