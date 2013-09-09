@@ -31,17 +31,3 @@ With these classes any common grid lay-out can be achieved. Classes can also be 
  + Modernizr feature detection
  + Debounce-able resize and scroll event (touchmove for iOS compatibility)
  + SASS/SCSS based style architecture (working on a better structure..)
- 
-## Placeholders
-
-This package comes with a custom dummy image generator. You can use this as following:
-+ `./assets/placeholder/300`
-+ `./assets/placeholder/400x250/EAEAEA/333333?text=Dummytext`
-
-First "dir-var" is the dimension. Use one number to get back a square image or use widthxheight.
-Second and third var are background- and text-color respectively.
-Optional GET var "text" let's you change the default label.
-
-To use a custom font, change the .ttf provided in the `./assets/placeholder/` folder and update the url in the .php script.
-
-**When using this, make sure to change htaccess.txt to .htaccess. Apache required**
