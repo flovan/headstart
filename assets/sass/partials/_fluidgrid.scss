@@ -20,3 +20,23 @@
 	width: 100%;
 	margin-bottom: em(20);
 }
+
+@include media-query(em(700))
+{
+	.col { margin-left: 5%; margin-bottom: 0; }
+	.col.col-2 { width: 46%; margin-left: 8%; }
+	.col.col-3 { width: 30%; }
+	.col.span-2 { width: 65%; }
+	.col.col-4 { width: 21.25%; }
+	.col.span-3 { width: 73.75%; }
+
+	/*.row { margin-bottom: 2em; }*/
+	/*.row:first-of-type:last-of-type { margin-bottom: 0; }*/
+		.row .col:first-child, .row > .col-2:nth-of-type(3n), .row > .col-3:nth-of-type(3n + 1),
+		.row > .col-4:nth-of-type(4n + 1) { margin-left: 0; }
+		.row > .span-2 + .col-3, .row > .span-3 + .col-4 { margin-left: 5%; }
+		.row > .col-2:nth-of-type(3n), .row > .col-3:nth-of-type(3n + 1),
+		.row > .col-4:nth-of-type(4n + 1) { clear: left; }
+		.row > .span-2 + .col-3, .row > .span-3 + .col-4 { clear: none; }
+		.row .col:last-of-type { overflow: hidden; overflow: visible; }
+}
