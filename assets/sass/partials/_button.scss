@@ -2,13 +2,19 @@
 {
 	border: none;
 	background-color: $black;
-	color: $black;
+	color: $white;
 	font-weight: bold;
 	padding: em(15);
 	border-radius: em(15);
 	text-decoration: none;
 	outline: none;
 	display: inline-block;
+	
+	&:visited, &:hover, &:active
+	{
+		color: $black;
+	}
+	&:disabled { opacity: 0.5; }
 	
 	/*&.some-color-button
 	{
@@ -21,17 +27,17 @@
 			background-color: $dark-color;
 		}
 	}*/
-}
-
-.loading .button
-{
-	background-image: url();
-	background-repeat: no-repeat;
-	background-position: center center;
-	color: transparent;
 	
-	/*&.some-color-button:hover
+	&.loading
 	{
-		background-color: $color;
-	}*/
+		background-repeat: no-repeat;
+		background-position: center center;
+
+		&, &:hover, &:active { color: transparent; }
+		/*&.some-color-button:hover, &.some-color-button:active { background-color: $black; }
+		&.some-color-button
+		{
+			background-image: url();
+		} */
+	}
 }
