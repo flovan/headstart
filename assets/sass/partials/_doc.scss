@@ -4,13 +4,12 @@
 
 /* Body settings */
 
-html, body { height: 100%; }
-
-body
+html, body
 {
     font-family: Helvetica Neue, Helvetica, sans-serif;
     font-size: $doc-font-size;
     line-height: 1.5;
     background-color: $doc-bg-color;
     color: $doc-text-color;
+	height: 100%;
 }
