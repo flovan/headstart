@@ -2,28 +2,18 @@
 // GENERAL UTILITIES
 //
 
-// Avoid `console` errors in browsers that lack a console. */
-
-(function() {
-    if(Function.prototype.bind && window.console && typeof console.log == "object")
-    {
-    	["log","info","warn","error","assert","dir","clear","profile","profileEnd"
-        ].forEach(function (method)
-        {
-            console[method] = this.bind(console[method], console);
-        }, Function.prototype.call);
-    }
-}());
-
 // Override console.log() with log() and support for dev flag */
-
-var log = function()
+window.log = function()
 {
-	if(CONFIG.devFlag) console.log.apply(console, arguments);
+	if(this.console && CONFIG.devFlag){
+		console.log.apply(console, arguments);
+		// If IE feels hurt, switch be the approach below
+		// console.log( Array.prototype.slice.call(arguments) );
+	}
 };
 
-// Make a function that spits our a json object from form data
-
+// Provide forms with a function to provide a data object
+// This is easier for Ajax POST requestst
 $.fn.serializeObject = function()
 {
    var o = {};
@@ -50,19 +40,21 @@ var Utils = function()
 	return {
 	
 		// Browser sniffing
-			
-		detectUserAgent: function()
-		{
-			var b = document.documentElement;
-		  	b.setAttribute('data-useragent',  navigator.userAgent);
-		  	b.setAttribute('data-platform', navigator.platform );
-		},
+		
+		// Don't use this >:(
+		// 		detectUserAgent: function()
+		// 		{
+		// 			var b = document.documentElement;
+		// 		  	b.setAttribute('data-useragent',  navigator.userAgent);
+		// 		  	b.setAttribute('data-platform', navigator.platform );
+		// 		},
 		
 		// Callback Debouncing
 		
-		debounceFct: function(callback, wait)
+		debounce: function(callback, wait)
 		{
 			var timeout = null;
+			if(wait == null || wait == undefined) wait = 75;
 		
 			return function()
 			{
@@ -80,10 +72,12 @@ var Utils = function()
 		},
 				
 		// Callback throttling
+		// Limit a function from being continuusly 
 		
-		throttleFct: function(callback, wait)
+		throttle: function(callback, wait)
 		{
 			var lastTimeCalled = new Date().getTime() - wait;
+			if(wait == null || wait == undefined) wait = 75;
 		
 			return function()
 			{
@@ -102,11 +96,9 @@ var Utils = function()
 		
 		// Debounce-able resize event
 		
-		resize: function(callback, debounce)
+		resize: function(callback, wait)
 		{
-			var wait = 75;
-			
-			if(debounce == null || debounce == undefined) debounce = false;
+			if(wait == null || wait == undefined) wait = 75;
 			
 		    function resizeFct()
 		    {
@@ -116,21 +108,19 @@ var Utils = function()
 		        callback(width, height);
 		    }
 		
-		    if(window.attachEvent) window.attachEvent('onresize', debounce ? Utils.debounceFct(resizeFct, wait) : resizeFct);
-		    if(window.addEventListener) window.addEventListener('resize', debounce ? Utils.debounceFct(resizeFct, wait) : resizeFct, false);
-		    if(window.orientationchange) window.addEventListener('orientationchange', debounce ? Utils.debounceFct(resizeFct, wait) : resizeFct, false);
+		    if(window.attachEvent) window.attachEvent('onresize', (wait != 0) ? Utils.debounceFct(resizeFct, wait) : resizeFct);
+		    if(window.addEventListener) window.addEventListener('resize', (wait != 0) ? Utils.debounceFct(resizeFct, wait) : resizeFct, false);
+		    if(window.orientationchange) window.addEventListener('orientationchange', (wait != 0) ? Utils.debounceFct(resizeFct, wait) : resizeFct, false);
 		
 		    resizeFct();
 		},
 		
 		// Debounce-able scroll event
 		
-		scroll: function(callback, debounce)
+		scroll: function(callback, wait)
 		{
-			var wait = 75,
-				isTouch = !(document.documentElement.className.indexOf('no-touch') > -1);
-			
-			if(debounce == null || debounce == undefined) debounce = false;
+			var isTouch = !(document.documentElement.className.indexOf('no-touch') > -1);
+			if(wait == null || wait == undefined) wait = 75;
 			
 		    function scrollFct()
 		    {
@@ -149,21 +139,105 @@ var Utils = function()
 		
 		        callback(width, height, st);
 		    }
+		
+			/* TODO:
+			**
+			
+			Check if Android devices do a better job at dispatching scroll events than iOS devices.
+			
+			*/
 		    
 		    if(window.attachEvent)
 		    {
-		    	if(!isTouch) window.attachEvent('onscroll', debounce ? debounceFct(scrollFct, wait) : scrollFct);
-		    	else window.attachEvent('ontouchmove', debounce ? debounceFct(scrollFct, wait) : scrollFct);
+		    	if(!isTouch) window.attachEvent('onscroll', (wait != 0) ? debounceFct(scrollFct, wait) : scrollFct);
+		    	else window.attachEvent('ontouchmove', (wait != 0) ? debounceFct(scrollFct, wait) : scrollFct);
 		    }
 		    
 		    if(window.addEventListener)
 		    {
 		    	log('window eventlistener', isTouch);
-		    	if(!isTouch) document.addEventListener('scroll', debounce ? debounceFct(scrollFct, wait) : scrollFct, false);
-		    	else document.addEventListener('touchmove', debounce ? debounceFct(scrollFct, wait) : scrollFct, false);
+		    	if(!isTouch) document.addEventListener('scroll', (wait != 0) ? debounceFct(scrollFct, wait) : scrollFct, false);
+		    	else document.addEventListener('touchmove', (wait != 0) ? debounceFct(scrollFct, wait) : scrollFct, false);
 		    }	
 		    
 		    scrollFct();
+		},
+
+		// Function to hide child image and add to bg of selector
+
+		imgToParentBG: function(imgs)
+		{
+			log('Rounding images');
+			
+			imgs = typeof imgs == 'String' ? $(imgs) : imgs;
+			imgs.each(function(i, item)
+			{
+				var trg = $(item);
+				trg.css('visibility', 'hidden')
+					.parent().css({ 'background-image': 'url(' + trg.attr('src') + ')'});
+			});
+		},
+
+		// Function to check if variable is type Function
+
+		isFunction: function(obj)
+		{
+		 	return !!(obj && obj.constructor && obj.call && obj.apply);
+		},
+
+		// Function for inserting report messages
+
+		insertReporting: function(target, message, type, addAfter, addClose)
+		{
+			if(!addAfter) addAfter = true;
+			if(!addClose) addClose = false;
+
+			target = target instanceof jQuery ? target : $(target);
+			message = typeof message === 'string' ? '<p class="report ' + type + '">' + message + '</p>' : '<ul class="report ' + type + '"><li>' + message.join('</li><li>') + '</li></ul>';
+
+			if(addAfter)
+			{
+				if(target.next().is('.report')) target.next().remove();
+				message = target.after(message).next();
+			}
+			else
+			{
+				if(target.prev().is('.report')) target.prev().remove();
+				message = target.before(message).prev();
+			}
+
+			if(addClose)
+			{
+				var cbtn = $('<button class="closebtn">&#215;</button>');
+				message.prepend(cbtn);
+
+				cbtn.on('click', function(e)
+				{
+					cbtn.parent().fadeOut(300, function(){ cbtn.parent().remove(); });
+				});
+			}
+		},
+
+		// Function to insert errors into a form
+
+		insertFormErrors: function(form, errors)
+		{
+			form = form instanceof jQuery ? form : $(form);
+
+			_.each(errors, function(value, key, list)
+			{
+				var field = form.find('*[name='+key+']');
+
+				form.find('label[for*='+field.attr('id')+']').addClass('error').append('<p class="report error">' + value + '</p>');
+			});
+		},
+
+		// Function to clear all errors from a form
+		clearErrors: function(form)
+		{
+			form = form instanceof jQuery ? form : $(form);
+			form.find('label.error').removeClass('error');
+			form.find('.report.error').remove();
 		}
 	}
 }();
