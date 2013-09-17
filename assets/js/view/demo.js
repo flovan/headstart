@@ -7,7 +7,7 @@ var Demo = function()
 	// VARS ----------------------------------------------------------------------
 	//
 	
-	// var demoSelector				= 'div.demo';
+	// var $demoSelector			= 'div.demo';
 
 	//
 	// CONSTRUCTOR ---------------------------------------------------------------
@@ -33,7 +33,7 @@ var Demo = function()
 	{
 		log('Make objects out of selector strings');
 		
-		// demoSelector = $(demoSelector);
+		// $demoSelector = $(demoSelector);
 	}
 	
 	// Apply listeners to certain elements in the view
