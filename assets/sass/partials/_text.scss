@@ -1,3 +1,8 @@
+/* Smoothing */
+
+-webkit-font-smoothing: antialiased;
+font-smoothing: antialiased;
+
 /* Selection color */
 
 ::-moz-selection
@@ -27,12 +32,12 @@ p:last-of-type, label:last-of-type { margin-bottom: 0; }
 
 /* Links */
 
-a, a:visited, a.col h3
+a, a:visited
 {
 	color: $link-color;
 	text-decoration: none;
 }
-a:hover, a.col:hover h3
+a:hover
 {
 	color: $link-hover-color;
 	text-decoration: underline;
