@@ -1,0 +1,8 @@
+/** 
+ * Html5 Placeholder Polyfill - v2.0.7 - 2013-03-31 
+ * web: http://blog.ginader.de/dev/jquery/HTML5-placeholder-polyfill/ 
+ * issues: https://github.com/ginader/HTML5-placeholder-polyfill/issues 
+ * Copyright (c) 2013 Dirk Ginader; Licensed MIT, GPL 
+ */
+
+span.placeholder{position:absolute;font-size:75%;color:#999;font-family:sans-serif;padding:4px 3px;z-index:1;cursor:text}span.placeholder-hide-except-screenreader{clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);padding:0!important;border:0!important;height:1px!important;width:1px!important;overflow:hidden}span.placeholder-hide{display:none}label.visuallyhidden-with-placeholder{height:auto!important;overflow:visible!important;position:absolute!important;left:-999em}
