@@ -1,0 +1,37 @@
+@mixin($width: 10px, $height: 10px, $direction: up, $color: red)
+{
+  	width: 0 ;
+	height: 0;
+
+	// Right
+	@if $direction == right
+	{
+		border-top: $height/2 solid transparent;
+		border-bottom: $height/2 solid transparent;
+		border-left: $width solid $color;
+	}
+
+	// Left
+	@if $direction == left
+	{
+		border-top: $height/2 solid transparent
+		border-bottom: $height/2 solid transparent
+		border-right: $width solid $color
+	}
+
+	// Up
+	@if $direction == up
+	{
+		border-left: $width/2 solid transparent
+		border-right: $width/2 solid transparent
+		border-bottom: $height solid $color
+	}
+
+	// Down
+	@if $direction == down
+	{
+		border-left: $width/2 solid transparent
+		border-right: $width/2 solid transparent
+		border-top: $height solid $color
+	}
+}
