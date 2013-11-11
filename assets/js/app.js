@@ -1,55 +1,46 @@
-var Application = function ()
+var App = function ()
 {
 	var me					= this;
 	
-	//
-	// VARS ----------------------------------------------------------------------
-	//
+	// VARS -------------------------------------------------------------------
 	
-	var view					= null;
+	var view				= null,
+		dispatcher 			= $('<div />');
 	
-	
-	//
-	// CONSTRUCTOR ---------------------------------------------------------------
-	//
+	// CONSTRUCTOR ------------------------------------------------------------
 	
 	var init = function()
 	{
-		log('## Application init ##');
-		
-		_initView();
-		
-		log('## End Application init ##');
+		log('_## Application init_');
+
+		dispatcher.on(EVENTS.app.viewLoaded, _viewLoadedHandler);
 	};
-	
-	//
-	// PRIVATE FUNCTIONS ---------------------------------------------------------
-	//
-	
-	function _initView()
+
+
+
+
+
+
+
+	// Handler of the viewLoaded event
+	function _viewLoadedHandler(e, data)
 	{
-		// Get the classname from the body tag
-		var docClass = $('body').attr('class'),
-			page = docClass.substr(0,docClass.indexOf('page'));
-		
-		// Assign correct view based on classname
-		switch(page)
-		{
-			case 'demo': view = Demo; break;
-		}
-		
-		// initiate the view
-		view.init();
+		log('_## View finished initializing_', data.view);
 	}
+
+
+
+
+
+
+
 	
-	//
-	// PUBLIC FUNCTIONS ----------------------------------------------------------
-	//
+	// PUBLIC -----------------------------------------------------------------
 	
 	return {
-		init: init
+		init: init,
+		dispatcher: dispatcher
 	};
 }();
 
-// Initiate the application on document ready
-$(document).ready(Application.init);
+App.init();

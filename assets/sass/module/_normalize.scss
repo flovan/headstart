@@ -406,7 +406,7 @@ table {
 }
 
 /* ==========================================================================
-   Personal additions
+   Custom additions
    ========================================================================== */
 
 /**
@@ -416,7 +416,30 @@ table {
 textarea { resize:  vertical; }
 
 /**
- * Hide the outline of inputs and textareas
+ * Hide the outline of of certain elements
  */
  
-input, textarea { outline: none; }
+input, textarea, button, a { outline: none; }
+
+/**
+ * Remove the gap between these elements and the bottom of their parent
+ */
+
+audio,
+canvas,
+img,
+svg,
+video {
+    vertical-align: middle;
+}
+
+/**
+ * Styles for the browsehappy notice
+ */
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}

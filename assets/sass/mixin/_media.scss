@@ -1,0 +1,43 @@
+// Media-max mixin ------------------------------------------------------------
+//
+// Generates a max-width media query
+//
+// $value:	The breakpoint, in px
+// $query:	What type of media this applies to, defaults to screen
+
+@mixin media-max($value, $query: 'screen')
+{
+	$value: em($value);
+	@media #{$query} and (max-width: #{$value})
+	{
+		@content;
+	}
+}
+
+// Media-min mixin ------------------------------------------------------------
+//
+// Generates a min-width media query
+//
+// $value:	The breakpoint, in px
+// $query:	What type of media this applies to, defaults to screen
+
+@mixin media-min($value, $query: 'screen')
+{
+	@media #{$query} and (min-width: #{$value})
+	{
+		@content;
+	}
+}
+
+// Highres mixin --------------------------------------------------------------
+//
+// Generates a media query for higher density displays
+// Targets everything above a ratio of 1.5, or a resolution of 144dpi
+
+@mixin highres()
+{ 
+    @media screen and (-webkit-min-device-pixel-ratio: 1.5), screen and (min-resolution: 144dpi)
+    { 
+        @content
+    }
+}

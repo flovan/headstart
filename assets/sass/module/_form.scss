@@ -1,13 +1,20 @@
+// Form Module ----------------------------------------------------------------
+//
+// Not as much a module, but separated as one to group all form styles
+
 label
 {
 	display: block;
+	margin: 0 0 em($doc-em-factor);
+
+	&:last-of-type, &:last-child { margin-bottom: 0; }
 	
 	input
 	{
 		margin-top: em(5);
 	}
 }
-input, textarea { font-family: Helvetica Neue, Helvetica, sans-serif; }
+input, textarea { font-family: $font-stack; }
 input[type=text], input[type=password], textarea
 {
 	border: em(1) solid $black;
@@ -21,9 +28,4 @@ input[type=text], input[type=password], textarea
 	{
 		background-color: transparent;
 	}
-	&:focus + i:before
-	{
-		color: $black;
-	}
 }
-form p:last-of-type { margin-top: em(15); }

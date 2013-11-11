@@ -1,6 +1,6 @@
-@mixin($width: 10px, $height: 10px, $direction: up, $color: red)
+@mixin triangle($width: 10px, $height: 10px, $direction: up, $color: red)
 {
-  	width: 0 ;
+  	width: 0;
 	height: 0;
 
 	// Right

@@ -1,0 +1,101 @@
+// Reporting Module -----------------------------------------------------------
+//
+// For everyone's feedback needs, the reporting module will provide
+// Easily setup Success, Error, Warning, and Info messages and lists
+//
+// Also, see the Utils.insertReporting() function for usage through javascipt
+
+.report
+{
+	color: $reporting-text;
+	padding: em(10) em(20); 
+}
+
+ul.report, ol.report
+{ padding-left: em(35); } // Nice paddings for your lists
+
+// Modifiers ------------------------------------------------------------------
+//
+// Note: colors are set in _config_site.scss
+
+.report--success
+{
+	@extend .report;
+
+	background: $reporting-success-light;
+	border: em(1) solid $reporting-success;
+
+	.report__close-button
+	{
+		background-color: $reporting-success;
+		color: $reporting-success-light;
+	}
+}
+.report--error
+{
+	@extend .report;
+
+	background: $reporting-error-light;
+	border: em(1) solid $reporting-error;
+
+	.report__close-button
+	{
+		background-color: $reporting-error;
+		color: $reporting-error-light;
+	}
+}
+.report--warning
+{
+	@extend .report;
+
+	background: $reporting-warning-light;
+	border: em(1) solid $reporting-warning;
+
+	.report__close-button
+	{
+		background-color: $reporting-warning;
+		color: $reporting-warning-light;
+	}
+}
+.report--info
+{
+	@extend .report;
+
+	background: $reporting-info-light;
+	border: em(1) solid $reporting-info;
+
+	.report__close-button
+	{
+		background-color: $reporting-info;
+		color: $reporting-info-light;
+	}
+}
+
+// States ---------------------------------------------------------------------
+
+.report.is-hidden { padding: 0; } // Collapse padding when hidden
+.report.has-close-button
+{
+	position: relative;
+	padding-right: 
+}
+
+// Children -------------------------------------------------------------------
+
+.report__close-button
+{
+	position: absolute;
+	top: em(15); 
+	right: em(15); 
+	display: inline-block;
+	padding: em(1) em(4) em(2) em(4); 
+	font-family: Helvetica, sans-serif;
+	font-weight: bold;
+	line-height: 1;
+	text-align: center;
+	text-decoration: none;
+	border: none;
+	border-radius: 50%;
+
+	&:before { content: '\00d7'; } // ISO value of '×', or &times;
+}

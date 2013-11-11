@@ -1,34 +1,30 @@
+// Demo view class
+
 var Demo = function()
 {
-
-	var me							= this;
+	var me						= this;
 	
-	//
-	// VARS ----------------------------------------------------------------------
-	//
+	// VARS -------------------------------------------------------------------
 	
-	// var $demoSelector			= 'div.demo';
+	// var $demoSelector			= '.demo';
 
-	//
-	// CONSTRUCTOR ---------------------------------------------------------------
-	//
+	// CONSTRUCTOR ------------------------------------------------------------
 	
 	function init()
 	{
-		log('# Demo page init #');
-		
+		log('_## Demo view init_');
+
+		me = me.Demo;
+
 		_makeObjects();
 		_addActions();
-		
-		log('# End Demo page init #');
+
+		App.dispatcher.trigger(EVENTS.app.viewLoaded , { view: me });
 	};
 	
-	//
-	// PRIVATE FUNCTIONS ---------------------------------------------------------
-	//
+	// PRIVATE FUNCTIONS ------------------------------------------------------
 	
-	// Initiate some elements
-	// Put all jQuery selectors inside of a var for cleaner coding
+	// Convert all selector strings to jQuery objects
 	function _makeObjects()
 	{
 		log('Make objects out of selector strings');
@@ -41,15 +37,34 @@ var Demo = function()
 	{
 		log('Adding actions');
 		
-		
+		// $demoSelector.on('click', _demoSelectorClickHandler);
 	}
+
+
+
+
+
+
+
+	/*function _demoSelectorClickHandler(e)
+	{
+		log('Clicked!');
+		return false;
+	}*/
+
+
+
+
+
+
+
 	
-	//
 	// PUBLIC FUNCTIONS ----------------------------------------------------------
-	//
 	
 	return {
 		init: init
 		//, otherExamplePublicFunction: function(){ alert('I am public'); }
 	};
 }();
+
+Demo.init();

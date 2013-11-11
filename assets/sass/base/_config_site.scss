@@ -1,0 +1,32 @@
+// Accent colors --------------------------------------------------------------
+
+
+
+// Greys ----------------------------------------------------------------------
+
+$white: #FFF;
+$black-5: shade($white, 5%);
+$black-10: shade($white, 10%);
+$black-25: shade($white, 25%);
+$black-50: shade($white, 50%);
+$black-75: shade($white, 75%);
+$black: #000;
+
+// Reporting ------------------------------------------------------------------
+//
+// Using in the Reporting module (module/_reporting.scss)
+
+$reporting-text: #333333;
+
+$reporting-success: #A2D69A;
+$reporting-success-light: #DEF1DD;
+$reporting-error: #F39B88;
+$reporting-error-light: #FADCD7;
+$reporting-warning: #F7E287;
+$reporting-warning-light: #FCF5D6;
+$reporting-info: #90B1D2;
+$reporting-info-light: #DAE5F0;
+
+// Font-stack -----------------------------------------------------------------
+
+$font-stack: Helvetica Neue, Helvetica, sans-serif;
