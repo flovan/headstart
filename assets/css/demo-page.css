@@ -78,8 +78,3 @@
 @media screen and (min-width: 970px) {
   .feature__text {
     font-size: 80%; } }
-
-/*@include high-res()
-{
-	
-}*/
