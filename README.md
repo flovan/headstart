@@ -1,12 +1,12 @@
-# Headstart 0.2
+# Headstart Lite 0.2
 
-####A front-end boilerplate for  web apps and platforms.
+####A front-end boilerplate
 
-In this time of automated workflows, I take pleasure in *hand-gardening* this project. This is the grown-up version of my personal boilerplate (now [branched](http://github.com/flovan/Headstart-0.2/tree/lite) as 'lite').
+In this time of automated workflows, I take pleasure in *hand-gardening* this project.
 
 ### HTML
 
-Headstart provides you with a solid HTML foundation, based on the [HTML5 Boilerplate](http://html5boilerplate.com), 
+Headstart Lite provides you with a solid HTML foundation, based on the [HTML5 Boilerplate](http://html5boilerplate.com), 
 but extended with *those things you always end up needing*.
 
 It also includes bits and pieces of Gwen Vanhee's [Boilerplate](https://github.com/gwenvanhee/Boilerplate-0.2)
@@ -23,11 +23,11 @@ Also included in the HTML are a few handy links:
  + Favicon and the ever-growing list of web app icons for iOS
  + Your CSS, of course!
  + Some CSS and JS based fixes for IE, so you can (almost) stop thinking about it
- + A class-based setup for page specific javascript / jQuery code
+ + A ready to use js file
 
 ###CSS
 
-For maintainability reasons, Headstart's CSS is compiled with Compass and SCSS, and utilizes a trimmed down version 
+For maintainability reasons, Headstart Lite's CSS is compiled with Compass and SCSS, and utilizes a trimmed down version 
 of [Suzy](http://susy.oddbird.net) to take care of the responsive grid. Included are some other handy mixins, 
 and a few modules.
 The folder structure and base file setup is based on [BEM](http://bem.info/method/definitions/) and [SMACSS](http://smacss.com). 
@@ -38,9 +38,7 @@ A more thourough write-up will be published elsewhere later.
 
 ###JS
 
-Being intended for web content requiring heavier database traffic and multiple pages, 
-Headstart uses a JS setup that I put together over the course of the last projects that I worked on.
-So there are bound to be some changes in the future, such as looking further into RequireJS, or even a Backbone implementation.
+Unlike it's bigger brother, the Lite version of Headstart comes with one .js file to contain all your javascript and jQuery code.
 
 ####Libraries
 
@@ -56,22 +54,12 @@ semantic elements and media queries just work! Cross-browser!
    + [Respond.js](http://j.mp/respondjs)
    + [Selectivizr](http://selectivizr.com) — in combination with [NWMatcher](http://javascript.nwbox.com/NWMatcher/)
    + [IE7/IE8/IE9.js](http://code.google.com/p/ie7-js/)
-
-####Classes
-
-Ready-to-use classes:
-
- + API — A handy wrapper for your API calls
- + Utils
++ Utils
    + `form.serializeObject()` will come in handy for your Api calls
    + Debounce-able `resize()` and `scroll()` function
    + `insertReporting()` helper function for displaying feedback messages
- + App — Global wrapper for app-wide logic
- + Views — Each page is probably a view
  
 ###TODO
 
  + Make a better demo page
  + Test cross-browser support (should be alright though)
- + Implement more interesting techniques from bookmarks
- + Remove UPPERCASE classnames
