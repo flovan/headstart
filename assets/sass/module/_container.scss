@@ -1,0 +1,32 @@
+// Container Module -----------------------------------------------------------
+
+.container
+{
+	width: 100% - $min-page-padding;
+	margin: 0 auto;
+	max-width: $max-container-width;
+	
+	// Responsive images, yay!
+	img
+	{
+	    height: auto;
+		max-width: 100%;
+	    width: auto\9; /* IE8 */
+	}
+}
+
+// Modifiers ------------------------------------------------------------------
+
+.container--header,
+.container--introduction,
+.container--features,
+.container--footer
+{
+	@extend .container;
+}
+
+.container--introduction,
+.container--features
+{
+	@extend .is-cf;
+}

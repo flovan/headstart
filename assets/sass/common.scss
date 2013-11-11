@@ -1,62 +1,41 @@
-/*
-   ==========================================
-   FONTS-FACE
-   ==========================================
-*/
+// General imports ------------------------------------------------------------
 
-/* Include here */
-/*
-** Don't forget to add this family to partials/doc if this is a body type
-** If so ... add it to partials/form also to use it in inputs and what not
-*/
+@import 'base/config_global';
+@import 'base/config_site';
+@import 'base/functions';
 
-/*
-   ==========================================
-   IMPORTS
-   ==========================================
-*/
+@import 'base/state.scss';
+@import 'module/normalize';
 
-@import "partials/base";
-@import "partials/normalize";
-@import "partials/doc";
-@import "partials/fluidgrid";
-@import "partials/helper";
-/*@import "partials/reporting";*/
-/*@import "partials/form";*/
-/*@import "partials/button";*/
-@import "partials/text";
+// Module imports -------------------------------------------------------------
 
-/*
-   ==========================================
-   COMMON STYLES
-   ==========================================
-*/
+@import 'module/doc';
+@import 'module/container';
+//@import 'module/reporting';
+//@import 'module/form';
+//@import 'module/button';
 
-/* Things like header, footer, ... keeping it DRY */
+@import 'demo-module/menu';
 
-/*
-   ==========================================
-   VENDOR IMPORTS
-   ==========================================
-*/
 
-/*@import "vendor/....";*/
+// Vendor imports -------------------------------------------------------------
 
-/*
-   ==========================================
-   MEDIA QUERIES
-   ==========================================
-*/
+//@import 'vendor/....';
+
+// Styles ---------------------------------------------------------------------
+
+header
+{
+	background: $black-5;
+}
+
+// IE10+ fix -------------------------------------------------------------------
 
 @-ms-viewport { width: device-width; } /* IE10 viewport fix */
 @viewport { width: device-width; }
 
-@include media-query(em(700)) /* Column break-point */
-{
-	
-}
+// Print ----------------------------------------------------------------------
+//
+// Inline to avoid the request
 
-/*@include highres()
-{
-	
-}*/
+@import 'module/ie';

@@ -1,0 +1,45 @@
+//  Column mixin --------------------------------------------------------------
+//
+//  Create a % based column
+//
+//	@columns:	Number of columns that need to be spanned
+//	@end: 		Mark the column as the end of a "row"
+//  @break:		Point where a column starts floating and stretching
+//	@context:	A context for @columns
+
+@mixin column($columns, $end: false, $break: $default-column-breakpoint, $context: $total-columns)
+{
+	@extend .column;
+
+	@include media-min($break)
+	{
+		$perc: (100 / $total-columns * $columns) * 1%;
+
+		@if $end == false
+		{
+			float: left;
+			margin-right: $default-gutter-width;
+		}
+		@else
+		{
+			float: right;
+			// TODO:	Find out where I found this "hack" and what is does
+			// 			exactly. It should be something relating to IE and filling
+			//			100% of avaiable width with floated elements (which IE
+			//			sucks at if I'm not mistaken).
+			overflow: hidden;
+			overflow: visible;
+		}
+
+		width: $perc - ($default-gutter-width);
+	}
+}
+
+// Base column class ----------------------------------------------------------
+
+.column
+{
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+}

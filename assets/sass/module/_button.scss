@@ -1,0 +1,64 @@
+//  Button Module -------------------------------------------------------------
+
+.button
+{
+	border: none;
+	outline: none;
+	font-family: $font-stack;
+	
+	background-color: $black;
+	display: inline-block;
+	padding: em(15);
+	font-weight: bold;
+	color: $white;
+	text-decoration: none;
+	border-radius: em(15);
+	
+	&:visited, &:hover, &:active
+	{
+		color: $black;
+	}
+	&:disabled { opacity: 0.5; }
+}
+
+//  Modifiers -----------------------------------------------------------------
+
+/* Example:
+
+&.button--grey
+{
+	background-color: shade($white, 60%);
+	color: $white;
+	
+	&:hover
+	{
+		background-color: shade($white, 50%);
+	}
+	&:active
+	{
+		background-color: shade($white, 70%);
+	}
+}
+
+*/
+
+//  States --------------------------------------------------------------------
+
+/* Example:
+
+.button--is-loading
+{
+	background-repeat: no-repeat;
+	background-position: center center;
+	text-index: -32697px; // max-value for text-indent
+	overflow: hidden;
+
+	&, &:hover, &:active { color: transparent; }
+
+	&.button--grey
+	{
+		background-image: url(../images/some-spinner-on-a-grey-bg.gif);
+	}
+}
+
+*/

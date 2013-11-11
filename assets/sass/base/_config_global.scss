@@ -1,0 +1,17 @@
+// Library imports ------------------------------------------------------------
+
+@import 'compass';
+
+// Global vars ----------------------------------------------------------------
+
+$base-font-size: 16px;
+
+$total-columns: 12; // 12 is great for a 2-, 3- and 4-column layout
+$default-gutter-width: 3% !default; // % spacing between columns
+$default-column-breakpoint: 650px; // Change this to whatever seems best
+$max-container-width: 1140px; // 1140 and 960 divide easily in 2, 3 and 4
+$min-page-padding: 6%; // Side padding when beneath $max-container-width
+
+// Mixin import -------------------------------------------------------------
+
+@import '../mixin/all';

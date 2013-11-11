@@ -1,0 +1,85 @@
+.column, .introduction__image, .introduction__text, .features__feature:nth-child(odd), .features__feature:nth-child(even), .features__feature:not(:last-child), .features__feature:last-child {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%; }
+
+.introduction, .features {
+  margin-bottom: 2.5em; }
+
+@media screen and (min-width: 650px) {
+  .introduction__image {
+    float: left;
+    margin-right: 3%;
+    width: 47%; } }
+@media screen and (max-width: 40.625em) {
+  .introduction__image {
+    margin-bottom: 1.25em; } }
+
+@media screen and (min-width: 650px) {
+  .introduction__text {
+    float: right;
+    overflow: hidden;
+    overflow: visible;
+    width: 47%; } }
+@media screen and (max-width: 60.625em) {
+  .introduction__text {
+    font-size: 90%; } }
+@media screen and (max-width: 54.375em) {
+  .introduction__text {
+    font-size: 80%; } }
+@media screen and (max-width: 40.625em) {
+  .introduction__text {
+    font-size: 100%; } }
+@media screen and (max-width: 28.75em) {
+  .introduction__text {
+    font-size: 90%; } }
+
+@media screen and (min-width: 650px) {
+  .features__feature:nth-child(odd) {
+    float: left;
+    margin-right: 3%;
+    width: 47%; } }
+@media screen and (min-width: 650px) {
+  .features__feature:nth-child(even) {
+    float: right;
+    overflow: hidden;
+    overflow: visible;
+    width: 47%; } }
+@media screen and (min-width: 970px) {
+  .features__feature:not(:last-child) {
+    float: left;
+    margin-right: 3%;
+    width: 22%; } }
+@media screen and (min-width: 970px) {
+  .features__feature:last-child {
+    float: right;
+    overflow: hidden;
+    overflow: visible;
+    width: 22%; } }
+@media screen and (max-width: 40.625em) {
+  .features__feature:not(:last-child) {
+    margin-bottom: 1.25em; } }
+@media screen and (min-width: 650px) {
+  .features__feature:nth-child(-n + 2) {
+    margin-bottom: 1.25em; } }
+@media screen and (min-width: 970px) {
+  .features__feature:nth-child(-n + 2) {
+    margin-bottom: 0; } }
+
+.feature__image {
+  margin-bottom: 1.25em; }
+
+@media screen and (max-width: 28.75em) {
+  .feature__text {
+    font-size: 90%; } }
+@media screen and (min-width: 650px) {
+  .feature__text {
+    font-size: 90%; } }
+@media screen and (min-width: 970px) {
+  .feature__text {
+    font-size: 80%; } }
+
+/*@include high-res()
+{
+	
+}*/

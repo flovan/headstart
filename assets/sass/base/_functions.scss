@@ -1,0 +1,27 @@
+// Functions ------------------------------------------------------------------
+
+// Strip-units ----------------------------------------------------------------
+//
+// Converts any typed variable to a regular integer
+//
+// $number: 	The value you want to unify
+
+@function stripUnits($number)
+{
+	@return $number / ($number * 0 + 1);
+}
+
+// Em -------------------------------------------------------------------------
+//
+// Converts a target value to em's, based on a context
+//
+// $target: 	The target integer
+// $context: 	Base for conversion, defaults to $doc-em-factor
+
+@function em($target, $context: $base-font-size)
+{
+	$context: stripUnits($context);
+	$target: stripUnits($target);
+	
+	@return ($target/$context)*1em;
+}
