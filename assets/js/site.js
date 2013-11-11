@@ -1,3 +1,31 @@
+// Document -------------------------------------------------------------------
+
+$(document).on('ready', function()
+{
+	log('_## Document ready_');
+
+	//
+	// VARS -------------------------------------------------------------------
+	//
+
+	//$myElement					= $('#myElement');
+
+	//
+	// ACTIONS ----------------------------------------------------------------
+	//
+
+	//	$myEmement.on('click', myElementClickHandler);
+
+	//
+	// FUNCTIONS --------------------------------------------------------------
+	//
+
+	// 	function myElementClickHandler(e)
+	//	{
+	//		log('Hurray I was clicked!');
+	//	}
+});
+
 // Utils ----------------------------------------------------------------------
 //
 // Utilities class
@@ -126,7 +154,7 @@ var Utils = function()
 //
 // Serializes a form to an object, rather than a string
 
-$.fn.serializeObject = function()
+/*$.fn.serializeObject = function()
 {
    var o = {};
    var a = this.serializeArray();
@@ -141,4 +169,4 @@ $.fn.serializeObject = function()
        }
    });
    return o;
-};
+};*/

@@ -4,11 +4,36 @@
 @import 'base/config_site';
 @import 'base/functions';
 
+@import 'base/state.scss';
+@import 'module/normalize';
+
 // Module imports -------------------------------------------------------------
 
+@import 'module/doc';
+@import 'module/container';
+//@import 'module/reporting';
+//@import 'module/form';
+//@import 'module/button';
+
+@import 'demo-module/menu';
 
 
-// Page styles ----------------------------------------------------------------
+// Vendor imports -------------------------------------------------------------
+
+//@import 'vendor/....';
+
+
+
+
+
+
+
+// Styles ---------------------------------------------------------------------
+
+header
+{
+	background: $black-5;
+}
 
 .introduction, .features
 {
@@ -86,13 +111,24 @@
 			}
 		}
 
-// Vendor imports -------------------------------------------------------------
 
-//@import 'vendor/....';
 
-// Media queries --------------------------------------------------------------
 
-/*@include high-res()
-{
-	
-}*/
+
+
+
+
+
+
+
+
+// IE10+ fix -------------------------------------------------------------------
+
+@-ms-viewport { width: device-width; } /* IE10 viewport fix */
+@viewport { width: device-width; }
+
+// Print ----------------------------------------------------------------------
+//
+// Inline to avoid the request
+
+@import 'module/print';

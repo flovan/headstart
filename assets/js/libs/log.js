@@ -12,14 +12,15 @@ https://github.com/adamschwartz/log
 
 --
 
-Extended with CONFIG.devFlag support
+Extended with devFlag support
 
 */
 
+var devFlag = true;
 
 (function() {
   var ffSupport, formats, getOrderedMatches, hasMatches, isFF, isIE, isOpera, isSafari, log, makeArray, operaSupport, safariSupport, stringToArgs, _log;
-  if (!(window.console && window.console.log) || !CONFIG.devFlag) {
+  if (!(window.console && window.console.log) || !devFlag) {
     return;
   }
   log = function() {
