@@ -504,7 +504,7 @@ p {
       .menu--header li:not(:last-child) {
         float: left;
         margin-right: 3%;
-        width: 30.33333%; } }
+        width: 31.33333%; } }
     @media screen and (min-width: 650px) {
       .menu--header li:not(:last-child) {
         border-bottom: none; } }
@@ -513,7 +513,8 @@ p {
       float: right;
       overflow: hidden;
       overflow: visible;
-      width: 30.33333%; } }
+      margin-right: 0;
+      width: 31.33333%; } }
   .menu--header a {
     color: #3f3f3f;
     padding: 0.9375em;

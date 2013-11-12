@@ -10,7 +10,7 @@
   .introduction__image {
     float: left;
     margin-right: 3%;
-    width: 47%; } }
+    width: 48.5%; } }
 @media screen and (max-width: 40.625em) {
   .introduction__image {
     margin-bottom: 1.25em; } }
@@ -20,7 +20,8 @@
     float: right;
     overflow: hidden;
     overflow: visible;
-    width: 47%; } }
+    margin-right: 0;
+    width: 48.5%; } }
 @media screen and (max-width: 60.625em) {
   .introduction__text {
     font-size: 90%; } }
@@ -38,24 +39,26 @@
   .features__feature:nth-child(odd) {
     float: left;
     margin-right: 3%;
-    width: 47%; } }
+    width: 48.5%; } }
 @media screen and (min-width: 650px) {
   .features__feature:nth-child(even) {
     float: right;
     overflow: hidden;
     overflow: visible;
-    width: 47%; } }
+    margin-right: 0;
+    width: 48.5%; } }
 @media screen and (min-width: 970px) {
   .features__feature:not(:last-child) {
     float: left;
     margin-right: 3%;
-    width: 22%; } }
+    width: 22.75%; } }
 @media screen and (min-width: 970px) {
   .features__feature:last-child {
     float: right;
     overflow: hidden;
     overflow: visible;
-    width: 22%; } }
+    margin-right: 0;
+    width: 22.75%; } }
 @media screen and (max-width: 40.625em) {
   .features__feature:not(:last-child) {
     margin-bottom: 1.25em; } }
