@@ -29,9 +29,10 @@
 			//			sucks at if I'm not mistaken).
 			overflow: hidden;
 			overflow: visible;
+			margin-right: 0; // Overwrite :odd when :last-child
 		}
 
-		width: $perc - ($default-gutter-width);
+		width: $perc - ($default-gutter-width - ($default-gutter-width/($total-columns / $columns)));
 	}
 }
 
