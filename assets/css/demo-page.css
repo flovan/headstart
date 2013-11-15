@@ -20,6 +20,7 @@
     float: right;
     overflow: hidden;
     overflow: visible;
+    clear: right;
     margin-right: 0;
     width: 48.5%; } }
 @media screen and (max-width: 60.625em) {
@@ -45,6 +46,7 @@
     float: right;
     overflow: hidden;
     overflow: visible;
+    clear: right;
     margin-right: 0;
     width: 48.5%; } }
 @media screen and (min-width: 970px) {
@@ -57,6 +59,7 @@
     float: right;
     overflow: hidden;
     overflow: visible;
+    clear: right;
     margin-right: 0;
     width: 22.75%; } }
 @media screen and (max-width: 40.625em) {

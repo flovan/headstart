@@ -516,6 +516,7 @@ a, input, button {
       float: right;
       overflow: hidden;
       overflow: visible;
+      clear: right;
       margin-right: 0;
       width: 31.33333%; } }
   .menu--header a {
