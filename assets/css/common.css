@@ -469,6 +469,9 @@ p {
       padding-left: 0.625em;
       padding-right: 0.625em; } }
 
+a, input, button {
+  -ms-touch-action: none !important; }
+
 .container, .container--header,
 .container--introduction,
 .container--features,
