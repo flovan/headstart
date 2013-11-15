@@ -80,3 +80,8 @@ p
 
 	@include media-max($default-column-breakpoint) { padding-left: em(10); padding-right: em(10); }
 }
+
+// Touch-delay fix for IE10 ---------------------------------------------------
+
+a, input, button { -ms-touch-action: none !important; }
+
