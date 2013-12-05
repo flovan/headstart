@@ -6,7 +6,7 @@
 .introduction, .features {
   margin-bottom: 2.5em; }
 
-@media screen and (min-width: 650px) {
+@media screen and (min-width: 40.625em) {
   .introduction__image {
     float: left;
     margin-right: 3%;
@@ -15,7 +15,7 @@
   .introduction__image {
     margin-bottom: 1.25em; } }
 
-@media screen and (min-width: 650px) {
+@media screen and (min-width: 40.625em) {
   .introduction__text {
     float: right;
     overflow: hidden;
@@ -36,12 +36,12 @@
   .introduction__text {
     font-size: 90%; } }
 
-@media screen and (min-width: 650px) {
+@media screen and (min-width: 40.625em) {
   .features__feature:nth-child(odd) {
     float: left;
     margin-right: 3%;
     width: 48.5%; } }
-@media screen and (min-width: 650px) {
+@media screen and (min-width: 40.625em) {
   .features__feature:nth-child(even) {
     float: right;
     overflow: hidden;
@@ -49,12 +49,12 @@
     clear: right;
     margin-right: 0;
     width: 48.5%; } }
-@media screen and (min-width: 970px) {
+@media screen and (min-width: 60.625em) {
   .features__feature:not(:last-child) {
     float: left;
     margin-right: 3%;
     width: 22.75%; } }
-@media screen and (min-width: 970px) {
+@media screen and (min-width: 60.625em) {
   .features__feature:last-child {
     float: right;
     overflow: hidden;
@@ -65,10 +65,10 @@
 @media screen and (max-width: 40.625em) {
   .features__feature:not(:last-child) {
     margin-bottom: 1.25em; } }
-@media screen and (min-width: 650px) {
+@media screen and (min-width: 40.625em) {
   .features__feature:nth-child(-n + 2) {
     margin-bottom: 1.25em; } }
-@media screen and (min-width: 970px) {
+@media screen and (min-width: 60.625em) {
   .features__feature:nth-child(-n + 2) {
     margin-bottom: 0; } }
 
@@ -78,9 +78,9 @@
 @media screen and (max-width: 28.75em) {
   .feature__text {
     font-size: 90%; } }
-@media screen and (min-width: 650px) {
+@media screen and (min-width: 40.625em) {
   .feature__text {
     font-size: 90%; } }
-@media screen and (min-width: 970px) {
+@media screen and (min-width: 60.625em) {
   .feature__text {
     font-size: 80%; } }

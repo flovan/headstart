@@ -503,15 +503,15 @@ a, input, button {
     text-align: center; }
   .menu--header li:not(:last-child) {
     border-bottom: 0.0625em solid #e5e5e5; }
-    @media screen and (min-width: 650px) {
+    @media screen and (min-width: 40.625em) {
       .menu--header li:not(:last-child) {
         float: left;
         margin-right: 3%;
         width: 31.33333%; } }
-    @media screen and (min-width: 650px) {
+    @media screen and (min-width: 40.625em) {
       .menu--header li:not(:last-child) {
         border-bottom: none; } }
-  @media screen and (min-width: 650px) {
+  @media screen and (min-width: 40.625em) {
     .menu--header li:last-child {
       float: right;
       overflow: hidden;
