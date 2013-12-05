@@ -23,6 +23,7 @@
 
 @mixin media-min($value, $query: 'screen')
 {
+	$value: em($value);
 	@media #{$query} and (min-width: #{$value})
 	{
 		@content;
