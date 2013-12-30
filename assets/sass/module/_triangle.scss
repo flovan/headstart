@@ -14,24 +14,24 @@
 	// Left
 	@if $direction == left
 	{
-		border-top: $height/2 solid transparent
-		border-bottom: $height/2 solid transparent
-		border-right: $width solid $color
+		border-top: $height/2 solid transparent;
+		border-bottom: $height/2 solid transparent;
+		border-right: $width solid $color;
 	}
 
 	// Up
 	@if $direction == up
 	{
-		border-left: $width/2 solid transparent
-		border-right: $width/2 solid transparent
-		border-bottom: $height solid $color
+		border-left: $width/2 solid transparent;
+		border-right: $width/2 solid transparent;
+		border-bottom: $height solid $color;
 	}
 
 	// Down
 	@if $direction == down
 	{
-		border-left: $width/2 solid transparent
-		border-right: $width/2 solid transparent
-		border-top: $height solid $color
+		border-left: $width/2 solid transparent;
+		border-right: $width/2 solid transparent;
+		border-top: $height solid $color;
 	}
 }
