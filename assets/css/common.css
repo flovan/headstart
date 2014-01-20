@@ -43,6 +43,15 @@
 .container--features, .menu ul, .menu--header ul, .menu--footer ul {
   *zoom: 1; }
 
+.is-vertical-aligned {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%); }
+
 /* normalize.css v2.1.3 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
