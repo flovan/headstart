@@ -14,19 +14,3 @@
 	    width: auto\9; /* IE8 */
 	}
 }
-
-// Modifiers ------------------------------------------------------------------
-
-.container--header,
-.container--introduction,
-.container--features,
-.container--footer
-{
-	@extend .container;
-}
-
-.container--introduction,
-.container--features
-{
-	@extend .is-cf;
-}
