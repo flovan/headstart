@@ -9,18 +9,42 @@
 
 // Module imports -------------------------------------------------------------
 
-@import 'module/doc';
 @import 'module/container';
+//@import 'module/font';
+//@import 'module/text';
 //@import 'module/reporting';
 //@import 'module/form';
 //@import 'module/button';
 
-@import 'demo-module/menu';
-
-
 // Vendor imports -------------------------------------------------------------
 
 //@import 'vendor/....';
+
+
+// Border-box rules! ----------------------------------------------------------
+
+*, *:after, *:before
+{
+	@include box-sizing('border-box');
+}
+
+// Document -------------------------------------------------------------------
+//
+// The font-size is calculated as a % from the browser default of 16
+
+html, body
+{
+    font-family: $font-stack;
+    font-size: (stripUnits($base-font-size) / 16 * 100) * 1%;
+    line-height: 1.5;
+    background-color: $white;
+    color: $black-75;
+	height: 100%;
+
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
 
 // Styles ---------------------------------------------------------------------
 
@@ -29,10 +53,12 @@ header
 	background: $black-5;
 }
 
-// IE10+ fix -------------------------------------------------------------------
+// IE10+ fixes ----------------------------------------------------------------
 
-@-ms-viewport { width: device-width; } /* IE10 viewport fix */
+@-ms-viewport { width: device-width; } // viewport fix
 @viewport { width: device-width; }
+
+a, input, button { -ms-touch-action: none !important; } // Touch-delay fix
 
 // Print ----------------------------------------------------------------------
 //
