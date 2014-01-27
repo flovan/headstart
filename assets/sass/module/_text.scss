@@ -1,0 +1,36 @@
+// Selection color ------------------------------------------------------------
+
+::-moz-selection
+{
+    background: $black-10;
+    text-shadow: none;
+}
+
+::selection
+{
+    background: $black;
+    text-shadow: none;
+}
+
+// Headings -------------------------------------------------------------------
+
+h1, h2, h3, h4
+{
+	margin-top: 0;
+	color: $black;
+
+	// Optional: Push in headings for a better hand-held reading experience
+	// @include media-max($default-column-breakpoint) { padding-left: em(10); padding-right: em(10); }
+}
+
+// Paragraphs -----------------------------------------------------------------
+
+p
+{
+	margin: 0 0 em(stripUnits($base-font-size)*1.5);
+	
+	&:last-of-type, &:last-child { margin-bottom: 0; }
+	
+	// Optional: Push in headings for a better hand-held reading experience
+	// @include media-max($default-column-breakpoint) { padding-left: em(10); padding-right: em(10); }
+}
