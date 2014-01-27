@@ -16,20 +16,20 @@
 	
 	<!-- SEO ------------------------------------------------------- -->
 	
-    <title>{{__PAGE_TITLE__}}</title>
-    <meta name="description" content="{{__PAGE_DESCRIPTION__}}">
-    <meta name="keywords" content="{{__PAGE_KEYWORDS__}}" />
-    <meta name="author" content="{{__PAGE_AUTHOR__}}">
+    <title>__PAGE_TITLE__</title>
+    <meta name="description" content="__PAGE_DESCRIPTION__">
+    <meta name="keywords" content="__PAGE_KEYWORDS__" />
+    <meta name="author" content="__PAGE_AUTHOR__">
     
-    <meta name="robots" content="noodp, noydir" /> <!-- Spiders have to use meta description -->
-    <meta name="google" content="notranslate" /> <!-- Don't display Google Translate toolbar -->
+    <meta name="robots" content="noodp, noydir" /> <!-- Spiders must use meta description -->
+    <meta name="google" content="notranslate" /> <!-- No Google Translate toolbar -->
     
     <!-- MOBILE ------------------------------------------------------ -->
     
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0"/>
 	
 	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-title" content="{{__PAGE_TITLE__}}" />
+	<meta name="apple-mobile-web-app-title" content="__PAGE_TITLE__" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	
 	<meta name="HandheldFriendly" content="true" /> <!-- Page is mobile friendly -->
@@ -54,8 +54,8 @@
 	<!-- WP8 tile settings ------------------------------------------- -->
 	
 	<!--
-	<meta name="application-name" content="{{__PAGE_TITLE__}}" />
-	<meta name="msapplication-tooltip" content="{{__PAGE_DESCRIPTION__}}" />
+	<meta name="application-name" content="__PAGE_TITLE__" />
+	<meta name="msapplication-tooltip" content="__PAGE_DESCRIPTION__" />
 	<meta name="msapplication-TileImage" content="icons/wp-tile-icon-144x144.png" />
 	<meta name="msapplication-TileColor" content="#FFFFFF" />
 	<meta name="msapplication-tap-highlight" content="no" />
@@ -66,22 +66,22 @@
 	<!-- G+ and FB -->
 	<!--
 	<meta property="og:type" content="website" />
-    <meta property="og:site_name" content="{{__SITE_NAME__}}" />
-    <meta property="og:title" content="{{__PAGE_TITLE__}}" />
-    <meta property="og:description" content="{{__PAGE_DESCRIPTION__}}" />
-    <meta property="og:url" content="{{__CANONICAL_PATH_TO_THIS_PAGE__}}" />
-    <meta property="og:image" content="http://www.{{__SITE_URL__}}/assets/images/icons/fb-gplus-icon-200x200.jpg" />
+    <meta property="og:site_name" content="__SITE_NAME__" />
+    <meta property="og:title" content="__PAGE_TITLE__" />
+    <meta property="og:description" content="__PAGE_DESCRIPTION__" />
+    <meta property="og:url" content="__CANONICAL_PATH_TO_THIS_PAGE__" />
+    <meta property="og:image" content="http://www.__SITE_URL__/assets/images/icons/fb-gplus-icon-200x200.jpg" />
     
-    <link rel="image_src" href="http://www.{{__SITE_URL__}}/assets/images/icons/fb-gplus-icon-200x200.jpg" />
+    <link rel="image_src" href="http://www.__SITE_URL__/assets/images/icons/fb-gplus-icon-200x200.jpg" />
     -->
 
     <!-- TWITTER -->
     <!--
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="{{__@TWITTER_ACCOUNT__}}" />
-    <meta name="twitter:title" content="{{__PAGE_TITLE__}}" />
-    <meta name="twitter:description" content="{{__PAGE_DESCRIPTION__}}" />
-    <meta name="twitter:image:src" content="http://www.{{__SITE_URL__}}/assets/images/icons/twitter-icon-450x300.jpg" />
+    <meta name="twitter:site" content="__@TWITTER_ACCOUNT__" />
+    <meta name="twitter:title" content="__PAGE_TITLE__" />
+    <meta name="twitter:description" content="__PAGE_DESCRIPTION__" />
+    <meta name="twitter:image:src" content="http://www.__SITE_URL__/assets/images/icons/twitter-icon-450x300.jpg" />
     <meta name="twitter:image:width" content="450" />
     <meta name="twitter:image:height" content="300" />
     -->
@@ -89,7 +89,8 @@
 	<!-- CSS --------------------------------------------------------- -->
 	
     <link href="./assets/css/common.css" rel="stylesheet" type="text/css"/>
-    <link href="./assets/css/demo-page.css" rel="stylesheet" type="text/css"/>
+    <!-- Offer page specific css file here -->
+    <!-- <link href="./assets/css/page-template.css" rel="stylesheet" type="text/css"/> -->
 	
 	<!--[if lt IE 9]>
         <link href="./assets/css/ie.css" rel="stylesheet" type="text/css"/>
@@ -97,11 +98,19 @@
 	<![endif]-->
 </head>
 <body class="demopage">
-    <!--[if lt IE 8]>
+    <!--[if lte IE 8]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
+
+
+
+
     <!---------------------- Your HTML here -------------------------- -->
+
+
+
+    
 
 	<!-- JS ---------------------------------------------------------- -->
 
