@@ -2,21 +2,30 @@
 //
 // Not as much a module, but separated as one to group all form styles
 
-label
+fieldset, label
 {
-	display: block;
 	margin: 0 0 em($doc-em-factor);
+	padding: 0;
 
 	&:last-of-type, &:last-child { margin-bottom: 0; }
-	
+}
+label
+{
 	input
 	{
 		margin-top: em(5);
 	}
 }
-input, textarea { font-family: $font-stack; }
-input[type=text], input[type=password], textarea
+input, textarea
 {
+	// NOTE
+	// 
+	// For the sake of being able to easily use the HTML5 input types
+	// and not styling the "submit" type with this selector,
+	// please use the <button type="submit"></button> instead.
+	// Otherwise, expand above "input" to the desired types.
+
+	font-family: $font-stack;
 	border: em(1) solid $black;
 	background: $black;
 	border-radius: em(5);
