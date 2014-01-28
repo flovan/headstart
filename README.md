@@ -1,4 +1,5 @@
 # Headstart 0.3
+# WIP - in progress of including Gulp. Things might break.
 
 ####A front-end boilerplate for  web apps and platforms.
 
