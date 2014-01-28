@@ -22,8 +22,7 @@
     "gulp-cache": "~0.1.1",
     "gulp-imagemin": "~0.1.4",
     "gulp-plumber": "~0.5.6",
-    "gulp-prompt": "0.0.3",
-    "gulp-rimraf": "0.0.8"
+    "gulp-prompt": "0.0.3"
   },
   "engines": {
     "node": ">=0.8.0"

@@ -12,7 +12,7 @@ var gulp 			= require('gulp'),
     uglify 			= require('gulp-uglify'),
     imagemin 		= require('gulp-imagemin'),
     rename 			= require('gulp-rename'),
-    rimraf 			= require('gulp-rimraf'),
+    clean 			= require('gulp-clean'),
     concat 			= require('gulp-concat'),
     cache 			= require('gulp-cache'),
     livereload 		= require('gulp-livereload'),
@@ -27,7 +27,7 @@ var gulp 			= require('gulp'),
 gulp.task('clean', function(cb)
 {
 	gulp.src(['dist'], {read: false})
-		.pipe(rimraf());
+		.pipe(clean());
 
 	cb();
 });
@@ -65,7 +65,7 @@ gulp.task('styles', function(cb)
 gulp.task('scripts', function(cb)
 {
 	// TODO: Do concatenating in 1 stream
-	
+
 	// Concat jQuery in front of libs, core files and the app
 	gulp.src(['assets/js/libs/jquery*.js', 'assets/js/libs/*.js', '!assets/js/libs/jquery*.js', 'assets/js/core/*.js', 'assets/js/app.js'])
 		.pipe(plumber())
