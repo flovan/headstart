@@ -2,7 +2,7 @@
 //
 // A wrapper class for making $.ajax() calls
 
-var API = function()
+var Api = function()
 {
 	var me					= this;
 	
@@ -96,4 +96,4 @@ var API = function()
 		},
 		call: call
 	}
-}();
+};

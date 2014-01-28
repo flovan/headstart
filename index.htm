@@ -94,9 +94,7 @@
 	
 	<!--[if lt IE 9]>
         <link href="./assets/css/ie.css" rel="stylesheet" type="text/css"/>
-        <script type="text/javascript" src="./assets/js/libs/html5shiv.js"></script>
-	    <script type="text/javascript" src="./assets/js/libs/nwmatcher-1.2.5.min.js"></script>
-		<script type="text/javascript" src="./assets/js/ie.min.js"></script>
+        <script type="text/javascript" src="./assets/js/ie.js"></script>
 	<![endif]-->
 </head>
 <body class="demopage">
@@ -116,10 +114,9 @@
 
 	<!-- JS ---------------------------------------------------------- -->
 
-    <script type="text/javascript" src="./assets/js/libs/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="./assets/js/libs/jquery-1.11.0.min.js"></script>
     
-    <!-- CONCATENATE following assets -->
-    <!-- Some things might need minifying :) -->
+    <!-- CONCATENATE following assets ( Some things might need minifying :) -->
     <script type="text/javascript" src="./assets/js/libs/underscore-min.js"></script>
     <script type="text/javascript" src="./assets/js/core/config.js"></script>
     <script type="text/javascript" src="./assets/js/core/events.js"></script>
@@ -141,5 +138,7 @@
         ga('create','UA-XXXXX-X');ga('send','pageview');
     </script>
     -->
+
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </body>
 </html>

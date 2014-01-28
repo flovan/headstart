@@ -16,13 +16,12 @@ Extended with CONFIG.devFlag support
 
 */
 
-
 (function() {
   var ffSupport, formats, getOrderedMatches, hasMatches, isFF, isIE, isOpera, isSafari, log, makeArray, operaSupport, safariSupport, stringToArgs, _log;
-  if (!(window.console && window.console.log) || !CONFIG.devFlag) {
-    return;
-  }
+  if (!(window.console && window.console.log)) { return; }
   log = function() {
+    //if(_.isBoolean(window.App.config.devFlag) && !window.App.config.devFlag)
+   // console.log(window.App);
     var args;
     args = [];
     makeArray(arguments).forEach(function(arg) {
@@ -32,6 +31,7 @@ Extended with CONFIG.devFlag support
         return args.push(arg);
       }
     });
+    console.log(typeof App.config);
     return _log.apply(window, args);
   };
   _log = function() {

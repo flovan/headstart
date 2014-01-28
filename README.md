@@ -1,4 +1,4 @@
-# Headstart 0.2
+# Headstart 0.3
 
 ####A front-end boilerplate for  web apps and platforms.
 
