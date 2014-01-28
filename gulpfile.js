@@ -55,9 +55,9 @@ gulp.task('scripts', function()
 	gulp.src(['assets/js/libs/*.js', '!**/jquery*.js', 'assets/js/core/*.js', 'assets/js/app.js'])
 		.pipe(plumber())
 		.pipe(concat('core-libs.tmp.js'))
-		.pipe(gulp.dest('dist/assets/js/tmp'));
+		.pipe(gulp.dest('dist/tmp'));
 
-	return gulp.src(['**/jquery*.js', '**/tmp/core-libs.tmp.js'])
+	return gulp.src(['assets/js/libs/jquery*.js', 'dist/tmp/core-libs.tmp.js'])
 		.pipe(plumber())
 		//.pipe(jshint('.jshintrc'))
 		//.pipe(jshint.reporter('default'))
@@ -116,12 +116,13 @@ gulp.task('clean', function()
 
 // The default task -----------------------------------------------------------
 //
-// Runs above tasks with dependency to clean
+// Runs tasks in order
+// On end clean tmp files that were generated
 
 gulp.task('default', ['clean', 'styles', 'scripts', 'ie-scripts', 'images', 'watch'], function()
 {
-	gulp.src('dist/assets/js/tmp', {read: false})
-		.pipe(clean());
+	/*gulp.src('dist/tmp', {read: false})
+		.pipe(clean());*/
 });
 
 // Watch ----------------------------------------------------------------------
