@@ -19,10 +19,11 @@
     "tiny-lr": "0.0.5",
     "gulp-uglify": "~0.2.0",
     "gulp-autoprefixer": "0.0.5",
-    "gulp-jshint": "~1.3.4",
     "gulp-cache": "~0.1.1",
     "gulp-imagemin": "~0.1.4",
-    "gulp-plumber": "~0.5.6"
+    "gulp-plumber": "~0.5.6",
+    "gulp-prompt": "0.0.3",
+    "gulp-rimraf": "0.0.8"
   },
   "engines": {
     "node": ">=0.8.0"
