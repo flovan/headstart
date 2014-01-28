@@ -64,6 +64,8 @@ gulp.task('styles', function(cb)
 
 gulp.task('scripts', function(cb)
 {
+	// TODO: Do concatenating in 1 stream
+	
 	// Concat jQuery in front of libs, core files and the app
 	gulp.src(['assets/js/libs/jquery*.js', 'assets/js/libs/*.js', '!assets/js/libs/jquery*.js', 'assets/js/core/*.js', 'assets/js/app.js'])
 		.pipe(plumber())
