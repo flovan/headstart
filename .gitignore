@@ -1,2 +1,4 @@
 .htaccess
 .sass-cache
+node_modules
+dist

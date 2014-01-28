@@ -19,7 +19,7 @@ var Demo = function()
 		_makeObjects();
 		_addActions();
 
-		App.dispatcher.trigger(EVENTS.app.viewLoaded , { view: me });
+		//App.dispatcher.trigger('test', { pipi: 'kaka' });
 	};
 	
 	// PRIVATE FUNCTIONS ------------------------------------------------------
@@ -65,6 +65,8 @@ var Demo = function()
 		init: init
 		//, otherExamplePublicFunction: function(){ alert('I am public'); }
 	};
-}();
+};
 
-Demo.init();
+// Last page-blocking file, init the app with this view
+
+App.init(new Demo());

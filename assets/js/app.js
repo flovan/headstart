@@ -1,46 +1,40 @@
-var App = function ()
+var App = (function()
 {
 	var me					= this;
 	
 	// VARS -------------------------------------------------------------------
 	
-	var view				= null,
-		dispatcher 			= $('<div />');
+	var config				= null,
+		api					= null,
+		view				= null,
+		dispatcher			= $({});
 	
 	// CONSTRUCTOR ------------------------------------------------------------
 	
-	var init = function()
+	var init = function(view)
 	{
-		log('_## Application init_');
+		log('_## Application initiated_');
 
-		dispatcher.on(EVENTS.app.viewLoaded, _viewLoadedHandler);
+		//dispatcher.on('test', function(e, data){ log('test',data); });
+
+		config = new Config();
+		api = new Api();
+
+		view = view.init();
 	};
 
-
-
-
-
-
-
-	// Handler of the viewLoaded event
-	function _viewLoadedHandler(e, data)
-	{
-		log('_## View finished initializing_', data.view);
-	}
-
-
-
-
-
+	// PRIVATE FUNCTIONS ------------------------------------------------------
 
 
 	
-	// PUBLIC -----------------------------------------------------------------
+	// PUBLIC FUNCTIONS -------------------------------------------------------
+
+
 	
 	return {
 		init: init,
+		config: config,
+		api: api,
 		dispatcher: dispatcher
 	};
-}();
-
-App.init();
+}());

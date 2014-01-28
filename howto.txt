@@ -1,0 +1,29 @@
+-
+-
+-- 	HOW TO INSTALL -------------------------------------------------------------
+-
+-
+
+
+Install NodeJS & npm through installer on:
+> http://nodejs.org
+
+
+
+Open Terminal.app ...
+
+
+	
+Install following modules globally: Gulp, Compass:
+> (sudo) npm install -g gulp
+> (sudo) npm install -g compass <- Eventueel niet, eens testen..
+
+
+
+Go to your project folder directory.
+Drag your folder onto the Terminal app in the Dock, or type:
+> cd path/to/your/folder
+
+
+Install dependencies:
+> (sudo) nmp install
