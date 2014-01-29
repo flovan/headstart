@@ -12,7 +12,7 @@ var gulp 			= require('gulp'),
     uglify 			= require('gulp-uglify'),
     imagemin 		= require('gulp-imagemin'),
     rename 			= require('gulp-rename'),
-    clean 			= require('gulp-clean'),
+    rimraf 			= require('gulp-rimraf'),
     concat 			= require('gulp-concat'),
     cache 			= require('gulp-cache'),
     livereload 		= require('gulp-livereload'),
@@ -24,12 +24,11 @@ var gulp 			= require('gulp'),
 // This task does the following things:
 // - Clean out the dist folder before rebuilding
 
-gulp.task('clean', function(cb)
+gulp.task('clean', function()
 {
-	gulp.src(['dist'], {read: false})
-		.pipe(clean());
-
-	cb();
+	return gulp.src(['dist'], {read: false})
+		.pipe(plumber())
+		.pipe(rimraf());
 });
 
 // Styles ---------------------------------------------------------------------
@@ -40,9 +39,9 @@ gulp.task('clean', function(cb)
 // - Save and minify results to .css files
 // - Reload browser
 
-gulp.task('styles', function(cb)
+gulp.task('styles', function()
 {
-	gulp.src('assets/sass/*.scss')
+	return gulp.src('assets/sass/*.scss')
 		.pipe(plumber())
 		.pipe(sass({ style: 'nested', compass: true }))
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
@@ -51,53 +50,38 @@ gulp.task('styles', function(cb)
 		.pipe(minifycss())
 		.pipe(gulp.dest('dist/assets/css'))
 		.pipe(livereload(server));
-
-	cb();
 });
 
 // Scripts --------------------------------------------------------------------
 //
-// This task does the following things:
-// - Concatenate the libs and core files
-// - Uglify, and save again as .min
-// - Reload browser
 
-gulp.task('scripts', function(cb)
+gulp.task('scripts-main', function()
 {
-	// TODO: Do concatenating in 1 stream
-
-	// Concat jQuery in front of libs, core files and the app
-	gulp.src(['assets/js/libs/jquery*.js', 'assets/js/libs/*.js', '!assets/js/libs/jquery*.js', 'assets/js/core/*.js', 'assets/js/app.js'])
+	return gulp.src(['assets/js/libs/jquery*.js', 'assets/js/libs/*.js', 'assets/js/core/*.js', 'assets/js/app.js'])
 		.pipe(plumber())
 		.pipe(concat('core-libs.min.js'))
-		//.pipe(uglify())
-		.pipe(gulp.dest('dist/assets/js'));
+		.pipe(uglify())
+		.pipe(gulp.dest('dist/assets/js'))
+		.pipe(livereload(server));
+});
 
-	// Minify view specific files
-	gulp.src('assets/js/view/*.js')
+gulp.task('scripts-view', function()
+{
+	return gulp.src('assets/js/view/*.js')
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify())
 		.pipe(gulp.dest('dist/assets/js/view'))
 		.pipe(livereload(server));
-
-	cb();
 });
 
-// IE -------------------------------------------------------------------------
-//
-// Same as scripts, but targeted for IE
-// Note: Order is important!!!
-
-gulp.task('ie-scripts', function(cb)
+gulp.task('scripts-ie', function()
 {
-	gulp.src(['**/html5shiv.js', '**/nwmatcher-1.2.5.js', '**/selectivizr.js', '**/matchmedia.polyfill.js', '**/matchmedia.addListener.js', '**/respond.js'])
+	return gulp.src(['**/html5shiv.js', '**/nwmatcher-1.2.5.js', '**/selectivizr.js', '**/matchmedia.polyfill.js', '**/matchmedia.addListener.js', '**/respond.js'])
 		.pipe(plumber())
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest('dist/assets/js'))
 		.pipe(livereload(server));
-
-	cb();
 });
 
 // Images ---------------------------------------------------------------------
@@ -107,15 +91,13 @@ gulp.task('ie-scripts', function(cb)
 // - Optimize them
 // - Reload browser
 
-gulp.task('images', function(cb)
+gulp.task('images', function()
 {
-	gulp.src('assets/images/**/*')
+	return gulp.src('assets/images/**/*')
 		.pipe(plumber())
 		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
 		.pipe(gulp.dest('dist/assets/images'))
 		.pipe(livereload(server));
-
-	cb();
 });
 
 // Watch ----------------------------------------------------------------------
@@ -157,9 +139,9 @@ gulp.task('watch', function(cb)
 // Use dependencies instead of gulp.run()
 // Not as easy as it seems though
 
-gulp.task('default', ['clean'], function()
+gulp.task('default', ['clean'], function(cb)
 {
-	gulp.run('styles', 'scripts', 'ie-scripts', /*'images',*/ 'watch');
+	gulp.run('styles', 'scripts-main', 'scripts-view', 'scripts-ie', /*'images',*/ 'watch');
 });
 
 
