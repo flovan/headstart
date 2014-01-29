@@ -6,18 +6,31 @@
 var gulp 			= require('gulp'),
 
     plumber 		= require('gulp-plumber'),
+    connect			= require('connect'),
+    http			= require('http'),
+    open			= require('open'),
+    rimraf 			= require('gulp-rimraf'),
+    jshint 			= require('gulp-jshint'),
+    concat 			= require('gulp-concat'),
+    uglify 			= require('gulp-uglify'),
     sass 			= require('gulp-ruby-sass'),
     autoprefixer 	= require('gulp-autoprefixer'),
     minifycss 		= require('gulp-minify-css'),
-    uglify 			= require('gulp-uglify'),
     imagemin 		= require('gulp-imagemin'),
     rename 			= require('gulp-rename'),
-    rimraf 			= require('gulp-rimraf'),
-    concat 			= require('gulp-concat'),
     cache 			= require('gulp-cache'),
-    livereload 		= require('gulp-livereload'),
-    lr 				= require('tiny-lr'),
-    server 			= lr();
+    refresh 		= require('gulp-livereload'),
+    useref	 		= require('gulp-useref'),
+    tinylr			= require('tiny-lr'),
+    livereload		= tinylr(),
+    server 			= lr(),
+
+    config			= {
+				    	app: 	'app',
+				    	dist: 	'dist',
+				    	port:	9000,
+				    	lr:		35729
+				    };
 
 // Clean up -------------------------------------------------------------------
 //
@@ -45,7 +58,6 @@ gulp.task('styles', function()
 		.pipe(plumber())
 		.pipe(sass({ style: 'nested', compass: true }))
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-		//.pipe(gulp.dest('dist/assets/css'))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(minifycss())
 		.pipe(gulp.dest('dist/assets/css'))
@@ -55,7 +67,14 @@ gulp.task('styles', function()
 // Scripts --------------------------------------------------------------------
 //
 
-gulp.task('scripts-main', function()
+gulp.task('lint-main', function()
+{
+	return gulp.src(['assets/js/app.js', 'assets/js/core/*.js'])
+		.pipe(jshint())
+		.pipe(jshint.reporter('default'));
+});
+
+gulp.task('scripts-main', ['lint-main'], function()
 {
 	return gulp.src(['assets/js/libs/jquery*.js', 'assets/js/libs/*.js', 'assets/js/core/*.js', 'assets/js/app.js'])
 		.pipe(plumber())
@@ -68,6 +87,8 @@ gulp.task('scripts-main', function()
 gulp.task('scripts-view', function()
 {
 	return gulp.src('assets/js/view/*.js')
+		.pipe(jshint())
+		.pipe(jshint.reporter('default'))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify())
 		.pipe(gulp.dest('dist/assets/js/view'))
