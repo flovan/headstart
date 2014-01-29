@@ -13,7 +13,6 @@
     "gulp-rename": "~0.2.2",
     "gulp-concat": "~2.1.7",
     "gulp-ruby-sass": "~0.2.0",
-    "gulp-clean": "~0.2.4",
     "gulp-minify-css": "~0.2.0",
     "gulp-notify": "~0.3.5-0",
     "tiny-lr": "0.0.5",
@@ -22,7 +21,8 @@
     "gulp-cache": "~0.1.1",
     "gulp-imagemin": "~0.1.4",
     "gulp-plumber": "~0.5.6",
-    "gulp-prompt": "0.0.3"
+    "gulp-prompt": "0.0.3",
+    "gulp-rimraf": "0.0.8"
   },
   "engines": {
     "node": ">=0.8.0"
