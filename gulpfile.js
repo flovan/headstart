@@ -24,7 +24,6 @@ var gulp 			= require('gulp'),
     refresh 		= require('gulp-livereload'),
     tinylr			= require('tiny-lr'),
     livereload		= tinylr(),
-    server 			= lr(),
 
     config			= {
 				    	app: 	'app',
@@ -61,7 +60,7 @@ gulp.task('sass', function()
 		.pipe(rename({suffix: '.min'}))
 		.pipe(minifycss())
 		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/css')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + 'dist/assets/css')))
+		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/css')))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -137,9 +136,9 @@ gulp.task('images', function()
 {
 	return gulp.src(config.app + '/images/**/*')
 		.pipe(plumber())
-		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
+		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
 		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/images')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + 'dist/assets/images')))
+		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/images')))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -237,7 +236,7 @@ gulp.task('server', ['sass', 'connect-livereload', 'tinylr'], function()
 
 gulp.task('default', ['clean'], function()
 {
-	gulp.run('html', 'sass', 'fonts', 'misc', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'server');
+	gulp.run('html', 'sass', 'fonts', 'misc', 'scripts-main', 'scripts-view', 'scripts-ie', 'images'/*, 'server'*/);
 });
 
 
