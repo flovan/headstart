@@ -27,7 +27,9 @@
     "open": "0.0.4",
     "useref": "0.0.1",
     "http": "0.0.0",
-    "gulp-jshint": "~1.3.4"
+    "gulp-jshint": "~1.3.4",
+    "gulp-inject": "~0.2.2",
+    "gulp-if": "0.0.4"
   },
   "engines": {
     "node": ">=0.8.0"
