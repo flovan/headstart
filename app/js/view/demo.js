@@ -20,7 +20,7 @@ var Demo = function()
 		_addActions();
 
 		//App.dispatcher.trigger('test', { pipi: 'kaka' });
-	};
+	}
 	
 	// PRIVATE FUNCTIONS ------------------------------------------------------
 	

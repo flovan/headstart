@@ -36,8 +36,8 @@ var Api = function()
 		// make the ajax call
 		req = $.ajax(
 		{
-			type: 	options.method,
-			url: 	options.route,
+			type:	options.method,
+			url:	options.route,
 			data:	options.values,
 		}).done(function(data)
 		{
@@ -95,5 +95,5 @@ var Api = function()
 			// demoRoute: '/your/api/route'
 		},
 		call: call
-	}
+	};
 };
