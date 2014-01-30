@@ -28,7 +28,8 @@
     "gulp-jshint": "~1.3.4",
     "gulp-inject": "~0.2.2",
     "gulp-if": "0.0.4",
-    "gulp-cleanhtml": "0.0.2"
+    "gulp-cleanhtml": "0.0.2",
+    "gulp-util": "~2.2.13"
   },
   "engines": {
     "node": ">=0.8.0"
