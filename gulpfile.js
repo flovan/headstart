@@ -4,6 +4,7 @@
 //		 -> https://gist.github.com/floatdrop/8269868
 
 var gulp 			= require('gulp'),
+	gulputil		= require('gulp-util'),
 
     plumber 		= require('gulp-plumber'),
     connect			= require('connect'),
@@ -37,8 +38,7 @@ var gulp 			= require('gulp'),
 
 // Catch CLI parameter
 
-var isProduction = gulp.env.type === 'production';
-console.log('isProduction: ' + isProduction);
+var isProduction = gulputil.env.production === true;
 
 // Clean up -------------------------------------------------------------------
 //
@@ -61,8 +61,8 @@ gulp.task('sass', function()
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(minifycss())
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/css')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/css')))
+		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/css')))
+		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/css')))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -90,16 +90,15 @@ gulp.task('scripts-main', ['lint-main', 'html'], function()
 			config.app + '/js/app.js'
 		])
 		.pipe(plumber())
-		.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, uglify()))
-    	.pipe(inject((isProduction ? config.dest : config.dev)+ '/index.html', {
+		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/js')))
+		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/js')))
+		/*.pipe(inject((isProduction ? config.dest : config.dev)+ '/index.html', {
     		addRootSlash: false
-    		//,starttag: '<!-- inject_core_lib:{{ext}} -->'
-    		//,ignorePath: config.app + '/html/'
-    	}))
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/js')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/js')))
+    		,starttag: '<!-- inject_main_js -->'
+    		,ignorePath: '/app/'
+    	}))*/
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -116,8 +115,8 @@ gulp.task('scripts-view', ['lint-view', 'html'], function()
 		.pipe(plumber())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify())
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/js/view')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/js/view')))
+		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/js/view')))
+		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/js/view')))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -134,8 +133,8 @@ gulp.task('scripts-ie', function()
 		.pipe(plumber())
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/js')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/js')))
+		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/js')))
+		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/js')))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -147,8 +146,8 @@ gulp.task('images', function()
 	return gulp.src(config.app + '/images/**/*')
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/images')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/images')))
+		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/images')))
+		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/images')))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -250,7 +249,7 @@ gulp.task('server', ['sass', 'connect-livereload', 'tinylr'], function()
 
 gulp.task('default', ['clean'], function()
 {
-	gulp.run('html', 'sass', 'fonts', 'misc', 'scripts-main', 'scripts-view', 'scripts-ie'/*, 'images', 'server'*/);
+	gulp.start('html', 'sass', 'fonts', 'misc', 'scripts-main', 'scripts-view', 'scripts-ie'/*, 'images', 'server'*/);
 });
 
 
