@@ -20,7 +20,6 @@ var gulp 			= require('gulp'),
     minifycss 		= require('gulp-minify-css'),
     imagemin 		= require('gulp-imagemin'),
     rename 			= require('gulp-rename'),
-    cache 			= require('gulp-cache'),
     refresh 		= require('gulp-livereload'),
     tinylr			= require('tiny-lr'),
     livereload		= tinylr(),
@@ -71,7 +70,8 @@ gulp.task('lint-main', function()
 {
 	return gulp.src([
 			config.app + '/js/app.js',
-			config.app + '/js/core/*.js'
+			config.app + '/js/core/*.js',
+			'!' + config.app + '/js/**/log.js'
 		])
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
@@ -168,6 +168,11 @@ gulp.task('misc', function()
 gulp.task('html', function()
 { 
     return gulp.src(config.app + '/html/*')
+    	.pipe(inject(config.app + '/html/index.htm', {
+    		addRootSlash: false
+    		//,ignorePath: config.app + '/html/'
+    	})
+        .pipe(gulpif(isProduction, cleanhtml()))
         .pipe(gulpif(isProduction, gulp.dest(config.dist)))
         .pipe(gulpif(!isProduction, gulp.dest(config.dev)));
 });
