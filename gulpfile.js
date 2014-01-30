@@ -12,6 +12,7 @@ var gulp 			= require('gulp'),
     gulpif			= require('gulp-if'),
     inject			= require('gulp-inject'),
     rimraf 			= require('gulp-rimraf'),
+    cleanhtml		= require('gulp-cleanhtml'),
     jshint 			= require('gulp-jshint'),
     concat 			= require('gulp-concat'),
     uglify 			= require('gulp-uglify'),
@@ -32,6 +33,8 @@ var gulp 			= require('gulp'),
 				    	lr:		35729
 				    };
 
+//gulp.setMaxListeners(0);
+
 // Catch CLI parameter
 
 var isProduction = gulp.env.type === 'production';
@@ -42,7 +45,7 @@ console.log('isProduction: ' + isProduction);
 
 gulp.task('clean', function()
 {
-	return gulp.src([config.dev, config.dist], {read: false})
+	return gulp.src(isProduction ? config.dist : config.dev, {read: false})
 		.pipe(plumber())
 		.pipe(rimraf());
 });
@@ -73,11 +76,12 @@ gulp.task('lint-main', function()
 			config.app + '/js/core/*.js',
 			'!' + config.app + '/js/**/log.js'
 		])
+		.pipe(plumber())
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
 
-gulp.task('scripts-main', ['lint-main'], function()
+gulp.task('scripts-main', ['lint-main', 'html'], function()
 {
 	return gulp.src([
 			config.app + '/js/libs/jquery*.js',
@@ -86,8 +90,14 @@ gulp.task('scripts-main', ['lint-main'], function()
 			config.app + '/js/app.js'
 		])
 		.pipe(plumber())
+		.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, uglify()))
+    	.pipe(inject((isProduction ? config.dest : config.dev)+ '/index.html', {
+    		addRootSlash: false
+    		//,starttag: '<!-- inject_core_lib:{{ext}} -->'
+    		//,ignorePath: config.app + '/html/'
+    	}))
 		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/js')))
 		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/assets/js')))
 		.pipe(gulpif(isProduction, refresh(livereload)));
@@ -96,14 +106,14 @@ gulp.task('scripts-main', ['lint-main'], function()
 gulp.task('lint-view', function()
 {
 	return gulp.src(config.app + '/js/view/*.js')
-		.pipe(plumber())
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
 
-gulp.task('scripts-view', ['lint-view'], function()
+gulp.task('scripts-view', ['lint-view', 'html'], function()
 {
 	return gulp.src(config.app + '/js/view/*.js')
+		.pipe(plumber())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify())
 		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/assets/js/view')))
@@ -148,6 +158,7 @@ gulp.task('images', function()
 gulp.task('fonts', function()
 {
     return gulp.src(config.app + '/fonts/*')
+		.pipe(plumber())
         .pipe(gulpif(isProduction, gulp.dest(config.dist + 'assets/fonts')))
         .pipe(gulpif(!isProduction, gulp.dest(config.dev + 'assets/fonts')));
 });
@@ -158,6 +169,7 @@ gulp.task('fonts', function()
 gulp.task('misc', function()
 {
     return gulp.src(config.app + '/misc/*')
+		.pipe(plumber())
         .pipe(gulpif(isProduction, gulp.dest(config.dist)))
         .pipe(gulpif(!isProduction, gulp.dest(config.dev)));
 });
@@ -167,12 +179,9 @@ gulp.task('misc', function()
  
 gulp.task('html', function()
 { 
-    return gulp.src(config.app + '/html/*')
-    	.pipe(inject(config.app + '/html/index.htm', {
-    		addRootSlash: false
-    		//,ignorePath: config.app + '/html/'
-    	})
-        .pipe(gulpif(isProduction, cleanhtml()))
+    return gulp.src(config.app + '/html/*.html')
+		.pipe(plumber())
+        //.pipe(gulpif(isProduction, cleanhtml()))
         .pipe(gulpif(isProduction, gulp.dest(config.dist)))
         .pipe(gulpif(!isProduction, gulp.dest(config.dev)));
 });
@@ -241,7 +250,7 @@ gulp.task('server', ['sass', 'connect-livereload', 'tinylr'], function()
 
 gulp.task('default', ['clean'], function()
 {
-	gulp.run('html', 'sass', 'fonts', 'misc', 'scripts-main', 'scripts-view', 'scripts-ie', 'images'/*, 'server'*/);
+	gulp.run('html', 'sass', 'fonts', 'misc', 'scripts-main', 'scripts-view', 'scripts-ie'/*, 'images', 'server'*/);
 });
 
 
