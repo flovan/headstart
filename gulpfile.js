@@ -3,6 +3,8 @@
 // Note: Plumber fixes an issue with Node Stream piping
 //		 -> https://gist.github.com/floatdrop/8269868
 
+Error.stackTraceLimit = Infinity;
+
 var gulp 			= require('gulp'),
 	gulputil		= require('gulp-util'),
 
@@ -11,6 +13,7 @@ var gulp 			= require('gulp'),
     http			= require('http'),
     open			= require('open'),
     gulpif			= require('gulp-if'),
+    using 			= require('gulp-using'),
     exclude			= require('gulp-ignore').exclude,
     include			= require('gulp-ignore').include,
     inject			= require('gulp-inject'),
@@ -32,11 +35,10 @@ var gulp 			= require('gulp'),
 				    	app: 	'app',
 				    	dev:	'dev',
 				    	dist: 	'dist',
+				    	temp:	'.temp',
 				    	port:	9000,
 				    	lr:		35729
 				    };
-
-//gulp.setMaxListeners(0);
 
 // Catch CLI parameter
 
@@ -47,7 +49,7 @@ var isProduction = gulputil.env.production === true;
 
 gulp.task('clean', function()
 {
-	return gulp.src(isProduction ? config.dist : config.dev, {read: false})
+	return gulp.src([isProduction ? config.dist : config.dev, config.temp], {read: false})
 		.pipe(plumber())
 		.pipe(rimraf());
 });
@@ -65,7 +67,7 @@ gulp.task('sass', function()
 		.pipe(minifycss())
 		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/css')))
 		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/css')))
-		.pipe(gulpif(isProduction, refresh(livereload)));
+		.pipe(gulpif(isProduction, refresh(livereload)))
 });
 
 // Scripts --------------------------------------------------------------------
@@ -94,13 +96,15 @@ gulp.task('scripts-main', ['lint-main', 'html'], function()
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, uglify()))
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/js')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/js')))
-		/*.pipe(inject((isProduction ? config.dest : config.dev)+ '/index.html', {
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
+
+
+		.pipe(inject(config.temp + '/index.html', {
     		addRootSlash: false
     		,starttag: '<!-- inject_main_js -->'
     		,ignorePath: '/app/'
-    	}))*/
+    	}))
+		.pipe(gulp.dest(isProduction ? config.dist : config.dev))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -117,8 +121,7 @@ gulp.task('scripts-view', ['lint-view', 'html'], function()
 		.pipe(plumber())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify())
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/js/view')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/js/view')))
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/view'))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -136,21 +139,21 @@ gulp.task('scripts-ie', function()
 		.pipe(plumber())
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/js')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/js')))
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
 // Images ---------------------------------------------------------------------
 //
+// TODO: Try to get rid of the EmitterEvent memory leak
+// ~ commented in 'default' task
 
 gulp.task('images', function()
 {
 	return gulp.src(config.app + '/images/**/*')
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/images')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/images')))
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -161,8 +164,7 @@ gulp.task('fonts', function()
 {
     return gulp.src(config.app + '/fonts/*')
 		.pipe(plumber())
-        .pipe(gulpif(isProduction, gulp.dest(config.dist + 'assets/fonts')))
-        .pipe(gulpif(!isProduction, gulp.dest(config.dev + 'assets/fonts')));
+        .pipe(gulp.dest((isProduction ? config.dist : config.dev) + 'assets/fonts'));
 });
 
 // Misc -----------------------------------------------------------------------
@@ -174,8 +176,7 @@ gulp.task('misc', function()
 		.pipe(plumber())
 		.pipe(rename('.htaccess'))
 		.pipe(gulpif(isProduction, include(config.app + '/mis/*')))
-        .pipe(gulpif(isProduction, gulp.dest(config.dist)))
-        .pipe(gulpif(!isProduction, gulp.dest(config.dev)));
+        .pipe(gulp.dest((isProduction ? config.dist : config.dev)));
 });
 
 // HTML -----------------------------------------------------------------------
@@ -186,12 +187,13 @@ gulp.task('html', function()
     return gulp.src(config.app + '/html/*.html')
 		.pipe(plumber())
         //.pipe(gulpif(isProduction, cleanhtml()))
-        .pipe(gulpif(isProduction, gulp.dest(config.dist)))
-        .pipe(gulpif(!isProduction, gulp.dest(config.dev)));
+        .pipe(gulp.dest(config.temp));
 });
 
 // LiveReload -----------------------------------------------------------------
 //
+// TODO: test
+// ~ commented in 'default' task
 
 gulp.task('connect-livereload', function()
 {
