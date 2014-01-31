@@ -11,6 +11,8 @@ var gulp 			= require('gulp'),
     http			= require('http'),
     open			= require('open'),
     gulpif			= require('gulp-if'),
+    exclude			= require('gulp-ignore').exclude,
+    include			= require('gulp-ignore').include,
     inject			= require('gulp-inject'),
     rimraf 			= require('gulp-rimraf'),
     cleanhtml		= require('gulp-cleanhtml'),
@@ -123,12 +125,13 @@ gulp.task('scripts-view', ['lint-view', 'html'], function()
 gulp.task('scripts-ie', function()
 {
 	return gulp.src([
-			'**/html5shiv.js',
-			'**/nwmatcher-1.2.5.js',
-			'**/selectivizr.js',
-			'**/matchmedia.polyfill.js',
-			'**/matchmedia.addListener.js',
-			'**/respond.js'
+			config.app + '/js/libs/ie/html5shiv.js',
+			config.app + '/js/libs/ie/PIE.js',
+			config.app + '/js/libs/ie/nwmatcher-1.2.5.js',
+			config.app + '/js/libs/ie/selectivizr.js',
+			config.app + '/js/libs/ie/matchmedia.polyfill.js',
+			config.app + '/js/libs/ie/matchmedia.addListener.js',
+			config.app + '/js/libs/ie/respond.js'
 		])
 		.pipe(plumber())
 		.pipe(concat('ie.min.js'))
@@ -167,8 +170,10 @@ gulp.task('fonts', function()
  
 gulp.task('misc', function()
 {
-    return gulp.src(config.app + '/misc/*')
+    return gulp.src(config.app + '/misc/htaccess.txt')
 		.pipe(plumber())
+		.pipe(rename('.htaccess'))
+		.pipe(gulpif(isProduction, include(config.app + '/mis/*')))
         .pipe(gulpif(isProduction, gulp.dest(config.dist)))
         .pipe(gulpif(!isProduction, gulp.dest(config.dev)));
 });
