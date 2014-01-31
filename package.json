@@ -30,7 +30,8 @@
     "gulp-if": "0.0.4",
     "gulp-cleanhtml": "0.0.2",
     "gulp-util": "~2.2.13",
-    "gulp-ignore": "~1.0.0"
+    "gulp-ignore": "~1.0.0",
+    "gulp-using": "0.0.1"
   },
   "engines": {
     "node": ">=0.8.0"
