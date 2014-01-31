@@ -29,7 +29,8 @@
     "gulp-inject": "~0.2.2",
     "gulp-if": "0.0.4",
     "gulp-cleanhtml": "0.0.2",
-    "gulp-util": "~2.2.13"
+    "gulp-util": "~2.2.13",
+    "gulp-ignore": "~1.0.0"
   },
   "engines": {
     "node": ">=0.8.0"
