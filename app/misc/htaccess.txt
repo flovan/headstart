@@ -17,4 +17,4 @@ AddType application/x-font-woff .woff
 
 # Gzip
 
-# AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript
