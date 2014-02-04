@@ -5,48 +5,42 @@
 
 Error.stackTraceLimit = Infinity;
 
-var path 			= require('path'),
-    connect			= require('connect'),
-    http			= require('http'),
-    open			= require('open'),
-    tinylr			= require('tiny-lr'),
+var 	path 			= require('path')
+    ,	connect			= require('connect')
+    ,	http			= require('http')
+    ,	open			= require('open')
+    ,	tinylr			= require('tiny-lr')
 
-	gulp 			= require('gulp'),
-	gulputil		= require('gulp-util'),
-    plumber 		= require('gulp-plumber')
-    gulpif			= require('gulp-if'),
-    using 			= require('gulp-using'),
-    exclude			= require('gulp-ignore').exclude,
-    include			= require('gulp-ignore').include,
-    tap				= require('gulp-tap'),
-    inject			= require('gulp-inject'),
-    rimraf 			= require('gulp-rimraf'),
-    minifyhtml		= require('gulp-minify-html'),
-    jshint 			= require('gulp-jshint'),
-    concat 			= require('gulp-concat'),
-    uglify 			= require('gulp-uglify'),
-    sass 			= require('gulp-ruby-sass'),
-    autoprefixer 	= require('gulp-autoprefixer'),
-    minifycss 		= require('gulp-minify-css'),
-    imagemin 		= require('gulp-imagemin'),
-    rename 			= require('gulp-rename'),
-    refresh 		= require('gulp-livereload'),
+	,	gulp 			= require('gulp')
+	,	gulputil		= require('gulp-util')
+    ,	plumber 		= require('gulp-plumber')
+    ,	gulpif			= require('gulp-if')
+    ,	using 			= require('gulp-using')
+    ,	exclude			= require('gulp-ignore').exclude
+    ,	include			= require('gulp-ignore').include
+    ,	tap				= require('gulp-tap')
+    ,	inject			= require('gulp-inject')
+    ,	rimraf 			= require('gulp-rimraf')
+    ,	minifyhtml		= require('gulp-minify-html')
+    ,	jshint 			= require('gulp-jshint')
+    ,	concat 			= require('gulp-concat')
+    ,	uglify 			= require('gulp-uglify')
+    ,	sass 			= require('gulp-ruby-sass')
+    ,	autoprefixer 	= require('gulp-autoprefixer')
+    ,	minifycss 		= require('gulp-minify-css')
+    ,	imagemin 		= require('gulp-imagemin')
+    ,	rename 			= require('gulp-rename')
+    ,	refresh 		= require('gulp-livereload')
 
-    livereload		= tinylr(),
-    config			= {
-				    	app: 	'app',
-				    	dev:	'dev',
-				    	dist: 	'dist',
-				    	temp:	'.temp',
-				    	port:	9000,
-				    	lr:		35729
-				    },
-	scriptsMain		= [
-						config.app + '/js/libs/jquery*.js',
-						config.app + '/js/libs/*.js',
-						config.app + '/js/core/*.js',
-						config.app + '/js/app.js'
-					];
+    ,	livereload		= tinylr()
+   	,	config			= {
+					    		app: 	'app'
+					    	,	dev:	'dev'
+					    	,	dist: 	'dist'
+					    	,	temp:	'.temp'
+					    	,	port:	9000
+					    	,	lr:		35729
+					    }
 
 // Catch CLI parameter
 
@@ -95,7 +89,12 @@ gulp.task('lint-main', function()
 
 gulp.task('scripts-main', ['lint-main'], function()
 {
-	return gulp.src(scriptsMain)
+	return gulp.src([
+				config.app + '/js/libs/jquery*.js'
+			,	config.app + '/js/libs/*.js'
+			,	config.app + '/js/core/*.js'
+			,	config.app + '/js/app.js'
+		])
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, uglify()))
@@ -114,7 +113,7 @@ gulp.task('scripts-view', ['lint-view'], function()
 {
 	gulp.src(config.app + '/js/view-*.js')
 		.pipe(plumber())
-		.pipe(rename({suffix: '.min'}))
+		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
 		.pipe(gulpif(isProduction, refresh(livereload)));
@@ -177,28 +176,50 @@ gulp.task('misc', function()
 // HTML -----------------------------------------------------------------------
 //
  
-gulp.task('html', ['scripts-view', 'scripts-main'], function(cb)
+gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 {
 	gulp.src(config.app + '/html/*.html')
 		.pipe(plumber())
-		.pipe(tap(function(file, t)
+		.pipe(tap(function(jsfile, t)
 		{
 			// Make a clone of the core and lib files array and include the view file
 			// that matches the current .html file
 
-			var jsSource = isProduction ? [config.dist + '/js/core-libs.min.js'] : scriptsMain.slice(0);
-			jsSource.push((isProduction ? config.dist : config.app ) + '/js/view-' + path.basename(file.path).split('.')[0] + (isProduction ? '.min' : '') + '.js');
+			var jsSource = isProduction ? [config.dist + '/js/core-libs.min.js'] : [
+					config.app + '/js/libs/jquery*.js'
+				,	config.app + '/js/libs/*.js'
+				,	config.app + '/js/core/*.js'
+				,	config.app + '/js/app.js'
+			];
+			jsSource.push((isProduction ? config.dist : config.dev ) + '/js/view-' + path.basename(jsfile.path).split('.')[0] + (isProduction ? '.min' : '') + '.js');
 
 			// Inject ordered js files into each .html file, in the correct order
-			gulp.src(jsSource)
-				.pipe(inject(config.app + '/html/' + path.basename(file.path), {
-		    		addRootSlash: false
-		    		,starttag: '<!-- inject_js -->'
-		    		,ignorePath: '/app/'
+			return gulp.src(jsSource)
+				.pipe(inject(config.app + '/html/' + path.basename(jsfile.path), {
+		    			addRootSlash: false
+		    		,	starttag: '<!-- inject_js -->'
+		    		,	ignorePath: ['/app/', '/dev/']
 	    		}))
-	    		.pipe(gulpif(isProduction, minifyhtml()))
-				.pipe(gulp.dest(isProduction ? config.dist : config.dev));
+				.pipe(gulp.dest(config.temp))
+				// Inject css file into the temp .html file
+				.pipe(tap(function(htmlfile, t)
+				{
+					gulp.src([
+								(isProduction ? config.dest : config.dev ) + '/css/common.min.css'
+							,	(isProduction ? config.dest : config.dev ) + '/css/view-' + path.basename(htmlfile.path).split('.')[0] + '.min.css'
+						])
+						.pipe(plumber())
+						.pipe(inject(config.temp + '/' + path.basename(htmlfile.path), {
+				    			addRootSlash: false
+				    		,	starttag: '<!-- inject_css -->'
+				    		,	ignorePath: '/dev/'
+			    		}))
+			    		.pipe(gulpif(isProduction, minifyhtml()))
+						.pipe(gulp.dest(isProduction ? config.dist : config.dev));
+				}));
+		
 		}));
+
 
     cb();
 });
