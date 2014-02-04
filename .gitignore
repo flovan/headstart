@@ -1,5 +1,6 @@
 .htaccess
 .sass-cache
+.temp
 node_modules
 dist
 dev
