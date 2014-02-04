@@ -5,20 +5,23 @@
 
 Error.stackTraceLimit = Infinity;
 
-var gulp 			= require('gulp'),
-	gulputil		= require('gulp-util'),
-
-    plumber 		= require('gulp-plumber'),
+var path 			= require('path'),
     connect			= require('connect'),
     http			= require('http'),
     open			= require('open'),
+    tinylr			= require('tiny-lr'),
+
+	gulp 			= require('gulp'),
+	gulputil		= require('gulp-util'),
+    plumber 		= require('gulp-plumber')
     gulpif			= require('gulp-if'),
     using 			= require('gulp-using'),
     exclude			= require('gulp-ignore').exclude,
     include			= require('gulp-ignore').include,
+    tap				= require('gulp-tap'),
     inject			= require('gulp-inject'),
     rimraf 			= require('gulp-rimraf'),
-    cleanhtml		= require('gulp-cleanhtml'),
+    minifyhtml		= require('gulp-minify-html'),
     jshint 			= require('gulp-jshint'),
     concat 			= require('gulp-concat'),
     uglify 			= require('gulp-uglify'),
@@ -28,9 +31,8 @@ var gulp 			= require('gulp'),
     imagemin 		= require('gulp-imagemin'),
     rename 			= require('gulp-rename'),
     refresh 		= require('gulp-livereload'),
-    tinylr			= require('tiny-lr'),
-    livereload		= tinylr(),
 
+    livereload		= tinylr(),
     config			= {
 				    	app: 	'app',
 				    	dev:	'dev',
@@ -38,7 +40,13 @@ var gulp 			= require('gulp'),
 				    	temp:	'.temp',
 				    	port:	9000,
 				    	lr:		35729
-				    };
+				    },
+	scriptsMain		= [
+						config.app + '/js/libs/jquery*.js',
+						config.app + '/js/libs/*.js',
+						config.app + '/js/core/*.js',
+						config.app + '/js/app.js'
+					];
 
 // Catch CLI parameter
 
@@ -62,7 +70,7 @@ gulp.task('sass', function()
 	return gulp.src(config.app + '/sass/*.scss')
 		.pipe(plumber())
 		.pipe(sass({ style: 'nested', compass: true }))
-		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+		//.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(minifycss())
 		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/css')))
@@ -85,43 +93,30 @@ gulp.task('lint-main', function()
 		.pipe(jshint.reporter('default'));
 });
 
-gulp.task('scripts-main', ['lint-main', 'html'], function()
+gulp.task('scripts-main', ['lint-main'], function()
 {
-	return gulp.src([
-			config.app + '/js/libs/jquery*.js',
-			config.app + '/js/libs/*.js',
-			config.app + '/js/core/*.js',
-			config.app + '/js/app.js'
-		])
+	return gulp.src(scriptsMain)
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
-
-
-		.pipe(inject(config.temp + '/index.html', {
-    		addRootSlash: false
-    		,starttag: '<!-- inject_main_js -->'
-    		,ignorePath: '/app/'
-    	}))
-		.pipe(gulp.dest(isProduction ? config.dist : config.dev))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
 gulp.task('lint-view', function()
 {
-	return gulp.src(config.app + '/js/view/*.js')
+	return gulp.src(config.app + '/js/view-*.js')
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
 
-gulp.task('scripts-view', ['lint-view', 'html'], function()
+gulp.task('scripts-view', ['lint-view'], function()
 {
-	return gulp.src(config.app + '/js/view/*.js')
+	gulp.src(config.app + '/js/view-*.js')
 		.pipe(plumber())
 		.pipe(rename({suffix: '.min'}))
-		.pipe(uglify())
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/view'))
+		.pipe(gulpif(isProduction, uglify()))
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
 		.pipe(gulpif(isProduction, refresh(livereload)));
 });
 
@@ -175,19 +170,37 @@ gulp.task('misc', function()
     return gulp.src(config.app + '/misc/htaccess.txt')
 		.pipe(plumber())
 		.pipe(rename('.htaccess'))
-		.pipe(gulpif(isProduction, include(config.app + '/mis/*')))
+		.pipe(gulpif(isProduction, include(config.app + '/misc/*')))
         .pipe(gulp.dest((isProduction ? config.dist : config.dev)));
 });
 
 // HTML -----------------------------------------------------------------------
 //
  
-gulp.task('html', function()
-{ 
-    return gulp.src(config.app + '/html/*.html')
+gulp.task('html', ['scripts-view', 'scripts-main'], function(cb)
+{
+	gulp.src(config.app + '/html/*.html')
 		.pipe(plumber())
-        //.pipe(gulpif(isProduction, cleanhtml()))
-        .pipe(gulp.dest(config.temp));
+		.pipe(tap(function(file, t)
+		{
+			// Make a clone of the core and lib files array and include the view file
+			// that matches the current .html file
+
+			var jsSource = isProduction ? [config.dist + '/js/core-libs.min.js'] : scriptsMain.slice(0);
+			jsSource.push((isProduction ? config.dist : config.app ) + '/js/view-' + path.basename(file.path).split('.')[0] + (isProduction ? '.min' : '') + '.js');
+
+			// Inject ordered js files into each .html file, in the correct order
+			gulp.src(jsSource)
+				.pipe(inject(config.app + '/html/' + path.basename(file.path), {
+		    		addRootSlash: false
+		    		,starttag: '<!-- inject_js -->'
+		    		,ignorePath: '/app/'
+	    		}))
+	    		.pipe(gulpif(isProduction, minifyhtml()))
+				.pipe(gulp.dest(isProduction ? config.dist : config.dev));
+		}));
+
+    cb();
 });
 
 // LiveReload -----------------------------------------------------------------
@@ -256,7 +269,7 @@ gulp.task('server', ['sass', 'connect-livereload', 'tinylr'], function()
 
 gulp.task('default', ['clean'], function()
 {
-	gulp.start('html', 'sass', 'fonts', 'misc', 'scripts-main', 'scripts-view', 'scripts-ie'/*, 'images', 'server'*/);
+	gulp.start('sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'fonts'/*, 'images'*/, 'misc', 'html'/*, 'server'*/);
 });
 
 

@@ -14,7 +14,6 @@
     "gulp-concat": "~2.1.7",
     "gulp-ruby-sass": "~0.2.0",
     "gulp-minify-css": "~0.2.0",
-    "gulp-notify": "~0.3.5-0",
     "tiny-lr": "0.0.5",
     "gulp-uglify": "~0.2.0",
     "gulp-autoprefixer": "0.0.5",
@@ -28,10 +27,11 @@
     "gulp-jshint": "~1.3.4",
     "gulp-inject": "~0.2.2",
     "gulp-if": "0.0.4",
-    "gulp-cleanhtml": "0.0.2",
     "gulp-util": "~2.2.13",
     "gulp-ignore": "~1.0.0",
-    "gulp-using": "0.0.1"
+    "gulp-using": "0.0.1",
+    "gulp-tap": "~0.1.1",
+    "gulp-minify-html": "~0.1.0"
   },
   "engines": {
     "node": ">=0.8.0"
