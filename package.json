@@ -31,7 +31,8 @@
     "gulp-ignore": "~1.0.0",
     "gulp-using": "0.0.1",
     "gulp-tap": "~0.1.1",
-    "gulp-minify-html": "~0.1.0"
+    "gulp-minify-html": "~0.1.0",
+    "gulp-flatten": "0.0.2"
   },
   "engines": {
     "node": ">=0.8.0"

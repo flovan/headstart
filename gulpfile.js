@@ -19,6 +19,7 @@ var 	path 			= require('path')
     ,	exclude			= require('gulp-ignore').exclude
     ,	include			= require('gulp-ignore').include
     ,	tap				= require('gulp-tap')
+    ,	flatten			= require('gulp-flatten')
     ,	inject			= require('gulp-inject')
     ,	rimraf 			= require('gulp-rimraf')
     ,	minifyhtml		= require('gulp-minify-html')
@@ -193,33 +194,38 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 			];
 			jsSource.push((isProduction ? config.dist : config.dev ) + '/js/view-' + path.basename(jsfile.path).split('.')[0] + (isProduction ? '.min' : '') + '.js');
 
-			// Inject ordered js files into each .html file, in the correct order
+			// Grab js files
 			return gulp.src(jsSource)
+				// Rewrite path names as folder structure is lost outside of the app folder
+				.pipe(tap(function(file, t)
+				{
+					file.path = (isProduction ? config.dist : config.dev ) + '/js/' + path.basename(file.path);
+				}))
+				// Inject ordered js files into each .html file
 				.pipe(inject(config.app + '/html/' + path.basename(jsfile.path), {
 		    			addRootSlash: false
 		    		,	starttag: '<!-- inject_js -->'
-		    		,	ignorePath: ['/app/', '/dev/']
+		    		,	ignorePath: ['/app/', '/dev/', 'dist/']
 	    		}))
 				.pipe(gulp.dest(config.temp))
-				// Inject css file into the temp .html file
+				// Tap into this generated .html file
 				.pipe(tap(function(htmlfile, t)
 				{
+					// Grab and nject css files into the temp .html file
 					gulp.src([
-								(isProduction ? config.dest : config.dev ) + '/css/common.min.css'
-							,	(isProduction ? config.dest : config.dev ) + '/css/view-' + path.basename(htmlfile.path).split('.')[0] + '.min.css'
+								(isProduction ? config.dist : config.dev ) + '/css/common.min.css'
+							,	(isProduction ? config.dist : config.dev ) + '/css/view-' + path.basename(htmlfile.path).split('.')[0] + '.min.css'
 						])
-						.pipe(plumber())
 						.pipe(inject(config.temp + '/' + path.basename(htmlfile.path), {
 				    			addRootSlash: false
 				    		,	starttag: '<!-- inject_css -->'
-				    		,	ignorePath: '/dev/'
+				    		,	ignorePath: ['dev/', '/dist/']
 			    		}))
 			    		.pipe(gulpif(isProduction, minifyhtml()))
 						.pipe(gulp.dest(isProduction ? config.dist : config.dev));
 				}));
 		
 		}));
-
 
     cb();
 });
