@@ -145,7 +145,7 @@ gulp.task('images', function()
 {
 	return gulp.src(config.app + '/images/**/*')
 		//.pipe(plumber())
-		.pipe(gulpif(isProduction, imagemin({ progressive: true, interlaced: true })))
+		//.pipe(gulpif(isProduction, imagemin({ progressive: true, interlaced: true })))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'))
 		//.pipe(gulpif(isProduction, refresh(livereload)));
 });
