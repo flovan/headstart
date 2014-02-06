@@ -17,5 +17,6 @@ Although some practises might be considered opinionated (this is still a one-man
 
 ## Author
 
-[github.com/flovan/](https://github.com/flovan/)
-[twitter.com/prplps](https://twitter.com/prplps
+ + [github.c/flovan/](https://github.com/flovan/)
+ + [twitter.com/prplps](https://twitter.com/prplps)
+ + [flovan.me](http://flovan.me)
