@@ -2,7 +2,7 @@
     ▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ 
     ▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░
 
-> A easy-to-use Gulp framework/boilerplate/template/whatever.
+> An easy-to-use Gulp framework/boilerplate/template/whatever.
   Comes with a base file setup and uses Gulp for compilation.
     
 
