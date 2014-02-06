@@ -270,7 +270,7 @@ gulp.task('tinylr', function()
     });
 });
 
-gulp.task('server', ['connect-livereload', 'tinylr'], function()
+gulp.task('server', ['sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'images', 'html' , 'connect-livereload', 'tinylr'], function()
 {
     console.log('Started watching assets folder..');
 
