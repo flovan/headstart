@@ -4,7 +4,8 @@
 
 > An easy-to-use Gulp framework/boilerplate/template/whatever.
   Comes with a base file setup and uses Gulp for compilation.
-    
+
+__NOTE: The production flow is not fully finished yet as it strips out conditional comments while minifying the HTML. I am thinking about dropping them all together.__
 
 ## Documentation
 
