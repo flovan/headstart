@@ -1,3 +1,14 @@
+/*
+#
+#	▒█░▒█ █▀▀ █▀▀█ ▒█▀▀▄ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀█ ▀▀█▀▀ 
+#	▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ 
+#	▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░ 
+#
+# 	A micro Gulp framework/boilerplate/template/whatever.
+#	➳  https://github.com/flovan/Headstart
+#
+*/
+
 "use strict";
 
 //Error.stackTraceLimit = Infinity;
