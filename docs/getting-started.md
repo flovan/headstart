@@ -1,3 +1,7 @@
+# Getting started
+
+This guide will walk you through the process of installing dependencies and actually running Headstart.
+
 ## One-time Setup
 
 + [Install Node.js and NPM](http://nodejs.org)
