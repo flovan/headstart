@@ -11,7 +11,8 @@
 
 "use strict";
 
-//Error.stackTraceLimit = Infinity;
+// Uncomment if you want a full error stack
+// Error.stackTraceLimit = Infinity;
 
 // Load in all the plugins ----------------------------------------------------
 //
@@ -24,13 +25,9 @@ var 	path 			= require('path')
 
 	,	gulp 			= require('gulp')
 	,	gulputil		= require('gulp-util')
-    ,	plumber 		= require('gulp-plumber')			// -> https://gist.github.com/floatdrop/8269868
     ,	gulpif			= require('gulp-if')
-    ,	using 			= require('gulp-using')
-    ,	exclude			= require('gulp-ignore').exclude
     ,	include			= require('gulp-ignore').include
     ,	tap				= require('gulp-tap')
-    ,	flatten			= require('gulp-flatten')
     ,	inject			= require('gulp-inject')
     ,	rimraf 			= require('gulp-rimraf')
     ,	htmlmin			= require('gulp-minify-html')
@@ -65,7 +62,6 @@ var isProduction = gulputil.env.dist === true;
 gulp.task('clean', function()
 {
 	return gulp.src([isProduction ? config.dist : config.dev, config.temp], {read: false})
-		//.pipe(plumber())
 		.pipe(rimraf());
 });
 
@@ -74,9 +70,7 @@ gulp.task('clean', function()
 
 gulp.task('sass', function()
 {
-	console.log('doing sassy things');
 	return gulp.src(config.app + '/sass/*.scss')
-		//.pipe(plumber())
 		.pipe(sass({ style: 'nested', compass: true }))
 		//.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(rename({suffix: '.min'}))
@@ -96,7 +90,6 @@ gulp.task('lint-main', function()
 			config.app + '/js/core/*.js',
 			'!' + config.app + '/js/**/log.js'
 		])
-		//.pipe(plumber())
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
@@ -109,7 +102,6 @@ gulp.task('scripts-main', ['lint-main'], function()
 			,	config.app + '/js/core/*.js'
 			,	config.app + '/js/app.js'
 		])
-		//.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
@@ -126,7 +118,6 @@ gulp.task('lint-view', function()
 gulp.task('scripts-view', ['lint-view'], function()
 {
 	gulp.src(config.app + '/js/view-*.js')
-		//.pipe(plumber())
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
@@ -144,7 +135,6 @@ gulp.task('scripts-ie', function()
 			,	config.app + '/js/libs/ie/matchmedia.addListener.js'
 			,	config.app + '/js/libs/ie/respond.js'
 		])
-		//.pipe(plumber())
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
@@ -163,7 +153,6 @@ gulp.task('images', function()
 			,	config.app + '/images/**/*.png'
 			,	config.app + '/images/**/*.gif'
 		])
-		//.pipe(plumber())
 		.pipe(gulpif(isProduction, cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'))
 		.pipe(gulpif(!isProduction, refresh(lr)));
@@ -175,7 +164,6 @@ gulp.task('images', function()
 gulp.task('fonts', function()
 {
     return gulp.src(config.app + '/fonts/*')
-		//.pipe(plumber())
         .pipe(gulp.dest((isProduction ? config.dist : config.dev) + 'assets/fonts'));
 });
 
@@ -185,7 +173,6 @@ gulp.task('fonts', function()
 gulp.task('misc', function()
 {
     return gulp.src(config.app + '/misc/htaccess.txt')
-		//.pipe(plumber())
 		.pipe(rename('.htaccess'))
 		.pipe(gulpif(isProduction, include(config.app + '/misc/*')))
         .pipe(gulp.dest((isProduction ? config.dist : config.dev)));
@@ -197,7 +184,6 @@ gulp.task('misc', function()
 gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 {
 	gulp.src(config.app + '/html/*.html')
-		//.pipe(plumber())
 		.pipe(tap(function(jsfile, t)
 		{
 			// Make a clone of the core and lib files array and include the view file
@@ -281,28 +267,30 @@ gulp.task('tinylr', function()
     });
 });
 
-gulp.task('server', ['sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'images', 'html' , 'connect-livereload', 'tinylr'], function()
+gulp.task('server', ['sass', 'scripts', 'scripts-view', 'scripts-ie', 'images', 'html', 'connect-livereload', 'tinylr'], function()
 {
-    console.log('Started watching assets folder..');
-
-    gulp.watch(config.app + '/sass/*.scss', ['sass'], function(event)
+    gulp.watch(config.app + '/sass/*.scss', function(event)
 	{
   		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+  		gulp.start('sass');
 	});
 
 	gulp.watch(config.app + '/**/*.js', ['scripts', 'scripts-view', 'scripts-ie'], function(event)
 	{
   		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+  		gulp.start('scripts', 'scripts-view', 'scripts-ie');
   	});
 
 	gulp.watch(config.app + '/images/**/*', ['images'], function(event)
 	{
   		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+  		gulp.start('images');
   	});
 	
 	gulp.watch(config.app + '/html/*', ['html'], function(event)
 	{
   		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+  		gulp.start('html');
   	});
 });
 
