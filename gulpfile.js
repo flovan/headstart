@@ -4,7 +4,7 @@
 #	▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ 
 #	▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░ 
 #
-# 	A micro Gulp framework/boilerplate/template/whatever.
+# 	A easy-to-use Gulp framework/boilerplate/template/whatever.
 #	➳  https://github.com/flovan/Headstart
 #
 */
