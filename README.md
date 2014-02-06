@@ -1,13 +1,17 @@
-# Headstart 0.3
+    ▒█░▒█ █▀▀ █▀▀█ ▒█▀▀▄ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀█ ▀▀█▀▀ 
+    ▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ 
+    ▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░
 
-An easy-to-use front-end framework, boilerplate, workflow, whatever. Comes with a base file setup and uses Gulp (like Grunt, only better/easier/faster) for compilation.
+    A easy-to-use Gulp framework/boilerplate/template/whatever.
+    Comes with a base file setup and uses Gulp for compilation.
+    
 
 ## Setup
 
 + [Install Node.js and NPM](http://nodejs.org)
-+ Open your Terminal
-+ Install Gulp by running `(sudo) npm install -g gulp`
-+ Install Compass by running `(sudo) npm install -g compass`
++ Open your CLI (eg. Terminal)
++ Install Gulp globally by running `(sudo) npm install -g gulp`
++ Install Compass globally by running `(sudo) npm install -g compass`
 + Navigate to your project folder (eg. `cd my/folder/location` or drag your folder onto the Terminal app)
 + Install dependencies by running `sudo) nmp install`
 
@@ -15,23 +19,20 @@ An easy-to-use front-end framework, boilerplate, workflow, whatever. Comes with 
 
 + Run `gulp` to initiate the development stage
 + Run `gulp --production` to generate your production ready files
++ Open your browser at `http://localhost:9000/myfile.html` and start coding!
 
 ## Structure
 
 ### HTML
 
-Headstart provides you with a solid HTML foundation, based on the [HTML5 Boilerplate](http://html5boilerplate.com), 
-but extended with *those things you always end up needing*.
-
-It also includes bits and pieces of Gwen Vanhee's [Boilerplate](https://github.com/gwenvanhee/Boilerplate-0.2)
+Headstart provides you with a solid HTML foundation, based on the [HTML5 Boilerplate](http://html5boilerplate.com), but extended with *those things you always end up needing*:
 
  + `<meta>` tags for everything!
  + A lot of handy `<link>`s, some commented out, but all ready to use
 
 ###CSS
 
-Headstart's CSS is compiled with Compass and SCSS, and utilizes a custom grid system based on on [Suzy](http://susy.oddbird.net). Included are some other handy mixins, 
-and a few modules.
+Headstart's CSS is powered by SASS (SCSS), and utilizes a custom grid system based on [Suzy](http://susy.oddbird.net).
 
 The setup works with a common.css file, which contains the site-wide (and repetitive) styles, accompanied by a page-specific css file (see the `page-template.scss` file) <del>which should be inserted through the back-end</del> **I am working on doing this automatically**.
 
