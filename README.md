@@ -14,5 +14,3 @@ You can find the Getting started, or the html/js/scss guides [in the docs](https
 
 Headstart has grown from a basic boilerplate file into a no-brainer workflow that takes care of the tedious tasks that come with modern front-end development.
 Although some practises might be considered opinionated (this is still a one-man show), Headstart does encourage the use of certain patterns and structures that will make you fast and organised.
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/flovan/headstart/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
