@@ -34,7 +34,8 @@
     "gulp-embedlr": "~0.5.2",
     "gulp-zip": "~0.1.2",
     "inquirer": "~0.4.0",
-    "gulp-svgmin": "~0.4.1"
+    "gulp-svgmin": "~0.4.1",
+    "gulp-replace": "~0.2.0"
   },
   "engines": {
     "node": ">=0.8.0"
