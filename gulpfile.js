@@ -275,7 +275,7 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
     cb();
 });
 
-// lr -----------------------------------------------------------------
+// Livereloading --------------------------------------------------------------
 //
 // Sets up a livereload server, and opens files in the browser
 
