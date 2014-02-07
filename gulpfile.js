@@ -44,14 +44,21 @@ var 	path 			= require('path')
     ,	embedlr 		= require('gulp-embedlr')
 
    	,	config			= {
-					    		app: 			'app'
+   							// Personal settings
+
+					    		browser:		'google chrome'
+					    	,	defaultPage:	'index.html'
+					    	,	openAllFiles:	false
+
+					    	// App settings
+					    	// Can can, but should not mess with these :)
+
+					    	,	app: 			'app'
 					    	,	dev:			'dev'
 					    	,	dist: 			'dist'
 					    	,	temp:			'.temp'
 					    	,	port:			9000
 					    	,	lr:				35729
-					    	,	browser:		'google chrome'
-					    	,	defaultPage:	'index.html'
 					    }
 
 // Catch CLI parameter
@@ -255,10 +262,18 @@ gulp.task('connect-livereload', function()
         .listen(config.port)
         .on('listening', function() {
             console.log('Started connect web server on http://localhost:' + config.port + '.');
-            console.log('You are now viewing ' + config.defaultPage + ' (you can change this in the config)');
  			
- 			// Open browser
-            open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
+ 			// Open the default .html file in the browser
+            if(!config.openAllFiles) open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
+            // or open ALL the files
+            else
+            {
+            	gulp.src(config.app + '/html/*.html')
+            		.pipe(tap(function(htmlFile, t)
+            		{
+            			open('http://localhost:' + config.port + '/' + path.basename(htmlFile.path), config.browser);
+            		}));
+            }
         });
 });
  
