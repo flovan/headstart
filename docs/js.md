@@ -5,6 +5,8 @@ All .js files will be injected dynamically in a predefined order that takes care
 
 The top-level classes are based on the [module pattern](http://css-tricks.com/how-do-you-structure-javascript-the-module-pattern-edition/) to provide you with public/private functionality. All files are commented to provide you with visual cues as to what each code "group" does.
 
+jQuery is used for some functionalities, but, as you probably know, you can mix this with vanilla javascript to your hearts content.
+
 ## App
 
 The App class is a self-instantiating class that instantiates all dependencies when the view is done loading. This is a top-level class that rarely needs editing.
@@ -55,26 +57,58 @@ By default this function calls the private function `_addActions()`, which can b
 
 At the bottom of the View class, an object is returned containing the constructor, as well as any other function you would like to have shared among your other classes.
 
+## Config
+
+A simple wrapper class for your global project settings.
+
+## API
+
+A class that extends the default ajax functionality of jQuery. The only function you'll ever need is `call()`, which can be passed in some settings to have it do what you want. A public `route` object contains the routes to your API.
+
+Example:
+    
+    App.api.call(App.api.routes.someRoute, {
+        values: { something: 'this', isCool: true },
+        done: function(data){
+            log('Returned data from route', data);
+        },
+        fail: function(err){
+            log('Route call failed', err);
+        }
+    });
+    
+When `cancellable` is set to `true`, the call will be monitored on its duration (as set in the Config class). With  a two-step event setup, you will be notified when your call is hanging or when it has been cancelled.
+
+## Events
+
+Adds a global `EVENTS` object that encourages globalized event names. Down with hard to manage strings! This is of course completely optional; just remove the file if you won't be needing this.
+
+## Log
+
+Headstart makes use of the great [log()](https://github.com/adamschwartz/log) library by [Adam Schwartz](https://github.com/adamschwartz).
+
+Safely call `log()` instead of `console.log()`. Also, log bold, italic or colored text, and even code blocks! Check out the repo for all options.
+
+Example:
+    
+    log('*This is italic*');
+    log('**This is bold**);
+    log('This piece is [c="color: red"]red[c]');
+
+## Utils
+
+The Utils class is a handy wrapper for functionality that you need throughout your website. By default the class comes with an `isTouch()` and `insertReporting()` function, the latter making it easy to inject feedback into the DOM.
+
+This file also patches jQuery to include a function that serializes forms into objects, which is handy when using POST API calls.
+
 ## Libraries
 
-A handfull of libraries, plugins and patches provide you with comfort as things like pseudo-selectors, 
-semantic elements and media queries just work! Cross-browser!
+Headstart uses a few libraries by default.
 
- + HTML5shiv
- + jQuery
- + [Underscore](http://underscorejs.org)
- + [Log.js](https://github.com/adamschwartz/log) for logging in style
- + IE fixes
-   + [Respond.js](http://j.mp/respondjs)
-   + [Selectivizr](http://selectivizr.com) — in combination with [NWMatcher](http://javascript.nwbox.com/NWMatcher/)
-
-## Classes
-
-Ready-to-use classes:
-
- + API — A handy wrapper for your API calls
- + Utils
-   + `form.serializeObject()` will come in handy for your Api calls
-   + `insertReporting()` helper function for injecting feedback messages
- + App — Global wrapper for app-wide logic
- + Views — Each page is probably a view
+ + jQuery (latest 1.x release)
+ + [Underscore](http://underscorejs.org) — for its powerfull array, debounce and throttle functions.
+ + IE libs
+   + html5shiv — making your fancy elements function properly.
+   + [Respond.js](http://j.mp/respondjs) — making your media queries work.
+   + [Selectivizr](http://selectivizr.com) + [NWMatcher](http://javascript.nwbox.com/NWMatcher/) — Use all the fancy selectors you want, without concequences.
+   + PIE — making your CSS3 rules work, [read the docs](http://css3pie.com/documentation/).
