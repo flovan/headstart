@@ -13,6 +13,7 @@ This guide will walk you through the process of installing dependencies and actu
 
 + Navigate to your project folder (eg. `cd my/folder/location` or drag your folder onto the Terminal app)
 + Install dependencies by running `sudo) nmp install`
++ Open up `gulpfile.js` and edit your config preferences (line 47)
 
 ## Usage
 
