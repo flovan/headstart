@@ -4,7 +4,7 @@
 > An easy-to-use Gulp framework/boilerplate/template/whatever.
   Comes with a base file setup and uses Gulp for compilation.
 
-__NOTE: The production flow is not fully finished yet as it strips out conditional comments while minifying the HTML. I am thinking about dropping them all together.__
+__NOTE: <del>The production flow is not fully finished yet as it strips out conditional comments while minifying the HTML. I am thinking about dropping them all together.</del> Comments are kept in the production html for the sake of the condition comments. All other bloat should be hand-removed from the `app/html/*.html` files for now.__
 
 ## Documentation
 
