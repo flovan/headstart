@@ -31,6 +31,7 @@ var 	path 			= require('path')
     ,	htmlmin			= require('gulp-minify-html')
     ,	jshint 			= require('gulp-jshint')
     ,	concat 			= require('gulp-concat')
+    ,	replace			= require('gulp-replace')
     ,	uglify 			= require('gulp-uglify')
     ,	sass 			= require('gulp-ruby-sass')
     ,	autoprefixer 	= require('gulp-autoprefixer')
@@ -101,6 +102,7 @@ gulp.task('sass', function()
 // Scripts --------------------------------------------------------------------
 //
 // Tasks relating to scripts performs linting, concatination and uglifying
+// Also strips out all references to console.log() or log()
 
 gulp.task('lint-main', function()
 {
@@ -119,9 +121,11 @@ gulp.task('scripts-main', ['lint-main'], function()
 				config.app + '/js/libs/jquery*.js'
 			,	config.app + '/js/libs/*.js'
 			,	config.app + '/js/core/*.js'
+			,	'!**/log.js'
 			,	config.app + '/js/app.js'
 		])
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
+		.pipe(gulpif(isProduction, replace(/((console.)|)log\((.*?)\);/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
 		.pipe(gulpif(!isProduction, refresh(lr)));
@@ -138,6 +142,7 @@ gulp.task('scripts-view', ['lint-view'], function()
 {
 	gulp.src(config.app + '/js/view-*.js')
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
+		.pipe(gulpif(isProduction, replace(/((console.)|)log\((.*?)\);/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
 		.pipe(gulpif(!isProduction, refresh(lr)));
