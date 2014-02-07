@@ -1,3 +1,12 @@
+// Triangle mixin -------------------------------------------------------------
+//
+// Make a CSS triangle out of an(y) element
+//
+// $width:		The width, in px
+// $height:		The height, in px
+// $direction:	Where the arrow points, up/down/left/right
+// $color:		The color of the arrow
+
 @mixin triangle($width: 10px, $height: 10px, $direction: up, $color: red)
 {
   	width: 0;
