@@ -22,6 +22,7 @@ var 	path 			= require('path')
     ,	http			= require('http')
     ,	open			= require('open')
     ,	lr				= require('tiny-lr')()
+    ,	ask				= require('inquirer').prompt
 
 	,	gulp 			= require('gulp')
 	,	gulputil		= require('gulp-util')
@@ -42,6 +43,7 @@ var 	path 			= require('path')
     ,	rename 			= require('gulp-rename')
     ,	refresh 		= require('gulp-livereload')
     ,	embedlr 		= require('gulp-embedlr')
+    ,	zip				= require('gulp-zip')
 
    	,	config			= {
    							// Personal settings
@@ -181,9 +183,13 @@ gulp.task('fonts', function()
  
 gulp.task('misc', function()
 {
+	var using = require('gulp-using');
+
     return gulp.src(config.app + '/misc/htaccess.txt')
 		.pipe(rename('.htaccess'))
+		.pipe(using())
 		.pipe(gulpif(isProduction, include(config.app + '/misc/*')))
+		.pipe(using())
         .pipe(gulp.dest((isProduction ? config.dist : config.dev)));
 });
 
@@ -315,6 +321,32 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
   	});
 });
 
+// Zipping --------------------------------------------------------------------
+//
+
+gulp.task('zip', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'html'], function(cb)
+{
+	cb(null);
+
+	ask({
+			type: 'confirm'
+		,	message: 'Would to like to have this zipped up?'
+		,	name: 'zip'
+		,	default: true
+
+	}, function(answer)
+	{
+		if(answer.zip)
+		{
+			gulp.src(config.dist + '/**/*')
+				.pipe(zip('Archive.zip'))
+				.pipe(gulp.dest(config.dist));
+
+			console.log('Made Archive.zip at ./' + config.dist);
+		}
+	});
+});
+
 // The default task -----------------------------------------------------------
 //
 // Runs when you call 'gulp' from the CLI
@@ -323,6 +355,7 @@ gulp.task('default', ['clean'], function()
 {
 	gulp.start('sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'fonts', 'images', 'misc', 'html');
 	if(!isProduction) gulp.start('server');
+	else gulp.start('zip')
 });
 
 
