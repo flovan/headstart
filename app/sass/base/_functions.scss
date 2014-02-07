@@ -6,7 +6,7 @@
 //
 // $number: 	The value you want to unify
 
-@function stripUnits($number)
+@function su($number)
 {
 	@return $number / ($number * 0 + 1);
 }
@@ -20,8 +20,8 @@
 
 @function em($target, $context: $base-font-size)
 {
-	$context: stripUnits($context);
-	$target: stripUnits($target);
+	$context: su($context);
+	$target: su($target);
 	
 	@return ($target/$context)*1em;
 }

@@ -35,7 +35,7 @@
 html, body
 {
     font-family: $font-stack;
-    font-size: (stripUnits($base-font-size) / 16 * 100) * 1%;
+    font-size: (su($base-font-size) / 16 * 100) * 1%;
     line-height: 1.5;
     background-color: $white;
     color: $black-75;
