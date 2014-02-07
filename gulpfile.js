@@ -126,7 +126,7 @@ gulp.task('scripts-main', ['lint-main'], function()
 			,	config.app + '/js/app.js'
 		])
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
-		.pipe(gulpif(isProduction, replace(/((console.)|)log\((.*?)\);/g, '')))
+		.pipe(gulpif(isProduction, replace(/(console\.)?log(.*?);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
 		.pipe(gulpif(!isProduction, refresh(lr)));
@@ -143,7 +143,7 @@ gulp.task('scripts-view', ['lint-view'], function()
 {
 	gulp.src(config.app + '/js/view-*.js')
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
-		.pipe(gulpif(isProduction, replace(/((console.)|)log\((.*?)\);/g, '')))
+		.pipe(gulpif(isProduction, replace(/(console\.)?log(.*?);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
 		.pipe(gulpif(!isProduction, refresh(lr)));
@@ -266,7 +266,7 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 				    		,	ignorePath: ['/dev/', '/dist/']
 			    		}))
 	    				.pipe(embedlr())
-			    		.pipe(gulpif(isProduction, htmlmin({ removeComments: false })))
+			    		.pipe(gulpif(isProduction, htmlmin({ comments: true })))
 						.pipe(gulp.dest(isProduction ? config.dist : config.dev));
 				}));
 		
