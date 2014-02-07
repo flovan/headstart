@@ -10,18 +10,16 @@ https://github.com/adamschwartz/log
     - `code` — log('this word `code`')
 - Use a custom syntax to style text however you want: `log('this is [c="color: red"]red[c]')`.
 
---
-
-Extended with CONFIG.devFlag support
-
 */
 
 (function() {
   var ffSupport, formats, getOrderedMatches, hasMatches, isFF, isIE, isOpera, isSafari, log, makeArray, operaSupport, safariSupport, stringToArgs, _log;
-  if (!(window.console && window.console.log)) { return; }
+
+  if (!(window.console && window.console.log)) {
+    return;
+  }
+
   log = function() {
-    //if(_.isBoolean(window.App.config.devFlag) && !window.App.config.devFlag)
-   // console.log(window.App);
     var args;
     args = [];
     makeArray(arguments).forEach(function(arg) {
@@ -31,15 +29,17 @@ Extended with CONFIG.devFlag support
         return args.push(arg);
       }
     });
-    console.log(typeof App.config);
     return _log.apply(window, args);
   };
+
   _log = function() {
     return console.log.apply(console, makeArray(arguments));
   };
+
   makeArray = function(arrayLikeThing) {
     return Array.prototype.slice.call(arrayLikeThing);
   };
+
   formats = [
     {
       regex: /\*([^\*]+)\*/,
@@ -75,6 +75,7 @@ Extended with CONFIG.devFlag support
       }
     }
   ];
+
   hasMatches = function(str) {
     var _hasMatches;
     _hasMatches = false;
@@ -85,6 +86,7 @@ Extended with CONFIG.devFlag support
     });
     return _hasMatches;
   };
+
   getOrderedMatches = function(str) {
     var matches;
     matches = [];
@@ -102,6 +104,7 @@ Extended with CONFIG.devFlag support
       return a.match.index - b.match.index;
     });
   };
+
   stringToArgs = function(str) {
     var firstMatch, matches, styles;
     styles = [];
@@ -113,18 +116,23 @@ Extended with CONFIG.devFlag support
     }
     return [str].concat(styles);
   };
+
   isSafari = function() {
     return /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
   };
+
   isOpera = function() {
     return /OPR/.test(navigator.userAgent) && /Opera/.test(navigator.vendor);
   };
+
   isFF = function() {
     return /Firefox/.test(navigator.userAgent);
   };
+
   isIE = function() {
     return /MSIE/.test(navigator.userAgent);
   };
+
   safariSupport = function() {
     var m;
     m = navigator.userAgent.match(/AppleWebKit\/(\d+)\.(\d+)(\.|\+|\s)/);
@@ -133,6 +141,7 @@ Extended with CONFIG.devFlag support
     }
     return 537.38 <= parseInt(m[1], 10) + (parseInt(m[2], 10) / 100);
   };
+
   operaSupport = function() {
     var m;
     m = navigator.userAgent.match(/OPR\/(\d+)\./);
@@ -141,13 +150,17 @@ Extended with CONFIG.devFlag support
     }
     return 15 <= parseInt(m[1], 10);
   };
+
   ffSupport = function() {
     return window.console.firebug || window.console.exception;
   };
+
   if (isIE() || (isFF() && !ffSupport()) || (isOpera() && !operaSupport()) || (isSafari() && !safariSupport())) {
     window.log = _log;
   } else {
     window.log = log;
   }
+
   window.log.l = _log;
+
 }).call(this);

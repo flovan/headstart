@@ -122,7 +122,7 @@ gulp.task('scripts-main', ['lint-main'], function()
 				config.app + '/js/libs/jquery*.js'
 			,	config.app + '/js/libs/*.js'
 			,	config.app + '/js/core/*.js'
-			,	'!**/log.js'
+			,	(isProduction ? '!**/log.js' : '')
 			,	config.app + '/js/app.js'
 		])
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))

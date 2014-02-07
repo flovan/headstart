@@ -1,12 +1,12 @@
-// Demo view class
+// view class
 
-var Demo = function()
+var View = function()
 {
 	var me						= this;
 	
 	// VARS -------------------------------------------------------------------
 	
-	// var $demoSelector			= '.demo';
+	// var $demoSelector			= $('.demo');
 
 	// CONSTRUCTOR ------------------------------------------------------------
 	
@@ -15,27 +15,16 @@ var Demo = function()
 		log('_## Demo view init_');
 
 		me = me.Demo;
-
-		_makeObjects();
+		
 		_addActions();
-
-		//App.dispatcher.trigger('test', { pipi: 'kaka' });
 	}
 	
 	// PRIVATE FUNCTIONS ------------------------------------------------------
 	
-	// Convert all selector strings to jQuery objects
-	function _makeObjects()
-	{
-		log('Make objects out of selector strings');
-		
-		// $demoSelector = $(demoSelector);
-	}
-	
 	// Apply listeners to certain elements in the view
 	function _addActions()
 	{
-		log('Adding actions');
+		log('~ Adding actions');
 		
 		// $demoSelector.on('click', _demoSelectorClickHandler);
 	}
@@ -63,10 +52,10 @@ var Demo = function()
 	
 	return {
 		init: init
-		//, otherExamplePublicFunction: function(){ alert('I am public'); }
+		//, examplePublicFunction: function(){ alert('I am public'); }
 	};
 };
 
 // Last page-blocking file, init the app with this view
 
-App.init(new Demo());
+App.init(new View());
