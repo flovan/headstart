@@ -85,7 +85,8 @@ gulp.task('clean', function()
 
 // Styles ---------------------------------------------------------------------
 //
-// Compiles the .scss files, autoprefixes and minifies
+// Compiles and minifies the .scss files
+// Note: Autoprefixer is included but not used, as I prefer Compass mixins
 
 gulp.task('sass', function()
 {
