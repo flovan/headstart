@@ -1,12 +1,15 @@
 {
+
   "name": "Headstart",
   "version": "0.3.0",
   "description": "A front-end boilerplate for web apps and platforms.",
   "author": "Florian Vanthuyne",
+
   "repository": {
     "type": "git",
     "url": "git://github.com/flovan/Headstart"
   },
+
   "devDependencies": {
     "gulp": "~3.5.0",
     "gulp-livereload": "~0.2.0",
@@ -31,9 +34,10 @@
     "gulp-tap": "~0.1.1",
     "gulp-minify-html": "~0.1.0",
     "gulp-cache": "~0.1.1",
-    "gulp-embedlr": "~0.5.2"
+    "gulp-embedlr": "~0.5.2",
+    "gulp-zip": "~0.1.2",
+    "inquirer": "~0.4.0"
   },
-  "engines": {
-    "node": ">=0.8.0"
-  }
+
+  "engines": { "node": ">=0.8.0" }
 }
