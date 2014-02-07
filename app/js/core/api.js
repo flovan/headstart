@@ -72,22 +72,15 @@ var Api = function()
 	//			@fail			Callback fct, called on route failure
 	//			@method			Defaults to 'POST'
 	//			@cancellable	Enfore timelimits to call, defaults to false
+	//			@values			The data object that you want to pass along
 
 	function call(route, args)
 	{
-		// Invert route key/value pairs to see if the route exists
-		// TODO: Check performance of this
-		if(!_.isString(_.invert(API.routes)[route]))
-		{
-			log('_API call failed_ on route ' + route);
-			return;
-		}
-
 		// Extend default settings object
-		$.extend({ method: 'POST', cancellable: false }, options);
+		$.extend({ method: 'POST', cancellable: false }, args);
 
 		args.route = route;
-		_ajax(arg);
+		_ajax(args);
 	}
 	
 	return {
