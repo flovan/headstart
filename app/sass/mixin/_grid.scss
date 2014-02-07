@@ -9,7 +9,9 @@
 
 @mixin column($columns, $end: false, $break: $default-column-breakpoint, $context: $total-columns)
 {
-	@extend .column;
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
 
 	@include media-min($break)
 	{
@@ -35,13 +37,4 @@
 
 		width: $perc - ($default-gutter-width - ($default-gutter-width/($total-columns / $columns)));
 	}
-}
-
-// Base column class ----------------------------------------------------------
-
-.column
-{
-	display: inline-block;
-	vertical-align: top;
-	width: 100%;
 }
