@@ -15,8 +15,6 @@ var App = (function()
 	{
 		log('_## Application initiated_');
 
-		//dispatcher.on('test', function(e, data){ log('test',data); });
-
 		config = new Config();
 		api = new Api();
 
