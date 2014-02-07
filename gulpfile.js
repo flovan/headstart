@@ -11,9 +11,6 @@
 
 "use strict";
 
-// Uncomment if you want a full error stack
-// Error.stackTraceLimit = Infinity;
-
 // Load in all the plugins ----------------------------------------------------
 //
 
@@ -40,35 +37,44 @@ var 	path 			= require('path')
     ,	cssmin	 		= require('gulp-minify-css')
     ,	cache 			= require('gulp-cache')
     ,	imagemin 		= require('gulp-imagemin')
+    ,	svgmin			= require('gulp-svgmin')
     ,	rename 			= require('gulp-rename')
     ,	refresh 		= require('gulp-livereload')
     ,	embedlr 		= require('gulp-embedlr')
     ,	zip				= require('gulp-zip')
 
    	,	config			= {
-   							// Personal settings
 
-					    		browser:		'google chrome'
-					    	,	defaultPage:	'index.html'
-					    	,	openAllFiles:	false
+		// Personal settings --------------------------------------------------
+		//
+		// Adjust these to your needs
 
-					    	// App settings
-					    	// Can can, but should not mess with these :)
+    		browser:		'google chrome'
+    	,	defaultPage:	'index.html'
+    	,	openAllFiles:	false
 
-					    	,	app: 			'app'
-					    	,	dev:			'dev'
-					    	,	dist: 			'dist'
-					    	,	temp:			'.temp'
-					    	,	port:			9000
-					    	,	lr:				35729
-					    }
+    	// App settings -------------------------------------------------------
+    	//
+    	// You can, but should not mess with these :)
+
+    	,	app: 			'app'
+    	,	dev:			'dev'
+    	,	dist: 			'dist'
+    	,	temp:			'.temp'
+    	,	port:			9000
+    	,	lr:				35729
+    };
 
 // Catch CLI parameter
+//
+// When 'gulp' is run with --dist as parameter, the process is kicked into
+// production mode
 
 var isProduction = gulputil.env.dist === true;
 
 // Clean up -------------------------------------------------------------------
 //
+// Removes the dev/dist folder and its files
 
 gulp.task('clean', function()
 {
@@ -78,6 +84,7 @@ gulp.task('clean', function()
 
 // Styles ---------------------------------------------------------------------
 //
+// Compiles the .scss files, autoprefixes and minifies
 
 gulp.task('sass', function()
 {
@@ -93,6 +100,7 @@ gulp.task('sass', function()
 
 // Scripts --------------------------------------------------------------------
 //
+// Tasks relating to scripts performs linting, concatination and uglifying
 
 gulp.task('lint-main', function()
 {
@@ -154,12 +162,11 @@ gulp.task('scripts-ie', function()
 
 // Images ---------------------------------------------------------------------
 //
-// TODO: Try to get rid of the EmitterEvent memory leak
-// ~ commented in 'default' task
+// Optimizes your images and svg files
 
-gulp.task('images', function()
+gulp.task('images', function(cb)
 {
-	return gulp.src([
+	gulp.src([
 				config.app + '/images/**/*.jpg'
 			,	config.app + '/images/**/*.png'
 			,	config.app + '/images/**/*.gif'
@@ -167,10 +174,18 @@ gulp.task('images', function()
 		.pipe(gulpif(isProduction, cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'))
 		.pipe(gulpif(!isProduction, refresh(lr)));
+
+	gulp.src(config.app + '/images/**/*.svg')
+		.pipe(gulpif(isProduction, svgmin()))
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'))
+		.pipe(gulpif(!isProduction, refresh(lr)));
+
+	cb(null);
 });
 
 // Fonts ----------------------------------------------------------------------
 //
+// Copies the font files over
 
 gulp.task('fonts', function()
 {
@@ -180,21 +195,26 @@ gulp.task('fonts', function()
 
 // Misc -----------------------------------------------------------------------
 //
+// Maked the .htaccess work, copy over the other misc files in production mode
  
-gulp.task('misc', function()
+gulp.task('misc', function(cb)
 {
-	var using = require('gulp-using');
-
-    return gulp.src(config.app + '/misc/htaccess.txt')
+	gulp.src(config.app + '/misc/htaccess.txt')
 		.pipe(rename('.htaccess'))
-		.pipe(using())
-		.pipe(gulpif(isProduction, include(config.app + '/misc/*')))
-		.pipe(using())
-        .pipe(gulp.dest((isProduction ? config.dist : config.dev)));
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev)));
+
+	if(isProduction)
+	{
+		gulp.src([config.app + '/misc/*', '!**/htaccess.txt'])
+			.pipe(gulp.dest(config.dist));
+	}
+
+    cb();
 });
 
 // HTML -----------------------------------------------------------------------
 //
+// Places links to correct assets in all the .html files and minify
  
 gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 {
@@ -240,7 +260,7 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 				    		,	ignorePath: ['/dev/', '/dist/']
 			    		}))
 	    				.pipe(embedlr())
-			    		.pipe(gulpif(isProduction, htmlmin()))
+			    		.pipe(gulpif(isProduction, htmlmin({ removeComments: false })))
 						.pipe(gulp.dest(isProduction ? config.dist : config.dev));
 				}));
 		
@@ -251,6 +271,7 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 
 // lr -----------------------------------------------------------------
 //
+// Sets up a livereload server, and opens files in the browser
 
 gulp.task('connect-livereload', function()
 {
@@ -323,6 +344,7 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
 
 // Zipping --------------------------------------------------------------------
 //
+// Zips up the production folder is wanted (via prompt)
 
 gulp.task('zip', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'html'], function(cb)
 {
@@ -338,7 +360,7 @@ gulp.task('zip', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images'
 	{
 		if(answer.zip)
 		{
-			gulp.src(config.dist + '/**/*')
+			gulp.src([config.dist + '/**/*', config.dist + '/.htaccess'])
 				.pipe(zip('Archive.zip'))
 				.pipe(gulp.dest(config.dist));
 
