@@ -44,12 +44,14 @@ var 	path 			= require('path')
     ,	embedlr 		= require('gulp-embedlr')
 
    	,	config			= {
-					    		app: 	'app'
-					    	,	dev:	'dev'
-					    	,	dist: 	'dist'
-					    	,	temp:	'.temp'
-					    	,	port:	9000
-					    	,	lr:		35729
+					    		app: 			'app'
+					    	,	dev:			'dev'
+					    	,	dist: 			'dist'
+					    	,	temp:			'.temp'
+					    	,	port:			9000
+					    	,	lr:				35729
+					    	,	browser:		'google chrome'
+					    	,	defaultPage:	'index.html'
 					    }
 
 // Catch CLI parameter
@@ -184,7 +186,7 @@ gulp.task('misc', function()
 gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 {
 	gulp.src(config.app + '/html/*.html')
-		.pipe(tap(function(jsfile, t)
+		.pipe(tap(function(htmlFile, t)
 		{
 			// Make a clone of the core and lib files array and include the view file
 			// that matches the current .html file
@@ -195,7 +197,7 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 				,	config.app + '/js/core/*.js'
 				,	config.app + '/js/app.js'
 			];
-			jsSource.push((isProduction ? config.dist : config.dev ) + '/js/view-' + path.basename(jsfile.path).split('.')[0] + (isProduction ? '.min' : '') + '.js');
+			jsSource.push((isProduction ? config.dist : config.dev ) + '/js/view-' + path.basename(htmlFile.path).split('.')[0] + (isProduction ? '.min' : '') + '.js');
 
 			// Grab js files
 			return gulp.src(jsSource)
@@ -205,21 +207,21 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
 					file.path = (isProduction ? config.dist : config.dev ) + '/js/' + path.basename(file.path);
 				}))
 				// Inject ordered js files into each .html file
-				.pipe(inject(config.app + '/html/' + path.basename(jsfile.path), {
+				.pipe(inject(config.app + '/html/' + path.basename(htmlFile.path), {
 		    			addRootSlash: false
 		    		,	starttag: '<!-- inject_js -->'
 		    		,	ignorePath: ['/app/', 'dev/', 'dist/']
 	    		}))
 				.pipe(gulp.dest(config.temp))
 				// Tap into this generated .html file
-				.pipe(tap(function(htmlfile, t)
+				.pipe(tap(function(viewFile, t)
 				{
 					// Grab and nject css files into the temp .html file
 					gulp.src([
 								(isProduction ? config.dist : config.dev ) + '/css/common.min.css'
-							,	(isProduction ? config.dist : config.dev ) + '/css/view-' + path.basename(htmlfile.path).split('.')[0] + '.min.css'
+							,	(isProduction ? config.dist : config.dev ) + '/css/view-' + path.basename(viewFile.path).split('.')[0] + '.min.css'
 						])
-						.pipe(inject(config.temp + '/' + path.basename(htmlfile.path), {
+						.pipe(inject(config.temp + '/' + path.basename(viewFile.path), {
 				    			addRootSlash: false
 				    		,	starttag: '<!-- inject_css -->'
 				    		,	ignorePath: ['/dev/', '/dist/']
@@ -253,8 +255,10 @@ gulp.task('connect-livereload', function()
         .listen(config.port)
         .on('listening', function() {
             console.log('Started connect web server on http://localhost:' + config.port + '.');
- 
-            //open('http://localhost:' + config.port);
+            console.log('You are now viewing ' + config.defaultPage + ' (you can change this in the config)');
+ 			
+ 			// Open browser
+            open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
         });
 });
  
@@ -267,18 +271,20 @@ gulp.task('tinylr', function()
     });
 });
 
-gulp.task('server', ['sass', 'scripts', 'scripts-view', 'scripts-ie', 'images', 'html', 'connect-livereload', 'tinylr'], function()
+gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'html'], function()
 {
+	gulp.start('connect-livereload', 'tinylr');
+
     gulp.watch(config.app + '/sass/*.scss', function(event)
 	{
   		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
   		gulp.start('sass');
 	});
 
-	gulp.watch(config.app + '/**/*.js', ['scripts', 'scripts-view', 'scripts-ie'], function(event)
+	gulp.watch(config.app + '/**/*.js', ['scripts-main', 'scripts-view', 'scripts-ie'], function(event)
 	{
   		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-  		gulp.start('scripts', 'scripts-view', 'scripts-ie');
+  		gulp.start('scripts-main', 'scripts-view', 'scripts-ie');
   	});
 
 	gulp.watch(config.app + '/images/**/*', ['images'], function(event)
