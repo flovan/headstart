@@ -1,22 +1,11 @@
 # Headstart 0.3
 
+> An easy-to-use, worry-free framework/boilerplate/template/whatever.
 
-> An easy-to-use Gulp framework/boilerplate/template/whatever.
-  Comes with a base file setup and uses Gulp for compilation.
+You should do what you do best, and stop worrying about the rest. Slice that design, code up your templates. Done.
 
-__NOTE: <del>The production flow is not fully finished yet as it strips out conditional comments while minifying the HTML. I am thinking about dropping them all together.</del> Comments are kept in the production html for the sake of the condition comments. All other bloat should be hand-removed from the `app/html/*.html` files for now.__
+Headstart will take care of the tedious tasks for you. Need a vendor plugin? Just drag the .js file into the right folder and start using it. Write your scss without refreshing or configuring anything at all.
 
 ## Documentation
 
 You can find the Getting started, or the html/js/scss guides [in the docs](https://github.com/flovan/Headstart/tree/master/docs).
-
-## About
-
-Headstart has grown from a basic boilerplate file into a no-brainer workflow that takes care of the tedious tasks that come with modern front-end development.
-Although some practises might be considered opinionated (this is still a one-man show), Headstart does encourage the use of certain patterns and structures that will make you fast and organised.
-
-## Author
-
- + [github.c/flovan/](https://github.com/flovan/)
- + [twitter.com/prplps](https://twitter.com/prplps)
- + [flovan.me](http://flovan.me)
