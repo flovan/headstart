@@ -30,6 +30,7 @@ var 	path 			= require('path')
     ,	rimraf 			= require('gulp-rimraf')
     ,	htmlmin			= require('gulp-minify-html')
     ,	jshint 			= require('gulp-jshint')
+    ,	stylish			= require('jshint-stylish')
     ,	concat 			= require('gulp-concat')
     ,	replace			= require('gulp-replace')
     ,	uglify 			= require('gulp-uglify')
@@ -100,23 +101,40 @@ gulp.task('sass', function()
 		.pipe(gulpif(!isProduction, refresh(lr)))
 });
 
-// Scripts --------------------------------------------------------------------
+// Hinting --------------------------------------------------------------------
 //
-// Tasks relating to scripts performs linting, concatination and uglifying
-// Also strips out all references to console.log() or log()
+// Making sure your scripts are squeaky-clean, settings in '.jshintrc' file
+//
+// Note:	Before running production it is advised to insert following option:
+// 			"undef": true
+//
+//			It is not included by default because it also throws errors on
+//			global variables such as "window" and "document".
 
-gulp.task('lint-main', function()
+gulp.task('hint-main', function()
 {
 	return gulp.src([
 			config.app + '/js/app.js',
 			config.app + '/js/core/*.js',
 			'!' + config.app + '/js/**/log.js'
 		])
-		.pipe(jshint())
-		.pipe(jshint.reporter('default'));
+		.pipe(jshint('.jshintrc'))
+		.pipe(jshint.reporter(stylish));
 });
 
-gulp.task('scripts-main', ['lint-main'], function()
+gulp.task('hint-view', function()
+{
+	return gulp.src(config.app + '/js/view-*.js')
+		.pipe(jshint('.jshintrc'))
+		.pipe(jshint.reporter(stylish));
+});
+
+// Scripts --------------------------------------------------------------------
+//
+// Concatinating and uglifying
+// Also strips out all references to console.log() or log()
+
+gulp.task('scripts-main', ['hint-main'], function()
 {
 	return gulp.src([
 				config.app + '/js/libs/jquery*.js'
@@ -132,14 +150,7 @@ gulp.task('scripts-main', ['lint-main'], function()
 		.pipe(gulpif(!isProduction, refresh(lr)));
 });
 
-gulp.task('lint-view', function()
-{
-	return gulp.src(config.app + '/js/view-*.js')
-		.pipe(jshint())
-		.pipe(jshint.reporter('default'));
-});
-
-gulp.task('scripts-view', ['lint-view'], function()
+gulp.task('scripts-view', ['hint-view'], function()
 {
 	gulp.src(config.app + '/js/view-*.js')
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
