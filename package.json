@@ -1,32 +1,34 @@
 {
   "name": "Headstart",
   "version": "0.3.0",
-  "description": "A front-end boilerplate for web apps and platforms.",
+  "description": "An easy-to-use Gulp framework/boilerplate/template/whatever.",
   "author": "Florian Vanthuyne",
+
   "repository": {
     "type": "git",
     "url": "git://github.com/flovan/Headstart"
   },
+
   "devDependencies": {
-    "gulp": "~3.5.0",
-    "gulp-livereload": "~0.2.0",
-    "gulp-rename": "~0.2.2",
+    "gulp": "~3.5.2",
+    "gulp-livereload": "~1.0.1",
+    "gulp-rename": "~1.0.0",
     "gulp-concat": "~2.1.7",
-    "gulp-ruby-sass": "~0.2.0",
-    "gulp-minify-css": "~0.2.0",
+    "gulp-ruby-sass": "~0.3.0",
+    "gulp-minify-css": "~0.3.0",
     "tiny-lr": "0.0.5",
-    "gulp-uglify": "~0.2.0",
-    "gulp-autoprefixer": "0.0.5",
-    "gulp-imagemin": "~0.1.4",
-    "gulp-rimraf": "0.0.8",
+    "gulp-uglify": "~0.2.1",
+    "gulp-autoprefixer": "0.0.6",
+    "gulp-imagemin": "~0.1.5",
+    "gulp-rimraf": "0.0.9",
     "connect": "~2.12.0",
     "connect-livereload": "~0.3.2",
     "open": "0.0.4",
     "http": "0.0.0",
-    "gulp-jshint": "~1.3.4",
+    "gulp-jshint": "~1.4.0",
     "gulp-inject": "~0.2.2",
-    "gulp-if": "0.0.4",
-    "gulp-util": "~2.2.13",
+    "gulp-if": "0.0.5",
+    "gulp-util": "~2.2.14",
     "gulp-ignore": "~1.0.0",
     "gulp-tap": "~0.1.1",
     "gulp-minify-html": "~0.1.0",
@@ -35,8 +37,10 @@
     "gulp-zip": "~0.1.2",
     "inquirer": "~0.4.0",
     "gulp-svgmin": "~0.4.1",
-    "gulp-replace": "~0.2.0"
+    "gulp-replace": "~0.2.0",
+    "jshint-stylish": "~0.1.5"
   },
+  
   "engines": {
     "node": ">=0.8.0"
   }
