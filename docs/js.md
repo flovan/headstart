@@ -3,7 +3,7 @@
 Headstart uses a predefined JS file setup, but it is relatively easy to get started once you get familiar with it.
 All .js files will be injected dynamically in a predefined order that takes care of dependencies for you.
 
-The top-level classes are based on the [module pattern](http://css-tricks.com/how-do-you-structure-javascript-the-module-pattern-edition/) to provide you with public/private functionality. All files are commented to provide you with visual cues as to what each code "group" does.
+The top-level classes are based on the [revealing module pattern](http://carldanley.com/js-revealing-module-pattern/) to provide you with public/private functionality. All JS code is written (more or less) as defined in [idiomatic.js](https://github.com/rwaldron/idiomatic.js/).
 
 jQuery is used for some functionalities, but, as you probably know, you can mix this with vanilla javascript to your hearts content.
 
