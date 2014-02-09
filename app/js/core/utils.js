@@ -1,9 +1,17 @@
+// JSHint pointers
+/* global log: false */
+/* global EVENTS: false */
+/* global _: false */
+/* global App: false */
+
 // Utils ----------------------------------------------------------------------
 //
 // Utilities class
 
 var Utils = function()
 {
+	'use strict';
+
 	var isTouch			= null;
 
 	return {
@@ -17,37 +25,72 @@ var Utils = function()
 		},
 
 		// Function for inserting report messages
+		//
+		// Works well with the 'reporting' scss module
+		//
+		// @args	Object with following key options:
+		//
+		//			@target		Target selector or jQuery object
+		//			@message	Text that you want to display; String or Array
+		//			@type		Kind of report; Error, Success, Info or Warning
+		//			@addAfter	Will inject after target if true. Default true.
+		//			@addClose	Will add a close button (with bound action)
+		//			@onClose	Callback that is called after closing
 
-		insertReporting: function(target, message, type, addAfter, addClose)
+		insertReporting: function(args)
 		{
-			if(!_.isBoolean(addAfter)) addAfter = true;
-			if(!_.isBoolean(addClose)) addClose = false;
+			// Extend arguments with default options
+			$.extend({
+					target:		null
+				,	message:	null
+				,	type:		'error'
+				,	addAfter:	true
+				,	addClose:	false	
+				,	onClose:	null
+			}, args);
 
-			target = target instanceof jQuery ? target : $(target);
-			message = _.isString(message) ? 
-						'<p class="report ' + type + '">' + message + '</p>'
+			// Cast target to jQuery if it isn't already
+			args.target = args.target instanceof jQuery ? args.target : $(args.target);
+
+			// Decide whether a <p> or <ul> should be used
+			args.message = _.isString(args.message) ?
+						'<p class="report ' + args.type + '">' + args.message + '</p>'
 						:
-						'<ul class="report ' + type + '"><li>' + message.join('</li><li>') + '</li></ul>';
+						'<ul class="report ' + args.type + '"><li>' + args.message.join('</li><li>') + '</li></ul>';
 
-			if(addAfter)
+			// Insert after or before the target element
+			if(args.addAfter)
 			{
-				if(target.next().is('.report')) target.next().remove();
-				message = target.after(message).next();
+				// If there is a .report, remove it first
+				if(args.target.next().is('.report')) args.target.next().remove();
+				// Append and update reference
+				args.message = args.target.after(args.message).next();
 			}
 			else
 			{
-				if(target.prev().is('.report')) target.prev().remove();
-				message = target.before(message).prev();
+				// If there is a .report, remove it first
+				if(args.target.prev().is('.report')) args.target.prev().remove();
+				// Prepend and update reference
+				args.message = args.target.before(args.message).prev();
 			}
 
-			if(addClose)
+			// Optionally include a close button
+			// and bind a click action
+			if(args.addClose)
 			{
 				var cbtn = $('<button class="closebtn">&#215;</button>');
-				message.prepend(cbtn);
+				args.message.prepend(cbtn);
 
 				cbtn.on('click', function(e)
 				{
-					cbtn.parent().fadeOut(300, function(){ cbtn.parent().remove(); });
+					// Fade-out the report
+					cbtn.parent().fadeOut(300, function()
+					{
+						// Remove it
+						cbtn.parent().remove();
+						// Call callback if there is one
+						if(_.isFunction(args.onClose)) args.onClose();
+					});
 				});
 			}
 		}
@@ -60,17 +103,19 @@ var Utils = function()
 
 $.fn.serializeObject = function()
 {
-   var o = {};
-   var a = this.serializeArray();
-   $.each(a, function() {
-       if (o[this.name]) {
-           if (!o[this.name].push) {
-               o[this.name] = [o[this.name]];
-           }
-           o[this.name].push(this.value || '');
-       } else {
-           o[this.name] = this.value || '';
-       }
-   });
-   return o;
+	'use strict';
+
+	var o = {};
+	var a = this.serializeArray();
+	$.each(a, function() {
+		if (o[this.name]) {
+			if (!o[this.name].push) {
+				o[this.name] = [o[this.name]];
+			}
+			o[this.name].push(this.value || '');
+		} else {
+			o[this.name] = this.value || '';
+		}
+	});
+	return o;
 };
