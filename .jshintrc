@@ -1,12 +1,12 @@
 {
   "strict": true,
-  "undef": true,
-  "unused": true,
+  "camelcase": true,
+  "eqeqeq": true,
+  "nonbsp": true,
+  "quotmark": "single",
   "node": true,
-  "globals": {
-  "describe": true,
-    "it": true,
-    "beforeEach": true,
-    "afterEach": true
-  }
+  "trailing": true,
+  "maxparams": 3,
+  "laxcomma": true,
+  "jquery": true
 }
