@@ -1,10 +1,16 @@
+// JSHint pointers
+/* global log: false */
+/* global EVENTS: false */
+/* global _: false */
+/* global App: false */
+
 // API class ------------------------------------------------------------------
 //
 // A wrapper class for making $.ajax() calls
 
 var Api = function()
 {
-	var me					= this;
+	'use strict';
 	
 	// PRIVATE FUNCTIONS ------------------------------------------------------
 	
@@ -14,23 +20,25 @@ var Api = function()
 			hangTO,
 			cancelTO;
 		
-		// if cancellable set timouts
+		// If cancellable set timouts
 		// configureable through config.js
 		if(options.cancellable)
 		{
 			hangTO = setTimeout(function()
 			{
+				// Let observers know the call is hanging
 				App.dispatcher.trigger(EVENTS.api.apiHang, { route: options.route });
 				
-			}, CONFIG.serviceHangWait);
+			}, App.config.serviceHangWait);
 			
 			cancelTO = setTimeout(function()
 			{
+				// Abort the call
 				if(req) req.abort();
-				
+				// Let observers know the call was cancelled
 				App.dispatcher.trigger(EVENTS.api.apiCancel, { route: options.route });
 				
-			}, CONFIG.serviceCancelWait);
+			}, App.config.serviceCancelWait);
 		}
 		
 		// make the ajax call
@@ -41,19 +49,23 @@ var Api = function()
 			data:	options.values,
 		}).done(function(data)
 		{
+			// Clear timeouts if there are any
 			if(hangTO) clearTimeout(hangTO);
 			if(cancelTO) clearTimeout(cancelTO);
 			hangTO = cancelTO = null;
 			
+			// Handle response
 			if(_.isFunction(options.done)) options.done(data);
 			else log('Route ' + options.route + ' received a result, but no callback was supplied', data);
 			
 		}).fail(function(data)
 		{
+			// Clear timeouts if there are any
 			if(hangTO) clearTimeout(hangTO);
 			if(cancelTO) clearTimeout(cancelTO);
 			hangTO = cancelTO = null;
 			
+			// Handle response
 			if(_.isFunction(options.fail)) options.fail(data);
 			else log('Route ' + options.route + ' failed, but no callback was supplied', data);
 		});

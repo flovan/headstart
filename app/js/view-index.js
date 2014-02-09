@@ -1,8 +1,14 @@
+// JSHint pointers
+/* global log: false */
+/* global EVENTS: false */
+/* global _: false */
+/* global App: false */
+
 // view class
 
 var View = function()
 {
-	var me						= this;
+	'use strict';
 	
 	// VARS -------------------------------------------------------------------
 	
@@ -14,8 +20,6 @@ var View = function()
 	{
 		log('_## Demo view init_');
 
-		me = me.Demo;
-		
 		_addActions();
 	}
 	
@@ -56,6 +60,5 @@ var View = function()
 	};
 };
 
-// Last page-blocking file, init the app with this view
-
+// This is the last page-blocking file, init the app with this view
 App.init(new View());
