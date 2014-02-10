@@ -3,13 +3,11 @@
   "version": "0.3.0",
   "description": "An easy-to-use Gulp framework/boilerplate/template/whatever.",
   "author": "Florian Vanthuyne",
-
   "repository": {
     "type": "git",
     "url": "git://github.com/flovan/Headstart"
   },
-
-  "devDependencies": {
+  "dependencies": {
     "gulp": "~3.5.2",
     "gulp-livereload": "~1.0.1",
     "gulp-rename": "~1.0.0",
@@ -40,7 +38,9 @@
     "gulp-replace": "~0.2.0",
     "jshint-stylish": "~0.1.5"
   },
-  
+  "devDependencies": {
+    "gulp-using": "0.0.1"
+  },
   "engines": {
     "node": ">=0.8.0"
   }
