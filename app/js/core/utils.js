@@ -45,7 +45,7 @@ var Utils = function()
 				,	message:	null
 				,	type:		'error'
 				,	addAfter:	true
-				,	addClose:	false	
+				,	addClose:	false
 				,	onClose:	null
 			}, args);
 
