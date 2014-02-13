@@ -360,19 +360,6 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
   		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
   		gulp.start('html');
   	});
-
-	// Reload on changed output files
-	/*gulp.watch([
-			config.dev + '/*.html'
-		,	config.dev + '/js/*.js'
-		,	config.dev + '/css/*.css'
-		,	config.dev + '/images/*.{jpg|gif|png|svg}'
-		,	config.dev + '/fonts/*'
-	], ['connect-livereload', 'tinylr'], function(event)
-	{
-		console.log(event);
-		refresh(lr);
-	});*/
 });
 
 // Zipping --------------------------------------------------------------------
