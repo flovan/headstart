@@ -370,8 +370,13 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
 		,	config.dev + '/fonts/*'
 	], ['connect-livereload', 'tinylr'], function(event)
 	{
-		console.log(event);
-		refresh(lr);
+		var 	locParts = event.path.split('/')
+			,	loc = '/' + locParts[locParts.length - 2] + '/' + locParts[locParts.length - 1];
+
+		console.log('-------' + config.dev + loc);
+
+		gulp.src(config.dev + loc)
+			.pipe(refresh(lr));
 	});*/
 });
 
