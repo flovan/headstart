@@ -36,7 +36,6 @@ var 	path 			= require('path')
     ,	uglify 			= require('gulp-uglify')
     ,	sass 			= require('gulp-ruby-sass')
     ,	autoprefixer 	= require('gulp-autoprefixer')
-    ,	cssmin	 		= require('gulp-minify-css')
     ,	cache 			= require('gulp-cache')
     ,	imagemin 		= require('gulp-imagemin')
     ,	svgmin			= require('gulp-svgmin')
@@ -93,13 +92,10 @@ gulp.task('clean', function()
 gulp.task('sass', function()
 {
 	return gulp.src(config.app + '/sass/*.scss')
-		.pipe(sass({ style: 'nested', compass: true }))
+		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
 		//.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(rename({suffix: '.min'}))
-		.pipe(cssmin())
-		.pipe(gulpif(isProduction, gulp.dest(config.dist + '/css')))
-		.pipe(gulpif(!isProduction, gulp.dest(config.dev + '/css')))
-		.pipe(gulpif((!isProduction && lrStarted), refresh(lr)));
+		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/css'))
 });
 
 // Hinting --------------------------------------------------------------------
@@ -149,7 +145,6 @@ gulp.task('scripts-main', ['hint-main'], function()
 		.pipe(gulpif(isProduction, replace(/(console\.)?log(.*?);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
-		.pipe(gulpif((!isProduction && lrStarted), refresh(lr)));
 });
 
 gulp.task('scripts-view', ['hint-view'], function()
@@ -159,7 +154,6 @@ gulp.task('scripts-view', ['hint-view'], function()
 		.pipe(gulpif(isProduction, replace(/(console\.)?log(.*?);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
-		.pipe(gulpif((!isProduction && lrStarted), refresh(lr)));
 });
 
 gulp.task('scripts-ie', function()
@@ -176,7 +170,6 @@ gulp.task('scripts-ie', function()
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'))
-		.pipe(gulpif((!isProduction && lrStarted), refresh(lr)));
 });
 
 // Images ---------------------------------------------------------------------
@@ -192,12 +185,10 @@ gulp.task('images', function(cb)
 		])
 		.pipe(gulpif(isProduction, cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'))
-		.pipe(gulpif((!isProduction && lrStarted), refresh(lr)));
 
 	gulp.src(config.app + '/images/**/*.svg')
 		.pipe(gulpif(isProduction, svgmin()))
 		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'))
-		.pipe(gulpif((!isProduction && lrStarted), refresh(lr)));
 
 	cb(null);
 });
@@ -307,7 +298,7 @@ gulp.task('connect-livereload', function()
     server
         .listen(config.port)
         .on('listening', function() {
-            console.log('Started connect web server on http://localhost:' + config.port + '.');
+            gulputil.log('Started connect web server on http://localhost:' + config.port + '.');
             lrStarted = true;
  			
  			// Open the default .html file in the browser
@@ -328,7 +319,7 @@ gulp.task('tinylr', function()
 {
     lr.listen(config.lr, function(err){
         if (err) {
-            return console.log(err);
+            return gulputil.log(err);
         }
     });
 });
@@ -337,29 +328,23 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
 {
 	gulp.start('connect-livereload', 'tinylr');
 
-    gulp.watch(config.app + '/sass/*.scss', ['connect-livereload', 'tinylr'], function(event)
+    gulp.watch(config.app + '/sass/*.scss', ['connect-livereload', 'tinylr'], ['sass']);
+	gulp.watch(config.app + '/**/*.js', ['connect-livereload', 'tinylr'], ['scripts-main', 'scripts-view', 'scripts-ie']);
+	gulp.watch(config.app + '/images/**/*', ['connect-livereload', 'tinylr'], ['images']);
+	gulp.watch(config.app + '/html/*', ['connect-livereload', 'tinylr'], ['html']);
+
+	// Reload on changed output files
+	gulp.watch([
+			config.dev + '/*.html'
+		,	config.dev + '/js/*.js'
+		,	config.dev + '/css/*.css'
+		,	config.dev + '/images/*.{jpg|gif|png|svg}'
+		,	config.dev + '/fonts/*'
+	], ['connect-livereload', 'tinylr'], function(event)
 	{
-  		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-  		gulp.start('sass');
+		gulputil.log('File ' + event.path + ' was ' + event.type);
+		refresh(lr).changed(event.path);
 	});
-
-	gulp.watch(config.app + '/**/*.js', ['connect-livereload', 'tinylr'], function(event)
-	{
-  		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-  		gulp.start('scripts-main', 'scripts-view', 'scripts-ie');
-  	});
-
-	gulp.watch(config.app + '/images/**/*', ['connect-livereload', 'tinylr'], function(event)
-	{
-  		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-  		gulp.start('images');
-  	});
-	
-	gulp.watch(config.app + '/html/*', ['connect-livereload', 'tinylr'], function(event)
-	{
-  		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-  		gulp.start('html');
-  	});
 });
 
 // Zipping --------------------------------------------------------------------
@@ -384,7 +369,7 @@ gulp.task('zip', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images'
 				.pipe(zip('Archive.zip'))
 				.pipe(gulp.dest(config.dist));
 
-			console.log('Made Archive.zip at ./' + config.dist);
+			gulputil.log('Made Archive.zip at ./' + config.dist);
 		}
 	});
 });
