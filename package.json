@@ -19,11 +19,10 @@
     "gulp-imagemin": "~0.1.5",
     "gulp-rimraf": "0.0.9",
     "connect": "~2.12.0",
-    "connect-livereload": "~0.3.2",
     "open": "0.0.4",
     "http": "0.0.0",
     "gulp-jshint": "~1.4.0",
-    "gulp-inject": "~0.2.2",
+    "gulp-inject": "~0.3.1",
     "gulp-if": "0.0.5",
     "gulp-util": "~2.2.14",
     "gulp-tap": "~0.1.1",
@@ -37,7 +36,8 @@
     "jshint-stylish": "~0.1.5"
   },
   "devDependencies": {
-    "gulp-using": "0.0.1"
+    "gulp-using": "0.0.1",
+    "gulp-intercept": "~0.1.0"
   },
   "engines": {
     "node": ">=0.8.0"
