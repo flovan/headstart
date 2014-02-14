@@ -1,4 +1,4 @@
-(function(){
+   (function(){
 
 /*
 #
@@ -12,10 +12,8 @@
 */
 
 /*
-* TODO
 *
-* Only pass newer files through stream with gulp-newer:
-* https://www.npmjs.org/package/gulp-newer
+* TODO
 *
 * Validate HTML with:
 * https://www.npmjs.org/package/gulp-htmlhint
@@ -31,6 +29,9 @@
 *
 * See if making symlinks during development is faster:
 * https://github.com/ben-eb/gulp-symlink
+*
+* Check out pageres, which takes screenshots of websites:
+* https://github.com/sindresorhus/pageres
 *
 */
 
@@ -52,6 +53,8 @@ var		path			= require('path')
 	,	tap				= require('gulp-tap')
 	,	inject			= require('gulp-inject')
 	,	rimraf			= require('gulp-rimraf')
+	,	newer			= require('gulp-newer')
+	,	watch			= require('gulp-watch')
 	,	htmlmin			= require('gulp-minify-html')
 	,	jshint			= require('gulp-jshint')
 	,	stylish			= require('jshint-stylish')
@@ -59,6 +62,7 @@ var		path			= require('path')
 	,	replace			= require('gulp-replace')
 	,	uglify			= require('gulp-uglify')
 	,	sass			= require('gulp-ruby-sass')
+	,	sassGraph		= require('gulp-sass-graph')
 	,	autoprefixer	= require('gulp-autoprefixer')
 	,	cache			= require('gulp-cache')
 	,	imagemin		= require('gulp-imagemin')
@@ -123,26 +127,13 @@ gulp.task('clean', function()
 // Styles ---------------------------------------------------------------------
 //
 // Compiles and minifies the .scss files
+// Will only run once — at the beginning
 
 gulp.task('sass', function()
 {
-	var intercept = require('gulp-intercept');
-
 	return gulp.src(config.app + '/sass/*.scss')
-		.pipe(intercept(function(file){
-	      console.log('BEFORE -------' );
-	      console.log(file.contents.toString());
-	      console.log('-------' );
-	      return file;
-	    }))
 		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
-		.pipe(intercept(function(file){
-	      console.log('AFTER -------' );
-	      console.log(file.contents.toString());
-	      console.log('-------' );
-	      return file;
-	    }))
-		//.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
+		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(runDir + '/css'));
 });
@@ -232,10 +223,12 @@ gulp.task('images', function(cb)
 			,	config.app + '/images/**/*.png'
 			,	config.app + '/images/**/*.gif'
 		])
+		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))))
 		.pipe(gulp.dest(runDir + '/images'));
 
 	gulp.src(config.app + '/images/**/*.svg')
+		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, svgmin()))
 		.pipe(gulp.dest(runDir + '/images'));
 
@@ -249,7 +242,8 @@ gulp.task('images', function(cb)
 gulp.task('fonts', function()
 {
 	return gulp.src(config.app + '/fonts/*')
-		.pipe(gulp.dest(runDir + 'assets/fonts'));
+		.pipe(newer(runDir + '/fonts'))
+		.pipe(gulp.dest(runDir + '/fonts'));
 });
 
 // Misc -----------------------------------------------------------------------
@@ -360,20 +354,34 @@ gulp.task('tinylr', function()
 
 gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'html'], function()
 {
+	// Startup the livereload server and connect to it
 	gulp.start('connect-livereload', 'tinylr');
 
-	// gulp.watch(config.app + '/sass/*.scss'
-	// 	,	['connect-livereload', 'tinylr']
-	// 	,	function(event){ gulp.start('sass'); });
-	// gulp.watch(config.app + '/**/*.js'
-	// 	,	['connect-livereload', 'tinylr']
-	// 	,	function(event){ gulp.start('scripts-main', 'scripts-view', 'scripts-ie'); });
-	// gulp.watch(config.app + '/images/**/*'
-	// 	,	['connect-livereload', 'tinylr']
-	// 	,	function(event){ gulp.start('images'); });
-	// gulp.watch(config.app + '/html/*'
-	// 	,	['connect-livereload', 'tinylr']
-	// 	,	function(event){ gulp.start('html'); });
+	// SCSS specific compilation is repeated here so the process can work with single files (= faster)
+	// rather then with all matches scss files
+	watch({ glob: config.app + '/sass/*.scss', emitOnGlob: false })
+		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
+		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
+		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
+		.pipe(gulp.dest(runDir + '/css'));
+
+	// Watch js and call appropriate task
+	gulp.watch(config.app + '/**/*.js'
+		,	['connect-livereload', 'tinylr']
+		,	function(event){ gulp.start('scripts-main', 'scripts-view', 'scripts-ie');
+	});
+
+	// Watch images and call their task
+	gulp.watch(config.app + '/images/**/*'
+		,	['connect-livereload', 'tinylr']
+		,	function(event){ gulp.start('images');
+	});
+
+	// Watch html and call its task
+	gulp.watch(config.app + '/html/*'
+		,	['connect-livereload', 'tinylr']
+		,	function(event){ gulp.start('html');
+	});
 
 	// Reload on changed output files
 	gulp.watch([
