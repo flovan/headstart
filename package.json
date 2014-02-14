@@ -33,7 +33,10 @@
     "inquirer": "~0.4.0",
     "gulp-svgmin": "~0.4.1",
     "gulp-replace": "~0.2.0",
-    "jshint-stylish": "~0.1.5"
+    "jshint-stylish": "~0.1.5",
+    "gulp-newer": "~0.2.1",
+    "gulp-sass-graph": "~1.0.0",
+    "gulp-watch": "~0.5.0"
   },
   "devDependencies": {
     "gulp-using": "0.0.1",
