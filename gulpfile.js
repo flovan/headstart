@@ -11,6 +11,29 @@
 #
 */
 
+/*
+* TODO
+*
+* Only pass newer files through stream with gulp-newer:
+* https://www.npmjs.org/package/gulp-newer
+*
+* Validate HTML with:
+* https://www.npmjs.org/package/gulp-htmlhint
+*
+* Check out icon fonts (and look for that css generator):
+* https://www.npmjs.org/package/gulp-iconfont
+*
+* Take a look at gulp-connect to replace current livereload setup:
+* https://www.npmjs.org/package/gulp-connect
+*
+* After testing gzipping, check if JSFuck'ing will improve more:
+* https://www.npmjs.org/package/gulp-jsfuck
+*
+* See if making symlinks during development is faster:
+* https://github.com/ben-eb/gulp-symlink
+*
+*/
+
 'use strict';
 
 // Load in all the plugins ----------------------------------------------------
