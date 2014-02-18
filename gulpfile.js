@@ -289,6 +289,22 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass', 'hint-html'], functio
 						ignorePath: ['/dev', '/app', '/dist']
 					,	addRootSlash: false
 				}))
+				.pipe(inject(gulp.src(config.app + '/images/icons/*', {read: false}), {
+						starttag: '<!-- inject:icons -->'
+					,	ignorePath: ['/dev', '/app', '/dist']
+					,	addRootSlash: false
+					,	transform: function(filepath, file, index, length)
+					{
+						// AAPL
+						//return '<link rel="apple-touch-iconprecomposed" sizes="152x152" href="./assets/images/icons/apple-touch-icon-152x152.png"/>';
+
+						// Fav
+						//return '<link rel="icon" href="./assets/images/icons/favicon.png"/>';
+
+						// IE
+						//return '<!--[if IE]><link rel="shortcut icon" href="./assets/images/icons/favicon.ico"/><![endif]-->';
+					}
+				}))
 				.pipe(embedlr())
 				.pipe(gulpif(isProduction, htmlmin({ comments: true })))
 				.pipe(gulp.dest(runDir));
