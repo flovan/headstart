@@ -1,4 +1,4 @@
-   (function(){
+(function(){
 
 /*
 #
@@ -56,6 +56,7 @@ var		path			= require('path')
 	,	newer			= require('gulp-newer')
 	,	watch			= require('gulp-watch')
 	,	htmlmin			= require('gulp-minify-html')
+	,	htmlhint		= require('gulp-htmlhint')
 	,	jshint			= require('gulp-jshint')
 	,	stylish			= require('jshint-stylish')
 	,	concat			= require('gulp-concat')
@@ -147,6 +148,13 @@ gulp.task('sass', function()
 //
 //			It is not included by default because it also throws errors on
 //			global variables such as "window" and "document".
+
+gulp.task('hint-html', function()
+{
+	return gulp.src(config.app + '/html/*.html')
+		.pipe(htmlhint('.htmlhintrc'))
+		.pipe(htmlhint.reporter(stylish));
+});
 
 gulp.task('hint-main', function()
 {
@@ -275,7 +283,7 @@ gulp.task('misc', function(cb)
 // HTML comments are being left in for the purpose of having conditional statements.
 // Perhaps this should be made optional through the config setting.
  
-gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
+gulp.task('html', ['scripts-view', 'scripts-main', 'sass', 'hint-html'], function(cb)
 {
 	gulp.src(config.app + '/html/*.html')
 		.pipe(tap(function(htmlFile)
