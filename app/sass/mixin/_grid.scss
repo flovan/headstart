@@ -25,14 +25,8 @@
 		@else
 		{
 			float: right;
-			// TODO:	Find out where I found this "hack" and what is does
-			// 			exactly. It should be something relating to IE and filling
-			//			100% of avaiable width with floated elements (which IE
-			//			sucks at if I'm not mistaken).
-			overflow: hidden;
-			overflow: visible;
 			clear: right;
-			margin-right: 0; // Overwrite :odd when :last-child
+			margin-right: 0;
 		}
 
 		width: $perc - ($default-gutter-width - ($default-gutter-width/($total-columns / $columns)));

@@ -1,3 +1,5 @@
+(function(){
+
 /*
 #
 #	▒█░▒█ █▀▀ █▀▀█ ▒█▀▀▄ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀█ ▀▀█▀▀ 
@@ -27,13 +29,17 @@ var		path			= require('path')
 	,	tap				= require('gulp-tap')
 	,	inject			= require('gulp-inject')
 	,	rimraf			= require('gulp-rimraf')
+	,	newer			= require('gulp-newer')
+	,	watch			= require('gulp-watch')
 	,	htmlmin			= require('gulp-minify-html')
+	,	htmlhint		= require('gulp-htmlhint')
 	,	jshint			= require('gulp-jshint')
 	,	stylish			= require('jshint-stylish')
 	,	concat			= require('gulp-concat')
 	,	replace			= require('gulp-replace')
 	,	uglify			= require('gulp-uglify')
 	,	sass			= require('gulp-ruby-sass')
+	,	sassGraph		= require('gulp-sass-graph')
 	,	autoprefixer	= require('gulp-autoprefixer')
 	,	cache			= require('gulp-cache')
 	,	imagemin		= require('gulp-imagemin')
@@ -50,9 +56,18 @@ var		path			= require('path')
 		//
 		// Adjust these to your needs
 
+			// Your favorite browser
+			// OS X: google chrome, Linux: google-chrome, Windows: chrome
 			browser:		'google chrome'
+
+			// The default page to open in the browser
 		,	defaultPage:	'index.html'
+
+			// Will open all the HTML files in the browser; overrides defaultPage
 		,	openAllFiles:	false
+
+			// Will enable auto-prefixing when true
+		,	autoPrefix:		false
 
 		// App settings -------------------------------------------------------
 		//
@@ -61,17 +76,21 @@ var		path			= require('path')
 		,	app:			'app'
 		,	dev:			'dev'
 		,	dist:			'dist'
-		,	temp:			'.temp'
+		,	snaps:			'snaps'
+		,	snapRes:		[{width: 320, height: 480}, {width: 480, height: 320}, {width: 768, height: 1024}, {width: 1024, height: 768}, {width: 1440, height: 900}, {width: 1600, height: 900}]
 		,	port:			9000
 		,	lr:				35729
 	};
 
 // Catch CLI parameter
 //
-// When 'gulp' is run with --dist as parameter, the process is kicked into
-// production mode
+// --dist
+//
+// By using 'gulp -- dist', the process is kicked into production mode
+// Will produce a 'dist' folder with production-ready files
 
-var isProduction = gulputil.env.dist === true;
+var 	isProduction = gulputil.env.dist === true
+	,	runDir = (isProduction ? config.dist : config.dev);
 
 // Clean up -------------------------------------------------------------------
 //
@@ -79,22 +98,22 @@ var isProduction = gulputil.env.dist === true;
 
 gulp.task('clean', function()
 {
-	return gulp.src([isProduction ? config.dist : config.dev, config.temp], {read: false})
+	return gulp.src(runDir, {read: false})
 		.pipe(rimraf());
 });
 
 // Styles ---------------------------------------------------------------------
 //
 // Compiles and minifies the .scss files
-// Note: Autoprefixer is included but not used, as I prefer Compass mixins
+// Will only run once — at the beginning
 
 gulp.task('sass', function()
 {
 	return gulp.src(config.app + '/sass/*.scss')
 		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
-		//.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-		.pipe(rename({suffix: '.min'}))
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/css'));
+		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
+		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
+		.pipe(gulp.dest(runDir + '/css'));
 });
 
 // Hinting --------------------------------------------------------------------
@@ -106,6 +125,13 @@ gulp.task('sass', function()
 //
 //			It is not included by default because it also throws errors on
 //			global variables such as "window" and "document".
+
+gulp.task('hint-html', function()
+{
+	return gulp.src(config.app + '/html/*.html')
+		.pipe(htmlhint('.htmlhintrc'))
+		.pipe(htmlhint.reporter(stylish));
+});
 
 gulp.task('hint-main', function()
 {
@@ -129,8 +155,11 @@ gulp.task('hint-view', function()
 //
 // Concatinating and uglifying
 // Also strips out all references to console.log() or log()
+//
+// JSHint options:	http://www.jshint.com/docs/options/
+// HTMLHint option:	https://github.com/yaniswang/HTMLHint/wiki/Rules
 
-gulp.task('scripts-main', ['hint-main'], function()
+gulp.task('scripts-main', ['hint-main', 'scripts-view'], function()
 {
 	return gulp.src([
 				config.app + '/js/libs/jquery*.js'
@@ -139,20 +168,20 @@ gulp.task('scripts-main', ['hint-main'], function()
 			,	config.app + '/js/core/*.js'
 			,	(isProduction ? '!**/log.js' : '')
 			,	config.app + '/js/app.js'
-		])
+		], {base: './' + config.app + '/js'})
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, replace(/(console\.)?log(.*?);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'));
+		.pipe(gulp.dest(runDir + '/js'));
 });
 
-gulp.task('scripts-view', ['hint-view'], function()
+gulp.task('scripts-view', ['hint-view', 'scripts-ie'], function()
 {
-	gulp.src(config.app + '/js/view-*.js')
+	return gulp.src(config.app + '/js/view-*.js')
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulpif(isProduction, replace(/(console\.)?log(.*?);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'));
+		.pipe(gulp.dest(runDir + '/js'));
 });
 
 gulp.task('scripts-ie', function()
@@ -168,7 +197,7 @@ gulp.task('scripts-ie', function()
 		])
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/js'));
+		.pipe(gulp.dest(runDir + '/js'));
 });
 
 // Images ---------------------------------------------------------------------
@@ -182,12 +211,14 @@ gulp.task('images', function(cb)
 			,	config.app + '/images/**/*.png'
 			,	config.app + '/images/**/*.gif'
 		])
+		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))))
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'));
+		.pipe(gulp.dest(runDir + '/images'));
 
 	gulp.src(config.app + '/images/**/*.svg')
+		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, svgmin()))
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + '/images'));
+		.pipe(gulp.dest(runDir + '/images'));
 
 	cb(null);
 });
@@ -199,7 +230,8 @@ gulp.task('images', function(cb)
 gulp.task('fonts', function()
 {
 	return gulp.src(config.app + '/fonts/*')
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev) + 'assets/fonts'));
+		.pipe(newer(runDir + '/fonts'))
+		.pipe(gulp.dest(runDir + '/fonts'));
 });
 
 // Misc -----------------------------------------------------------------------
@@ -210,7 +242,7 @@ gulp.task('misc', function(cb)
 {
 	gulp.src(config.app + '/misc/htaccess.txt')
 		.pipe(rename('.htaccess'))
-		.pipe(gulp.dest((isProduction ? config.dist : config.dev)));
+		.pipe(gulp.dest(runDir));
 
 	if(isProduction)
 	{
@@ -223,56 +255,43 @@ gulp.task('misc', function(cb)
 
 // HTML -----------------------------------------------------------------------
 //
-// Places links to correct assets in all the .html files and minify
+// Inject links to correct assets in all the .html files
+// Add livereload tag in development
+// Minify in production
+//
+// Note:
+// HTML comments are being left in for the purpose of having conditional statements.
+// Perhaps this should be made optional through the config setting.
  
-gulp.task('html', ['scripts-view', 'scripts-main', 'sass'], function(cb)
+gulp.task('html', ['scripts-view', 'scripts-main', 'sass', 'hint-html'], function(cb)
 {
 	gulp.src(config.app + '/html/*.html')
 		.pipe(tap(function(htmlFile)
 		{
-			// Make a clone of the core and lib files array and include the view file
-			// that matches the current .html file
+			// Production will get 1 file only
+			// Developmment gets raw base files
+			var injectItems = isProduction ? [config.dist + '/js/core-libs.min.js'] : [
+						config.app + '/js/libs/jquery*.js'
+					,	config.app + '/js/libs/*.js'
+					,	config.app + '/js/core/*.js'
+					,	config.app + '/js/app.js'
+				];
 
-			var jsSource = isProduction ? [config.dist + '/js/core-libs.min.js'] : [
-					config.app + '/js/libs/jquery*.js'
-				,	config.app + '/js/libs/*.js'
-				,	config.app + '/js/core/*.js'
-				,	config.app + '/js/app.js'
-			];
-			jsSource.push((isProduction ? config.dist : config.dev ) + '/js/view-' + path.basename(htmlFile.path).split('.')[0] + (isProduction ? '.min' : '') + '.js');
+			// Add specific js and css files
+			var viewSpecificName = 'view-' + path.basename(htmlFile.path).split('.')[0] + (isProduction ? '.min' : '');
+			injectItems.push(runDir + '/js/' + viewSpecificName + '.js');
+			injectItems.push(runDir + '/css/common' + (isProduction ? '.min' : '') + '.css')
+			injectItems.push(runDir + '/css/' + viewSpecificName + '.css');
 
-			// Grab js files
-			return gulp.src(jsSource)
-				// Rewrite path names as folder structure is lost outside of the app folder
-				.pipe(tap(function(file)
-				{
-					file.path = (isProduction ? config.dist : config.dev ) + '/js/' + path.basename(file.path);
+			// Inject files into the HTML file
+			gulp.src(config.app + '/html/' + path.basename(htmlFile.path))
+				.pipe(inject(gulp.src(injectItems, {read: false}), {
+						ignorePath: ['/dev', '/app', '/dist']
+					,	addRootSlash: false
 				}))
-				// Inject ordered js files into each .html file
-				.pipe(inject(config.app + '/html/' + path.basename(htmlFile.path), {
-						addRootSlash: false
-					,	starttag: '<!-- inject_js -->'
-					,	ignorePath: ['/app/', 'dev/', 'dist/']
-				}))
-				.pipe(gulp.dest(config.temp))
-				// Tap into this generated .html file
-				.pipe(tap(function(viewFile)
-				{
-					// Grab and nject css files into the temp .html file
-					gulp.src([
-								(isProduction ? config.dist : config.dev ) + '/css/common.min.css'
-							,	(isProduction ? config.dist : config.dev ) + '/css/view-' + path.basename(viewFile.path).split('.')[0] + '.min.css'
-						])
-						.pipe(inject(config.temp + '/' + path.basename(viewFile.path), {
-								addRootSlash: false
-							,	starttag: '<!-- inject_css -->'
-							,	ignorePath: ['/dev/', '/dist/']
-						}))
-						.pipe(embedlr())
-						.pipe(gulpif(isProduction, htmlmin({ comments: true })))
-						.pipe(gulp.dest(isProduction ? config.dist : config.dev));
-				}));
-		
+				.pipe(embedlr())
+				.pipe(gulpif(isProduction, htmlmin({ comments: true })))
+				.pipe(gulp.dest(runDir));
 		}));
 
 	cb(null);
@@ -294,22 +313,23 @@ gulp.task('connect-livereload', function()
 
 	server
 		.listen(config.port)
-		.on('listening', function() {
-		gulputil.log('Started connect web server on http://localhost:' + config.port + '.');
-		lrStarted = true;
-
-		// Open the default .html file in the browser
-		if(!config.openAllFiles) open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
-		// or open ALL the files
-		else
+		.on('listening', function()
 		{
-			gulp.src(config.app + '/html/*.html')
-			.pipe(tap(function(htmlFile)
+			gulputil.log('Started connect web server on http://localhost:' + config.port + '.');
+			lrStarted = true;
+
+			// Open the default .html file in the browser
+			if(!config.openAllFiles) open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
+			// or open all the files
+			else
 			{
-				open('http://localhost:' + config.port + '/' + path.basename(htmlFile.path), config.browser);
-			}));
-		}
-	});
+				gulp.src(config.app + '/html/*.html')
+					.pipe(tap(function(htmlFile)
+					{
+						open('http://localhost:' + config.port + '/' + path.basename(htmlFile.path), config.browser);
+					}));
+			}
+		});
 });
  
 gulp.task('tinylr', function()
@@ -323,12 +343,34 @@ gulp.task('tinylr', function()
 
 gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'html'], function()
 {
+	// Startup the livereload server and connect to it
 	gulp.start('connect-livereload', 'tinylr');
 
-	gulp.watch(config.app + '/sass/*.scss', ['connect-livereload', 'tinylr'], ['sass']);
-	gulp.watch(config.app + '/**/*.js', ['connect-livereload', 'tinylr'], ['scripts-main', 'scripts-view', 'scripts-ie']);
-	gulp.watch(config.app + '/images/**/*', ['connect-livereload', 'tinylr'], ['images']);
-	gulp.watch(config.app + '/html/*', ['connect-livereload', 'tinylr'], ['html']);
+	// SCSS specific compilation is repeated here so the process can work with single files (= faster)
+	// rather then with all matches scss files
+	watch({ glob: config.app + '/sass/*.scss', emitOnGlob: false })
+		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
+		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
+		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
+		.pipe(gulp.dest(runDir + '/css'));
+
+	// Watch js and call appropriate task
+	gulp.watch(config.app + '/**/*.js'
+		,	['connect-livereload', 'tinylr']
+		,	function(event){ gulp.start('scripts-main', 'scripts-view', 'scripts-ie');
+	});
+
+	// Watch images and call their task
+	gulp.watch(config.app + '/images/**/*'
+		,	['connect-livereload', 'tinylr']
+		,	function(event){ gulp.start('images');
+	});
+
+	// Watch html and call its task
+	gulp.watch(config.app + '/html/*'
+		,	['connect-livereload', 'tinylr']
+		,	function(event){ gulp.start('html');
+	});
 
 	// Reload on changed output files
 	gulp.watch([
@@ -383,3 +425,4 @@ gulp.task('default', ['clean'], function()
 });
 
 
+}());
