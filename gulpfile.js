@@ -11,30 +11,6 @@
 #
 */
 
-/*
-*
-* TODO
-*
-* Validate HTML with:
-* https://www.npmjs.org/package/gulp-htmlhint
-*
-* Check out icon fonts (and look for that css generator):
-* https://www.npmjs.org/package/gulp-iconfont
-*
-* Take a look at gulp-connect to replace current livereload setup:
-* https://www.npmjs.org/package/gulp-connect
-*
-* After testing gzipping, check if JSFuck'ing will improve more:
-* https://www.npmjs.org/package/gulp-jsfuck
-*
-* See if making symlinks during development is faster:
-* https://github.com/ben-eb/gulp-symlink
-*
-* Check out pageres, which takes screenshots of websites:
-* https://github.com/sindresorhus/pageres
-*
-*/
-
 'use strict';
 
 // Load in all the plugins ----------------------------------------------------
@@ -100,7 +76,8 @@ var		path			= require('path')
 		,	app:			'app'
 		,	dev:			'dev'
 		,	dist:			'dist'
-		,	temp:			'.temp'
+		,	snaps:			'snaps'
+		,	snapRes:		[{width: 320, height: 480}, {width: 480, height: 320}, {width: 768, height: 1024}, {width: 1024, height: 768}, {width: 1440, height: 900}, {width: 1600, height: 900}]
 		,	port:			9000
 		,	lr:				35729
 	};
@@ -113,7 +90,7 @@ var		path			= require('path')
 // Will produce a 'dist' folder with production-ready files
 
 var 	isProduction = gulputil.env.dist === true
-	,	runDir = (isProduction ? config.dist : config.dev) ;
+	,	runDir = (isProduction ? config.dist : config.dev);
 
 // Clean up -------------------------------------------------------------------
 //
@@ -178,6 +155,9 @@ gulp.task('hint-view', function()
 //
 // Concatinating and uglifying
 // Also strips out all references to console.log() or log()
+//
+// JSHint options:	http://www.jshint.com/docs/options/
+// HTMLHint option:	https://github.com/yaniswang/HTMLHint/wiki/Rules
 
 gulp.task('scripts-main', ['hint-main', 'scripts-view'], function()
 {
@@ -333,22 +313,23 @@ gulp.task('connect-livereload', function()
 
 	server
 		.listen(config.port)
-		.on('listening', function() {
-		gulputil.log('Started connect web server on http://localhost:' + config.port + '.');
-		lrStarted = true;
-
-		// Open the default .html file in the browser
-		if(!config.openAllFiles) open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
-		// or open all the files
-		else
+		.on('listening', function()
 		{
-			gulp.src(config.app + '/html/*.html')
-			.pipe(tap(function(htmlFile)
+			gulputil.log('Started connect web server on http://localhost:' + config.port + '.');
+			lrStarted = true;
+
+			// Open the default .html file in the browser
+			if(!config.openAllFiles) open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
+			// or open all the files
+			else
 			{
-				open('http://localhost:' + config.port + '/' + path.basename(htmlFile.path), config.browser);
-			}));
-		}
-	});
+				gulp.src(config.app + '/html/*.html')
+					.pipe(tap(function(htmlFile)
+					{
+						open('http://localhost:' + config.port + '/' + path.basename(htmlFile.path), config.browser);
+					}));
+			}
+		});
 });
  
 gulp.task('tinylr', function()
