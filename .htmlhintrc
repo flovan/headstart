@@ -1,0 +1,8 @@
+{
+  "tag-pair": true,
+  "tag-self-close": true,
+  "spec-char-escape": true,
+  "id-unique": true,
+  "attr-value-double-quotes": true,
+  "attr-lowercase": true
+}
