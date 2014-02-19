@@ -76,8 +76,6 @@ var		path			= require('path')
 		,	app:			'app'
 		,	dev:			'dev'
 		,	dist:			'dist'
-		,	snaps:			'snaps'
-		,	snapRes:		[{width: 320, height: 480}, {width: 480, height: 320}, {width: 768, height: 1024}, {width: 1024, height: 768}, {width: 1440, height: 900}, {width: 1600, height: 900}]
 		,	port:			9000
 		,	lr:				35729
 	};
@@ -289,12 +287,18 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass', 'hint-html'], functio
 						ignorePath: ['/dev', '/app', '/dist']
 					,	addRootSlash: false
 				}))
-				.pipe(inject(gulp.src(config.app + '/images/icons/*', {read: false}), {
+				/*.pipe(inject(gulp.src(config.app + '/images/icons/*', {read: false}), {
 						starttag: '<!-- inject:icons -->'
 					,	ignorePath: ['/dev', '/app', '/dist']
 					,	addRootSlash: false
 					,	transform: function(filepath, file, index, length)
 					{
+						var 	fileName = path.basename(filepath).split('.')[0].split('-').pop()
+							,	;
+
+						console.log(dimensions);
+
+						return 'test';
 						// AAPL
 						//return '<link rel="apple-touch-iconprecomposed" sizes="152x152" href="./assets/images/icons/apple-touch-icon-152x152.png"/>';
 
@@ -304,7 +308,7 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass', 'hint-html'], functio
 						// IE
 						//return '<!--[if IE]><link rel="shortcut icon" href="./assets/images/icons/favicon.ico"/><![endif]-->';
 					}
-				}))
+				}))*/
 				.pipe(embedlr())
 				.pipe(gulpif(isProduction, htmlmin({ comments: true })))
 				.pipe(gulp.dest(runDir));
