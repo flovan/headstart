@@ -76,8 +76,6 @@ var		path			= require('path')
 		,	app:			'app'
 		,	dev:			'dev'
 		,	dist:			'dist'
-		,	snaps:			'snaps'
-		,	snapRes:		[{width: 320, height: 480}, {width: 480, height: 320}, {width: 768, height: 1024}, {width: 1024, height: 768}, {width: 1440, height: 900}, {width: 1600, height: 900}]
 		,	port:			9000
 		,	lr:				35729
 	};
