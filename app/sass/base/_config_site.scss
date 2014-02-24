@@ -42,5 +42,13 @@ $reporting-info: #90B1D2;
 $reporting-info-light: #DAE5F0;
 
 // Font-stack -----------------------------------------------------------------
+//
+// Helvetica Neue is nice to have
+// Helvetica is the aimed-for default
+// Verdana is available on iOS, WP and BlackBerry
+// Roboto should be available on Android
+// Fall back to any sans-serif
+//
+// http://www.jordanm.co.uk/tinytype
 
-$font-stack: Helvetica Neue, Helvetica, sans-serif;
+$font-stack: Helvetica Neue, Helvetica, Verdana, Roboto, sans-serif;
