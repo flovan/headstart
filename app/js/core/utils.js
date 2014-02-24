@@ -36,8 +36,8 @@ var Utils = function()
 		//			@addAfter	Will inject after target if true. Default true.
 		//			@addClose	Will add a close button (with bound action)
 		//			@onClose	Callback that is called after closing
-
-		insertReporting: function(args)
+		
+		/*insertReporting: function(args)
 		{
 			// Extend arguments with default options
 			$.extend({
@@ -93,14 +93,67 @@ var Utils = function()
 					});
 				});
 			}
-		}
+		},*/
+
+		// Function for sharing something through a pop-up
+		//
+		// @service	Name of the service to share through; String
+		// @args	Object with following key options:
+		//
+		//			@width			Width of the pop-up window
+		//			@height			Height of the pop-up window
+		//			@title			The title to share; not used by Google+; defaults to content of <title> element
+		//			@description	The description to share; only used by Facebook; defaults to content of description meta tag
+		//			@link			The url to share; defaults to page url
+		//			@media			An image to share; used by Facebook and Pinterest
+
+		/*share: function(service, args)
+		{
+			if(!_.isString(service))
+			{
+				log('*Utils.share()::A service ("facebook", "twitter", ...) must be provided.*');
+				return;
+			}
+
+			// Extend arguments with default options
+			args = $.extend({}, {
+					width:			600
+				,	height:			600
+				,	title:			document.title || 'No title provided'
+				,	description:	$('meta[name=description]').length > 0 ? $('meta[name=description]').attr('content') : 'No description provided'
+				,	link:			window.location || 'No link provided'
+				,	media:			''
+			}, args);
+
+			switch(service)
+			{
+				case 'facebook':
+					window.open('//www.facebook.com/share.php?m2w&s=100&p[url]=' + encodeURIComponent(args.link) + '&p[images][0]=' + encodeURIComponent(args.media) + '&p[title]=' + encodeURIComponent(args.title) + '&p[summary]=' + encodeURIComponent(args.description),'Facebook','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + args.height + ',width=' + args.width);
+				break;
+				case 'twitter':
+					window.open('https://twitter.com/intent/tweet?original_referer=' + encodeURIComponent(args.link) + '&text=' + encodeURIComponent(args.title) + '%20' + encodeURIComponent(args.link),'Twitter','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + args.height + ',width=' + args.width);
+				break;
+				case 'linkedin':
+					window.open('//www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(args.link) + '&title=' + encodeURIComponent(args.title) + '&source=' + encodeURIComponent(args.link),'LinkedIn','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + args.height + ',width=' + args.width);
+				break;
+				case 'pinterest':
+					window.open('//pinterest.com/pin/create/button/?url=' + encodeURIComponent(args.link) + '&media=' + encodeURIComponent(args.media) + '&description=' + encodeURIComponent(args.title),'Pinterest','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + args.height + ',width=' + args.width);
+				break;
+				case 'googleplus':
+					window.open('//plus.google.com/share?url=' + encodeURIComponent(args.link),'GooglePlus','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=' + args.height + ',width=' + args.width);
+				break;
+				default:
+					log('*Utils.share()::The provided service "' + service + '" is not supported.*');
+				break;
+			}
+		}*/
 	};
 }();
 
 // $form.serializeObject() ----------------------------------------------------
 //
 // Serializes a form to an object, rather than a string
-
+/*
 $.fn.serializeObject = function()
 {
 	'use strict';
@@ -118,4 +171,4 @@ $.fn.serializeObject = function()
 		}
 	});
 	return o;
-};
+};*/
