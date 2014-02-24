@@ -89,7 +89,7 @@ var Api = function()
 	function call(route, args)
 	{
 		// Extend default settings object
-		$.extend({ method: 'POST', cancellable: false }, args);
+		args = $.extend({}, { method: 'POST', cancellable: false }, args);
 
 		args.route = route;
 		_ajax(args);
