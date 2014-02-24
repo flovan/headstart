@@ -287,7 +287,7 @@ gulp.task('html', ['scripts-view', 'scripts-main', 'sass', 'hint-html'], functio
 						ignorePath: ['/dev', '/app', '/dist']
 					,	addRootSlash: false
 				}))
-				.pipe(gulpif(isProduction, embedlr())
+				.pipe(gulpif(isProduction, embedlr()))
 				.pipe(gulpif(isProduction, htmlmin({ comments: true })))
 				.pipe(gulp.dest(runDir));
 		}));
