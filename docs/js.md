@@ -97,9 +97,11 @@ Example:
 
 ## Utils
 
-The Utils class is a handy wrapper for functionality that you need throughout your website. By default the class comes with an `isTouch()` and `insertReporting()` function, the latter making it easy to inject feedback into the DOM.
+The Utils class is a handy wrapper for functionality that you need throughout your website. By default the class comes with a few function: `isTouch()` (self-explanatory), `insertReporting()` function (making it easy to inject feedback into the DOM), and `share()` (Share your page through various social channels).
 
-This file also patches jQuery to include a function that serializes forms into objects, which is handy when using POST API calls.
+This file also includes a patch for jQuery to include a function that serializes forms into objects, which is handy when using POST API calls.
+
+Most of the default Utils functionality is commented out to make sure you're not including excess code into your files.
 
 ## Libraries
 
