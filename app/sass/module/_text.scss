@@ -27,7 +27,7 @@ h1, h2, h3, h4
 
 p
 {
-	margin: 0 0 em(su($base-font-size)*1.5);
+	margin: 0 0 em(strip($base-font-size)*1.5);
 	
 	&:last-of-type, &:last-child { margin-bottom: 0; }
 	
