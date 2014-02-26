@@ -267,7 +267,7 @@ gulp.task('html', function(cb)
 		.pipe(tap(function(htmlFile)
 		{
 			// Production will get 1 file only
-			// Developmment gets raw base files
+			// Development gets raw base files
 			var injectItems = isProduction ? [config.dist + '/js/core-libs.min.js'] : [
 						config.app + '/js/libs/jquery*.js'
 					,	config.app + '/js/libs/*.js'
