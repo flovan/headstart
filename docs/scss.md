@@ -91,4 +91,21 @@ Maintaining some of these values can be hard, so Headstart comes with a few func
 
   1. No changes here, just use `px`.
   2. `em($size, $base)` — Results in a calculated `em` value. `$base` is optional and  defaults to your document size.
-  3. `rem($prop, $values...)` — Results in `rem` values, with `px` fallbacks
+  3. `@include rem($prop, $values...)` — Results in `rem` values, with `px` fallbacks.
+ 
+Example of the rem mixin:
+
+    // Using:
+    
+    div
+    {
+      @include rem(padding, 10, 15);
+    }
+    
+    // Will result in:
+    
+    div
+    {
+      padding: 10px 15px;
+      padding: 0.625rem 0.9375rem;
+    }
