@@ -6,7 +6,7 @@
 //
 // $number: 	The value you want to unify
 
-@function su($number)
+@function strip($number)
 {
 	@return $number / ($number * 0 + 1);
 }
@@ -20,8 +20,22 @@
 
 @function em($target, $context: $base-font-size)
 {
-	$context: su($context);
-	$target: su($target);
+	$context: strip($context);
+	$target: strip($target);
 	
 	@return ($target/$context)*1em;
+}
+
+// Rem ------------------------------------------------------------------------
+//
+// Converts a target value to rem's
+//
+// $target: 	The target integer
+
+@function rem($target)
+{
+	$context: strip($base-font-size);
+	$target: strip($target);
+	
+	@return ($target/$context)*1rem;
 }

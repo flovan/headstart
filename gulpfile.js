@@ -261,7 +261,7 @@ gulp.task('misc', function(cb)
 // HTML comments are being left in for the purpose of having conditional statements.
 // Perhaps this should be made optional through the config setting.
  
-gulp.task('html', ['scripts-view', 'scripts-main', 'sass', 'hint-html'], function(cb)
+gulp.task('html', function(cb)
 {
 	gulp.src(config.app + '/html/*.html')
 		.pipe(tap(function(htmlFile)
@@ -346,14 +346,14 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
 
 	// SCSS specific compilation is repeated here so the process can work with single files (= faster)
 	// rather then with all matches scss files
-	watch({ glob: config.app + '/sass/*.scss', emitOnGlob: false })
+	watch({ glob: config.app + '/sass/**/*.scss', emitOnGlob: false })
 		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(runDir + '/css'));
 
 	// Watch js and call appropriate task
-	gulp.watch(config.app + '/**/*.js'
+	gulp.watch(config.app + '/js/**/*.js'
 		,	['connect-livereload', 'tinylr']
 		,	function(event){ gulp.start('scripts-main', 'scripts-view', 'scripts-ie');
 	});
@@ -365,7 +365,7 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
 	});
 
 	// Watch html and call its task
-	gulp.watch(config.app + '/html/*'
+	gulp.watch(config.app + '/html/*.html'
 		,	['connect-livereload', 'tinylr']
 		,	function(event){ gulp.start('html');
 	});
@@ -396,7 +396,7 @@ gulp.task('zip', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images'
 			type: 'confirm'
 		,	message: 'Would to like to have this zipped up?'
 		,	name: 'zip'
-		,	default: true
+		,	default: false
 
 	}, function(answer)
 	{
