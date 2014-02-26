@@ -29,6 +29,7 @@ The folder structure and base file setup is based on [BEM](http://bem.info/metho
    - __all__ — Imports all other mixins
    - __grid__ — Super-easy fluid and responsive grids (see below)
    - __media__ — Mixins for all the media queries you'll need (see below)
+   - __prop__ — Mixins related to properties
    - __triangle__ — Make a CSS triangle
  + __module__
    - __button__ — All kinds of buttons, put them here
@@ -77,3 +78,34 @@ How to use:
     }
 
 Take a look at the [_media.scss](https://github.com/flovan/Headstart/blob/master/app/sass/mixin/_media.scss) file for all parameters.
+
+## Measurements
+
+A rule of thumb for adding measured values to your CSS might be:
+
+  1. Use `px` values for borders
+  2. Use `em` values for font-sizes
+  3. Use `rem` values for paddings and margins
+
+Maintaining some of these values can be hard, so Headstart comes with a few functions and a mixin to help you out:
+
+  1. No changes here, just use `px`.
+  2. `em($size, $base)` — Results in a calculated `em` value. `$base` is optional and  defaults to your document size.
+  3. `@include rem($prop, $values...)` — Results in `rem` values, with `px` fallbacks.
+ 
+Example of the rem mixin:
+
+    // Using:
+    
+    div
+    {
+      @include rem(padding, 10, 15);
+    }
+    
+    // Will result in:
+    
+    div
+    {
+      padding: 10px 15px;
+      padding: 0.625rem 0.9375rem;
+    }
