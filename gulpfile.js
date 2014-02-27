@@ -22,6 +22,7 @@ var		path			= require('path')
 	,	open			= require('open')
 	,	lr				= require('tiny-lr')()
 	,	ask				= require('inquirer').prompt
+	,	sequence		= require('run-sequence')
 
 	,	gulp			= require('gulp')
 	,	gulputil		= require('gulp-util')
@@ -289,7 +290,8 @@ gulp.task('html', function(cb)
 				}))
 				.pipe(gulpif(!isProduction, embedlr()))
 				.pipe(gulpif(isProduction, htmlmin({ comments: true })))
-				.pipe(gulp.dest(runDir));
+				.pipe(gulp.dest(runDir))
+				.pipe(refresh(lr));
 		}));
 
 	cb(null);
@@ -339,7 +341,7 @@ gulp.task('tinylr', function()
 	});
 });
 
-gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'html'], function()
+gulp.task('server', function()
 {
 	// Startup the livereload server and connect to it
 	gulp.start('connect-livereload', 'tinylr');
@@ -372,8 +374,7 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
 
 	// Reload on changed output files
 	gulp.watch([
-			config.dev + '/*.html'
-		,	config.dev + '/js/*.js'
+			config.dev + '/js/*.js'
 		,	config.dev + '/css/*.css'
 		,	config.dev + '/images/*.{jpg|gif|png|svg}'
 		,	config.dev + '/fonts/*'
@@ -388,7 +389,7 @@ gulp.task('server', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'imag
 //
 // Zips up the production folder is wanted (via prompt)
 
-gulp.task('zip', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images', 'html'], function(cb)
+gulp.task('zip', function(cb)
 {
 	cb(null);
 
@@ -415,11 +416,16 @@ gulp.task('zip', ['sass', 'scripts-main', 'scripts-view', 'scripts-ie', 'images'
 //
 // Runs when you call 'gulp' from the CLI
 
-gulp.task('default', ['clean'], function()
+gulp.task('default', function()
 {
-	gulp.start('sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'fonts', 'images', 'misc', 'html');
-	if(!isProduction) gulp.start('server');
-	else gulp.start('zip');
+	sequence('clean', ['sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'fonts', 'images', 'misc'], function()
+	{
+		sequence('html', function()
+		{
+			if(!isProduction) gulp.start('server');
+			else gulp.start('zip');
+		})
+	});
 });
 
 
