@@ -70,6 +70,10 @@ var		path			= require('path')
 			// Will enable auto-prefixing when true
 		,	autoPrefix:		false
 
+			// Will enable hinting of your files
+			// Change settings in .htmlhintrc and .jshintrc
+		,	hint:			true
+
 		// App settings -------------------------------------------------------
 		//
 		// You can, but should not mess with these :)
@@ -125,16 +129,18 @@ gulp.task('sass', function()
 //			It is not included by default because it also throws errors on
 //			global variables such as "window" and "document".
 
-gulp.task('hint-html', function()
+gulp.task('hint-html', function(cb)
 {
-	return gulp.src(config.app + '/html/*.html')
+	if(!config.hint) cb(null);
+	else return gulp.src(config.app + '/html/*.html')
 		.pipe(htmlhint('.htmlhintrc'))
 		.pipe(htmlhint.reporter(stylish));
 });
 
-gulp.task('hint-main', function()
+gulp.task('hint-main', function(cb)
 {
-	return gulp.src([
+	if(!config.hint) cb(null);
+	else return gulp.src([
 				config.app + '/js/app.js'
 			,	config.app + '/js/core/*.js'
 			,	'!' + config.app + '/js/**/log.js'
@@ -143,9 +149,10 @@ gulp.task('hint-main', function()
 		.pipe(jshint.reporter(stylish));
 });
 
-gulp.task('hint-view', function()
+gulp.task('hint-view', function(cb)
 {
-	return gulp.src(config.app + '/js/view-*.js')
+	if(!config.hint) cb(null);
+	else return gulp.src(config.app + '/js/view-*.js')
 		.pipe(jshint('.jshintrc'))
 		.pipe(jshint.reporter(stylish));
 });
@@ -260,9 +267,9 @@ gulp.task('misc', function(cb)
 //
 // Note:
 // HTML comments are being left in for the purpose of having conditional statements.
-// Perhaps this should be made optional through the config setting.
+// Perhaps this could be made optional through the config setting.
  
-gulp.task('html', function(cb)
+gulp.task('html', ['hint-html'], function(cb)
 {
 	gulp.src(config.app + '/html/*.html')
 		.pipe(tap(function(htmlFile)
