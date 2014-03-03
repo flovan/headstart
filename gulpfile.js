@@ -6,8 +6,8 @@
 #	▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ 
 #	▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░ 
 #
-#	A easy-to-use Gulp framework/boilerplate/template/whatever.
-#	➳  https://github.com/flovan/Headstart
+#	An easy to use, worry-free framework/boilerplate/template/whatever.
+#	➳  https://github.com/flovan/headstart
 #
 */
 
