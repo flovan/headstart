@@ -4,10 +4,9 @@
 /* global _: false */
 /* global App: false */
 
-// view class
+/** @namespace */
+var View = function() {
 
-var View = function()
-{
 	'use strict';
 	
 	// VARS -------------------------------------------------------------------
@@ -16,9 +15,9 @@ var View = function()
 
 	// CONSTRUCTOR ------------------------------------------------------------
 	
-	function init()
-	{
-		log('_## Demo view init_');
+	function init() {
+
+		log('_## View init_');
 
 		_addActions();
 	}
@@ -26,9 +25,9 @@ var View = function()
 	// PRIVATE FUNCTIONS ------------------------------------------------------
 	
 	// Apply listeners to certain elements in the view
-	function _addActions()
-	{
-		log('~ Adding actions');
+	function _addActions() {
+
+		log('*~ Adding actions*');
 		
 		// $demoSelector.on('click', _demoSelectorClickHandler);
 	}
@@ -39,8 +38,8 @@ var View = function()
 
 
 
-	/*function _demoSelectorClickHandler(e)
-	{
+	/*function _demoSelectorClickHandler(e) {
+		
 		log('Clicked!');
 		return false;
 	}*/
