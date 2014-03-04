@@ -32,6 +32,7 @@ var		path			= require('path')
 	,	rimraf			= require('gulp-rimraf')
 	,	newer			= require('gulp-newer')
 	,	watch			= require('gulp-watch')
+	,	plumber			= require('gulp-plumber')
 	,	htmlmin			= require('gulp-minify-html')
 	,	htmlhint		= require('gulp-htmlhint')
 	,	jshint			= require('gulp-jshint')
@@ -165,14 +166,13 @@ gulp.task('hint-view', function(cb)
 // JSHint options:	http://www.jshint.com/docs/options/
 // HTMLHint option:	https://github.com/yaniswang/HTMLHint/wiki/Rules
 
-gulp.task('scripts-main', ['hint-main', 'scripts-view'], function()
+gulp.task('scripts-main', ['hint-main'], function()
 {
 	return gulp.src([
 				config.app + '/js/libs/jquery*.js'
 			,	config.app + '/js/libs/*.js'
-			,	'!' + config.app + '/js.libs.'
-			,	config.app + '/js/core/*.js'
 			,	(isProduction ? '!**/log.js' : '')
+			,	config.app + '/js/core/*.js'
 			,	config.app + '/js/app.js'
 		], {base: './' + config.app + '/js'})
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
@@ -181,7 +181,7 @@ gulp.task('scripts-main', ['hint-main', 'scripts-view'], function()
 		.pipe(gulp.dest(runDir + '/js'));
 });
 
-gulp.task('scripts-view', ['hint-view', 'scripts-ie'], function()
+gulp.task('scripts-view', ['hint-view'], function()
 {
 	return gulp.src(config.app + '/js/view-*.js')
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
@@ -219,12 +219,14 @@ gulp.task('images', function(cb)
 		])
 		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))))
-		.pipe(gulp.dest(runDir + '/images'));
+		.pipe(gulp.dest(runDir + '/images'))
+		.pipe(refresh(lr));
 
 	gulp.src(config.app + '/images/**/*.svg')
 		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, svgmin()))
-		.pipe(gulp.dest(runDir + '/images'));
+		.pipe(gulp.dest(runDir + '/images'))
+		.pipe(refresh(lr));
 
 	cb(null);
 });
@@ -237,7 +239,8 @@ gulp.task('fonts', function()
 {
 	return gulp.src(config.app + '/fonts/*')
 		.pipe(newer(runDir + '/fonts'))
-		.pipe(gulp.dest(runDir + '/fonts'));
+		.pipe(gulp.dest(runDir + '/fonts'))
+		.pipe(refresh(lr));;
 });
 
 // Misc -----------------------------------------------------------------------
@@ -279,6 +282,7 @@ gulp.task('html', ['hint-html'], function(cb)
 			var injectItems = isProduction ? [config.dist + '/js/core-libs.min.js'] : [
 						config.app + '/js/libs/jquery*.js'
 					,	config.app + '/js/libs/*.js'
+					,	(isProduction ? '!**/log.js' : '')
 					,	config.app + '/js/core/*.js'
 					,	config.app + '/js/app.js'
 				];
@@ -353,19 +357,30 @@ gulp.task('server', function()
 	// Startup the livereload server and connect to it
 	gulp.start('connect-livereload', 'tinylr');
 
-	// SCSS specific compilation is repeated here so the process can work with single files (= faster)
-	// rather then with all matches scss files
-	watch({ glob: config.app + '/sass/**/*.scss', emitOnGlob: false })
+	// SCSS specific cwatch
+	// Note: Compilation is repeated here so the process can work with single files (= faster)
+	watch({ glob: config.app + '/sass/**/*.scss', emitOnGlob: false, name: 'SCSS' })
+		.pipe(plumber())
 		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
-		.pipe(gulp.dest(runDir + '/css'));
+		.pipe(gulp.dest(runDir + '/css'))
+		.pipe(refresh(lr));
 
-	// Watch js and call appropriate task
-	gulp.watch(config.app + '/js/**/*.js'
-		,	['connect-livereload', 'tinylr']
-		,	function(event){ gulp.start('scripts-main', 'scripts-view', 'scripts-ie');
-	});
+	// JS specific watches to also detect removing/adding of files
+	// Note: Will also run the HTML task again (when needed) to update the linked files
+	watch({ glob: config.app + '/js/**/ie/*.js', emitOnGlob: false, name: 'JS-IE', emit: 'all' }, function() {
+		gulp.start('scripts-ie');
+	}).pipe(plumber())
+		.pipe(refresh(lr));
+
+	watch({ glob: [config.app + '/**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', emit: 'all' }, function() {
+		sequence('scripts-view', 'html');
+	}).pipe(plumber());
+
+	watch({ glob: [config.app + '/js/**/*.js', '!**/ie/*.js', '!**/view-*.js'], emitOnGlob: false, name: 'JS', emit: 'all' }, function() {
+		sequence('scripts-main', 'html');
+	}).pipe(plumber());
 
 	// Watch images and call their task
 	gulp.watch(config.app + '/images/**/*'
@@ -377,18 +392,6 @@ gulp.task('server', function()
 	gulp.watch(config.app + '/html/*.html'
 		,	['connect-livereload', 'tinylr']
 		,	function(event){ gulp.start('html');
-	});
-
-	// Reload on changed output files
-	gulp.watch([
-			config.dev + '/js/*.js'
-		,	config.dev + '/css/*.css'
-		,	config.dev + '/images/*.{jpg|gif|png|svg}'
-		,	config.dev + '/fonts/*'
-	], ['connect-livereload', 'tinylr'], function(event)
-	{
-		gulputil.log('File ' + event.path + ' was ' + event.type);
-		refresh(lr).changed(event.path);
 	});
 });
 
@@ -425,13 +428,10 @@ gulp.task('zip', function(cb)
 
 gulp.task('default', function()
 {
-	sequence('clean', ['sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'fonts', 'images', 'misc'], function()
+	sequence('clean', ['sass', 'scripts-view', 'scripts-main', 'scripts-ie', 'fonts', 'images', 'misc'], 'html', function()
 	{
-		sequence('html', function()
-		{
-			if(!isProduction) gulp.start('server');
-			else gulp.start('zip');
-		})
+		if(!isProduction) gulp.start('server');
+		else gulp.start('zip');
 	});
 });
 
