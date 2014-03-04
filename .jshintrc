@@ -7,6 +7,5 @@
   "node": true,
   "trailing": true,
   "maxparams": 3,
-  "laxcomma": true,
   "jquery": true
 }
