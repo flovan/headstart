@@ -1,5 +1,5 @@
-var Config = function()
-{
+/** @namespace */
+var Config = function() {
 	'use strict';
 
 	return {
