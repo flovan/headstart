@@ -5,11 +5,7 @@
 /* global EVENTS: false */
 /* global _: false */
 
-// App class ------------------------------------------------------------------
-//
-// The application class will take the role of instatiating the core classes
-// in an orderly fashion, giving greater control over dependencies.
-
+/** @namespace The application class will take the role of instantiating the core classes in an orderly fashion, giving greater control over dependencies. */
 var App = (function() {
 
 	'use strict';
@@ -27,6 +23,8 @@ var App = (function() {
 
 		log('_## Application initiated_');
 
+		if(Utils.isOldie()) patchIE();
+
 		// Instantiate Core files
 		config = new Config();
 		api = new Api();
@@ -37,16 +35,33 @@ var App = (function() {
 
 	// PRIVATE FUNCTIONS ------------------------------------------------------
 
+	function patchIE() {
 
+		// Load and include the js patches
+		var script = document.createElement('script');
+		script.onreadystatechange = function() {
+
+			if (script.readyState === 'loaded') {
+				document.body.appendChild(script);
+			}
+		};
+
+		script.src = 'js/ie.min.js';
+
+		// Load and include the css patches
+		if (document.createStyleSheet) {
+			document.createStyleSheet('css/ie.min.css');
+		} else {
+			$('<link rel="stylesheet" type="text/css" href="css/ie.min.css" />').appendTo('head');
+		}
+	}
 	
 	// PUBLIC FUNCTIONS -------------------------------------------------------
-
-
 	
 	return {
-			init: init
-		,	config: config
-		,	api: api
-		,	dispatcher: dispatcher
+		init: init,
+		config: config,
+		api: api,
+		dispatcher: dispatcher,
 	};
 }());
