@@ -8,11 +8,11 @@
     "url": "git://github.com/flovan/Headstart"
   },
   "dependencies": {
-    "gulp": "~3.5.2",
+    "gulp": "^3.5.5",
     "gulp-livereload": "~1.2.0",
     "gulp-rename": "~1.1.0",
     "gulp-concat": "~2.1.7",
-    "gulp-ruby-sass": "~0.3.1",
+    "gulp-ruby-sass": "~0.4.0",
     "tiny-lr": "0.0.5",
     "gulp-uglify": "~0.2.1",
     "gulp-autoprefixer": "0.0.6",
