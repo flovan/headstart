@@ -12,7 +12,6 @@
     "gulp-livereload": "~1.2.0",
     "gulp-rename": "~1.1.0",
     "gulp-concat": "~2.1.7",
-    "gulp-ruby-sass": "~0.4.0",
     "tiny-lr": "0.0.5",
     "gulp-uglify": "~0.2.1",
     "gulp-autoprefixer": "0.0.6",
@@ -40,7 +39,8 @@
     "gulp-htmlhint": "0.0.7",
     "connect-livereload": "~0.3.2",
     "run-sequence": "~0.3.6",
-    "gulp-plumber": "^0.5.6"
+    "gulp-plumber": "^0.5.6",
+    "gulp-ruby-sass": "^0.4.0"
   },
   "devDependencies": {
     "gulp-using": "0.0.1",
