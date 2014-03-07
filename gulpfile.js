@@ -69,7 +69,7 @@ var		path			= require('path')
 		,	openAllFiles:	false
 
 			// Will enable auto-prefixing when true
-		,	autoPrefix:		false
+		,	autoPrefix:		true
 
 			// Will enable hinting of your files
 			// Change settings in .htmlhintrc and .jshintrc
@@ -96,6 +96,17 @@ var		path			= require('path')
 var 	isProduction = gulputil.env.dist === true
 	,	runDir = (isProduction ? config.dist : config.dev);
 
+// Error handler
+//
+// Errors from sass or autoprefix can stop the Gulp process.
+// By catching and processing them this can be fixed.
+
+function handleError(err)
+{
+	gulputil.log(err.toString());
+	this.emit('end');
+}
+
 // Clean up -------------------------------------------------------------------
 //
 // Removes the dev/dist folder and its files
@@ -114,7 +125,8 @@ gulp.task('clean', function()
 gulp.task('sass', function()
 {
 	return gulp.src(config.app + '/sass/*.scss')
-		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
+		.pipe(plumber({errorHandler: handleError}))
+		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(runDir + '/css'));
@@ -360,8 +372,8 @@ gulp.task('server', function()
 	// SCSS specific cwatch
 	// Note: Compilation is repeated here so the process can work with single files (= faster)
 	watch({ glob: config.app + '/sass/**/*.scss', emitOnGlob: false, name: 'SCSS' })
-		.pipe(plumber())
-		.pipe(sass({ compass: true, style: isProduction ? 'compressed' : 'nested' }))
+		.pipe(plumber({errorHandler: handleError}))
+		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(runDir + '/css'))
