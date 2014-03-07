@@ -4,7 +4,7 @@
 @import 'base/config_site';
 @import 'base/functions';
 
-@import 'base/state.scss';
+@import 'base/state';
 @import 'module/normalize';
 
 // Module imports -------------------------------------------------------------
@@ -25,7 +25,7 @@
 
 *, *:after, *:before
 {
-	@include box-sizing('border-box');
+	box-sizing: 'border-box';
 }
 
 // Document -------------------------------------------------------------------
