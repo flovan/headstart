@@ -1,12 +1,19 @@
 // Library imports ------------------------------------------------------------
+//
+// Links to common libraries are included below. Place the files at the root 
+// of the sass folder
 
-@import 'compass';
+// Compass
+// ~ https://github.com/chriseppstein/compass/tree/stable/frameworks/compass/stylesheets
+//@import 'compass';
 
-// If you need animations or transitions
+// Compass animation
 // ~ https://github.com/ericam/compass-animation
-// ~ Also update config.rb file
-
 //@import 'animation';
+
+// Bourbon
+// ~ https://github.com/thoughtbot/bourbon/tree/master/dist
+//@import 'bourbon';
 
 // Global vars ----------------------------------------------------------------
 
