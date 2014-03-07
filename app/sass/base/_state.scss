@@ -9,4 +9,4 @@
 %is-cf:before, %is-cf:after { content: " "; display: table; }
 %is-cf:after { clear: both; }
 %is-cf { *zoom: 1; }
-%is-vertical-aligned { position: relative; top: 50%; @include transform(translateY(-50%)); }
+%is-vertical-aligned { position: relative; top: 50%; transform: translateY(-50%); }
