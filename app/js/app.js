@@ -12,10 +12,10 @@ var App = (function() {
 
 	// VARS -------------------------------------------------------------------
 	
-	var		config				= null
-		,	api					= null
-		,	view				= null
-		,	dispatcher			= $({});
+	var	config				= null,
+		api					= null,
+		view				= null,
+		dispatcher			= $({});
 	
 	// CONSTRUCTOR ------------------------------------------------------------
 	
