@@ -1,9 +1,6 @@
 //  Button Module -------------------------------------------------------------
-//
-// Use as following example:
-// <a class="button -grey" href=""></a>
 
-.button
+%button
 {
 	border: none; background: none;
 	outline: none;
@@ -14,25 +11,27 @@
 	line-height: 1;
 	
 	&:disabled { opacity: 0.5; }
-
-	// Modifiers --------------------------------------------------------------
-
-	/*
-	&.-grey
-	{
-		@extend %button;
-
-		background-color: shade($white, 60%);
-		color: $white;
-		
-		&:hover
-		{
-			background-color: shade($white, 50%);
-		}
-		&:active
-		{
-			background-color: shade($white, 70%);
-		}
-	}
-	*/
 }
+
+// Modifiers ------------------------------------------------------------------
+//
+// Use these classes in your HTML
+
+/*
+.button--grey
+{
+	@extend %button;
+
+	background-color: shade($white, 60%);
+	color: $white;
+	
+	&:hover
+	{
+		background-color: shade($white, 50%);
+	}
+	&:active
+	{
+		background-color: shade($white, 70%);
+	}
+}
+*/
