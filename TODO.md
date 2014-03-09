@@ -19,3 +19,11 @@
   - Link MIT license in footer after merging wip with master branch
   - When having multiple HTML pages, each one is rendered again when only one of them changes.
   - Certain ruby-sass (and maybe even autoprefixer) errors make the watches block. The system doesn't crash, but reloading stops working and tasks don't run.
+  - Convert modules to use rem's
+  - Remove wrong declaration at line 80, reporting
+  - Resync with HTML5 boilerplate as there are some new additions
+  - Re-add stripping of comments in HTML. Conditional comments were dumped, so this can be default.
+  - _text.scss, change paragraph reset to :last-of-type:last-child
+  - Add following link in HTML in iOS web app part: https://gist.github.com/tfausak/2222823
+  - Move _state.scss to modules as it actually generates css styles.
+  - Change the url to imported libraries in the global conf file to ../[...] as that is where libraries should be added
