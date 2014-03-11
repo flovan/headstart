@@ -15,8 +15,11 @@
 
 	@for $i from 1 through $max
 	{
-		$value: strip(nth($values, $i));
-		$pxValues: #{$pxValues + $value}px;
+		$value: '';
+		@if nth($values, $i) == 'auto' { $value: nth($values, $i); }
+		@else { $value: #{strip(nth($values, $i))}px; }
+
+		$pxValues: #{$pxValues + $value};
 
 		@if $i < $max
 		{
@@ -26,8 +29,11 @@
 
 	@for $i from 1 through $max
 	{
-		$value: strip(nth($values, $i));
-		$remValues: #{$remValues + rem($value)};
+		$value: '';
+		@if nth($values, $i) == 'auto' { $value: nth($values, $i); }
+		@else { $value: rem(strip(nth($values, $i))); }
+
+		$remValues: #{$remValues + $value};
 
 		@if $i < $max
 		{
