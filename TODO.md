@@ -27,3 +27,7 @@
   - Add following link in HTML in iOS web app part: https://gist.github.com/tfausak/2222823
   - Move _state.scss to modules as it actually generates css styles.
   - Change the url to imported libraries in the global conf file to ../[...] as that is where libraries should be added
+  - Add empty vendor folder in sass
+  - Make default bg color of inputs white instead of black 
+  - Prevent a ruby-sass error from crashing the process
+  - Box-sizing doesn't need quotes!
