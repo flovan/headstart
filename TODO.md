@@ -29,5 +29,8 @@
   - Change the url to imported libraries in the global conf file to ../[...] as that is where libraries should be added
   - Add empty vendor folder in sass
   - Make default bg color of inputs white instead of black 
-  - Prevent a ruby-sass error from crashing the process
   - Box-sizing doesn't need quotes!
+  - Add general imports to IE stylesheet
+  - Strip comments from HTML by default
+  - Think about fixed size columns for eg ads
+  - Include ie specific js file, expand task by importing all other files at the end
