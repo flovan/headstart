@@ -4,12 +4,12 @@
 @import 'base/config_site';
 @import 'base/functions';
 
-@import 'base/state';
+@import 'module/state';
 @import 'module/normalize';
 
 // Module imports -------------------------------------------------------------
 
-@import 'module/container';
+//@import 'module/container';
 //@import 'module/font';
 //@import 'module/text';
 //@import 'module/reporting';
@@ -18,21 +18,23 @@
 
 // Vendor imports -------------------------------------------------------------
 
-//@import 'vendor/....';
-
+//@import 'vendor/somestyles';
 
 // Border-box rules! ----------------------------------------------------------
 
-*, *:after, *:before
+*,
+*:after,
+*:before
 {
-	box-sizing: 'border-box';
+	box-sizing: border-box;
 }
 
 // Document -------------------------------------------------------------------
 //
 // The font-size is calculated as a % from the browser default of 16
 
-html, body
+html,
+body
 {
     font-family: $font-stack;
     font-size: (strip($base-font-size) / 16 * 100) * 1%;
@@ -52,10 +54,16 @@ html, body
 
 // IE10+ fixes ----------------------------------------------------------------
 
-@-ms-viewport { width: device-width; } // viewport fix
+// viewport fix
+// http://msdn.microsoft.com/en-us/library/ie/hh869615(v=vs.85).aspx
+@-ms-viewport { width: device-width; }
 @viewport { width: device-width; }
 
-a, input, button { -ms-touch-action: none !important; } // Touch-delay fix
+// Touch-delay fix
+// http://msdn.microsoft.com/en-us/library/ie/hh772044(v=vs.85).aspx
+a,
+input,
+button { -ms-touch-action: none !important; }
 
 // Print ----------------------------------------------------------------------
 //

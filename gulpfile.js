@@ -312,7 +312,7 @@ gulp.task('html', ['hint-html'], function(cb)
 					,	addRootSlash: false
 				}))
 				.pipe(gulpif(!isProduction, embedlr()))
-				.pipe(gulpif(isProduction, htmlmin({ comments: true })))
+				.pipe(gulpif(isProduction, htmlmin()))
 				.pipe(gulp.dest(runDir))
 				.pipe(refresh(lr));
 		}));
