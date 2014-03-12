@@ -1,4 +1,6 @@
 //  Button Module -------------------------------------------------------------
+//
+// Resets and sets some default styles that <button> and <a> elements have
 
 %button
 {
@@ -22,16 +24,17 @@
 {
 	@extend %button;
 
-	background-color: shade($white, 60%);
-	color: $white;
+	background-color: $black-30;
+	color: $black-70;
+	@include rem(padding, 15);
 	
 	&:hover
 	{
-		background-color: shade($white, 50%);
+		background-color: $black-20;
 	}
 	&:active
 	{
-		background-color: shade($white, 70%);
+		background-color: $black-40;
 	}
 }
 */

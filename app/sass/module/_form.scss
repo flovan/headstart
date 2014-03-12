@@ -2,21 +2,23 @@
 //
 // Not as much a module, but separated as one to group all form styles
 
-fieldset, label
-{
-	margin: 0 0 em($doc-em-factor);
-	padding: 0;
-
-	&:last-of-type, &:last-child { margin-bottom: 0; }
-}
+fieldset,
 label
 {
-	input
-	{
-		margin-top: em(5);
-	}
+	@include rem(margin, 0, 0, strip($base-font-size));
+	padding: 0;
+
+	&:last-of-type,
+	&:last-child { margin-bottom: 0; }
 }
-input, textarea
+
+label
+{
+	input { @include rem(margin-top, 5); }
+}
+
+input,
+textarea
 {
 	// NOTE
 	// 
@@ -26,11 +28,11 @@ input, textarea
 	// Otherwise, expand above "input" to the desired types.
 
 	font-family: $font-stack;
-	border: em(1) solid $black;
-	background: $black;
-	border-radius: em(5);
+	border: 1px solid $black;
+	background: $white;
+	@include rem(border-radius, 5);
 	color: $black;
-	padding: em(10) em(20) em(8);
+	@include rem(padding, 10, 20, 8);
 	line-height: 1.5;
 	
 	&:focus
