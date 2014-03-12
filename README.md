@@ -9,3 +9,5 @@ Headstart will take care of the tedious tasks for you. Need a vendor plugin? Jus
 ## Documentation
 
 You can find the Getting started, or the html/js/scss guides [in the docs](https://github.com/flovan/Headstart/tree/master/docs).
+
+[![Analytics](https://ga-beacon.appspot.com/UA-19595931-7/flovan/headstart)](https://github.com/igrigorik/ga-beacon)
