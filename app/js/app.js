@@ -23,7 +23,9 @@ var App = (function() {
 
 		log('_## Application initiated_');
 
-		if(Utils.isOldie()) patchIE();
+		// Patch IE if necessary
+		// Pass false for development mode, true for production mode
+		if(Utils.isOldie()) patchIE(false);
 
 		// Instantiate Core files
 		config = new Config();
@@ -45,14 +47,13 @@ var App = (function() {
 				document.body.appendChild(script);
 			}
 		};
-
-		script.src = 'js/ie.min.js';
+		script.src = 'js/ie' + (isProd ? '.min' : '') + '.js';
 
 		// Load and include the css patches
 		if (document.createStyleSheet) {
-			document.createStyleSheet('css/ie.min.css');
+			document.createStyleSheet('css/ie' + (isProd ? '.min' : '') + '.css');
 		} else {
-			$('<link rel="stylesheet" type="text/css" href="css/ie.min.css" />').appendTo('head');
+			$('<link rel="stylesheet" type="text/css" href="css/ie' + (isProd ? '.min' : '') + '.css" />').appendTo('head');
 		}
 	}
 	
