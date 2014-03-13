@@ -36,7 +36,8 @@ var		path			= require('path')
 	,	concat			= require('gulp-concat')
 	,	replace			= require('gulp-replace')
 	,	uglify			= require('gulp-uglify')
-	,	sass			= require('gulp-ruby-sass')
+	,	sass			= require('gulp-sass')
+	,	sassgraph		= require('gulp-sass-graph')
 	,	autoprefixer	= require('gulp-autoprefixer')
 	,	cache			= require('gulp-cache')
 	,	imagemin		= require('gulp-imagemin')
@@ -104,7 +105,7 @@ var 	isProduction = gulputil.env.dist === true
 
 function handleError(err)
 {
-	gulputil.log(err.toString());
+	console.log(err.toString());
 	this.emit('end');
 }
 
@@ -126,8 +127,8 @@ gulp.task('clean', function()
 gulp.task('sass', function()
 {
 	return gulp.src(config.app + '/sass/*.scss')
-		.pipe(plumber({errorHandler: handleError}))
-		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
+		.pipe(plumber())
+		.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(runDir + '/css'));
@@ -343,11 +344,15 @@ gulp.task('server', function()
 		lrStarted = true;
 	});
 
-	// SCSS specific cwatch
+	// SCSS specific watch
 	// Note: Compilation is repeated here so the process can work with single files (= faster)
 	watch({ glob: config.app + '/sass/**/*.scss', emitOnGlob: false, name: 'SCSS' })
-		.pipe(plumber({errorHandler: handleError}))
-		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
+		.pipe(plumber())
+		.pipe(sassgraph([config.app + '/sass']))
+		.pipe(sass({
+			outputStyle: (isProduction ? 'compressed' : 'nested'),
+			errLogToConsole: true
+		}))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(runDir + '/css'))
