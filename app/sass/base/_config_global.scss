@@ -1,22 +1,29 @@
 // Library imports ------------------------------------------------------------
+//
+// Links to common libraries are included below. Place the files at the root 
+// of the sass folder
 
-@import 'compass';
+// Compass
+// ~ https://github.com/chriseppstein/compass/tree/stable/frameworks/compass/stylesheets
+//@import '../libs/compass';
 
-// If you need animations or transitions
+// Compass animation
 // ~ https://github.com/ericam/compass-animation
-// ~ Also update config.rb file
+//@import '../libs/animation';
 
-//@import 'animation';
+// Bourbon
+// ~ https://github.com/thoughtbot/bourbon/tree/master/dist
+//@import '../libs/bourbon';
 
 // Global vars ----------------------------------------------------------------
 
 $base-font-size: 16px;
 
 $total-columns: 12; // 12 is great for a 2-, 3- and 4-column layout
-$default-gutter-width: 3% !default; // % spacing between columns
+$default-gutter-width: 5% !default; // % spacing between columns
 $default-column-breakpoint: 650px; // Change this to whatever seems best
 $max-container-width: 1140px; // 1140 and 960 divide easily in 2, 3 and 4
-$min-page-padding: 6%; // Side padding when beneath $max-container-width
+$min-page-padding: 4%; // Side padding when beneath $max-container-width
 
 // Mixin import -------------------------------------------------------------
 

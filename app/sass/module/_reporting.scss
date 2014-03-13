@@ -8,11 +8,16 @@
 .report
 {
 	color: $reporting-text;
-	padding: em(10) em(20); 
+	border: 1px solid transparent;
+	@include rem(padding, 10, 20);
+	@include rem(margin, 0, 0, strip($base-font-size)*1.5)
+
+	&:last-of-type:last-child { margin-bottom: 0; }
 }
 
-ul.report, ol.report
-{ padding-left: em(35); } // Nice paddings for your lists
+ul.report,
+ol.report
+{ @include rem(padding-left, 35); }
 
 // Modifiers ------------------------------------------------------------------
 //
@@ -23,79 +28,29 @@ ul.report, ol.report
 	@extend .report;
 
 	background: $reporting-success-light;
-	border: em(1) solid $reporting-success;
-
-	.report__close-button
-	{
-		background-color: $reporting-success;
-		color: $reporting-success-light;
-	}
+	border-color: $reporting-success;
 }
+
 .report--error
 {
 	@extend .report;
 
 	background: $reporting-error-light;
-	border: em(1) solid $reporting-error;
-
-	.report__close-button
-	{
-		background-color: $reporting-error;
-		color: $reporting-error-light;
-	}
+	border-color: $reporting-error;
 }
+
 .report--warning
 {
 	@extend .report;
 
 	background: $reporting-warning-light;
-	border: em(1) solid $reporting-warning;
-
-	.report__close-button
-	{
-		background-color: $reporting-warning;
-		color: $reporting-warning-light;
-	}
+	border-color: $reporting-warning;
 }
+
 .report--info
 {
 	@extend .report;
 
 	background: $reporting-info-light;
-	border: em(1) solid $reporting-info;
-
-	.report__close-button
-	{
-		background-color: $reporting-info;
-		color: $reporting-info-light;
-	}
-}
-
-// States ---------------------------------------------------------------------
-
-.report.is-hidden { padding: 0; } // Collapse padding when hidden
-.report.has-close-button
-{
-	position: relative;
-	padding-right: 
-}
-
-// Children -------------------------------------------------------------------
-
-.report__close-button
-{
-	position: absolute;
-	top: em(15); 
-	right: em(15); 
-	display: inline-block;
-	padding: em(1) em(4) em(2) em(4); 
-	font-family: Helvetica, sans-serif;
-	font-weight: bold;
-	line-height: 1;
-	text-align: center;
-	text-decoration: none;
-	border: none;
-	border-radius: 50%;
-
-	&:before { content: '\00d7'; } // ISO value of '×', or &times;
+	border-color: $reporting-info;
 }

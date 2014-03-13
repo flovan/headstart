@@ -1,0 +1,38 @@
+//  Global states -------------------------------------------------------------
+//
+// Placeholders that contain frequently used styles
+// Extend to these from your main css
+
+%is-hidden,
+.is-hidden
+{
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	opacity: 0;
+}
+%is-bold { font-weight: bold; }
+%is-underlined { text-decoration: underline; }
+%is-italic { font-style: italic; }
+%is-uppercase { text-transform: uppercase; }
+%is-smallcaps { font-variant: small-caps; }
+%is-cf:before,
+%is-cf:after
+{
+	content: '';
+	display: table;
+}
+%is-cf:after { clear: both; }
+%is-cf { *zoom: 1; }
+.is-cf { @extend %is-cf; }
+%is-vertical-aligned
+{
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
