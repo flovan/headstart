@@ -1,4 +1,4 @@
-# Headstart 0.4 [![Build Status](https://travis-ci.org/flovan/headstart.png?branch=master)](https://travis-ci.org/flovan/headstart) [![Dependency Status](https://david-dm.org/flovan/headstart.png?theme=shields.io)](https://david-dm.org/flovan/headstart)
+# Headstart 0.5 [![Build Status](https://travis-ci.org/flovan/headstart.png?branch=master)](https://travis-ci.org/flovan/headstart) [![Dependency Status](https://david-dm.org/flovan/headstart.png?theme=shields.io)](https://david-dm.org/flovan/headstart)
 
 > An easy-to-use, worry-free framework/boilerplate/template/whatever.
 
