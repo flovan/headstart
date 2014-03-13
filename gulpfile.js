@@ -17,10 +17,6 @@
 //
 
 var		path			= require('path')
-	,	connect			= require('connect')
-	,	http			= require('http')
-	,	open			= require('open')
-	,	lr				= require('tiny-lr')()
 	,	ask				= require('inquirer').prompt
 	,	sequence		= require('run-sequence')
 
@@ -41,14 +37,12 @@ var		path			= require('path')
 	,	replace			= require('gulp-replace')
 	,	uglify			= require('gulp-uglify')
 	,	sass			= require('gulp-ruby-sass')
-	,	sassGraph		= require('gulp-sass-graph')
 	,	autoprefixer	= require('gulp-autoprefixer')
 	,	cache			= require('gulp-cache')
 	,	imagemin		= require('gulp-imagemin')
 	,	svgmin			= require('gulp-svgmin')
 	,	rename			= require('gulp-rename')
-	,	refresh			= require('gulp-livereload')
-	,	embedlr			= require('gulp-embedlr')
+	,	connect			= require('gulp-connect')
 	,	zip				= require('gulp-zip')
 
 	,	lrStarted		= false
@@ -59,14 +53,21 @@ var		path			= require('path')
 		// Adjust these to your needs
 
 			// Your favorite browser
-			// OS X: google chrome, Linux: google-chrome, Windows: chrome
-			browser:		'google chrome'
+			// OS X: Google Chrome, Linux: google-chrome, Windows: chrome
+			browser:		'Google Chrome'
 
 			// The default page to open in the browser
 		,	defaultPage:	'index.html'
 
 			// Will open all the HTML files in the browser; overrides defaultPage
 		,	openAllFiles:	false
+
+			// Will turn off livereload when false
+			// Handy for IE testing through http://my.ip.address:port as livereload blocks page
+		,	useLR:			true
+
+			// Will minify HTML when true; should be avoided for back-end integration
+		,	minifyHTML:		false
 
 			// Will enable auto-prefixing when true
 		,	autoPrefix:		true
@@ -212,6 +213,7 @@ gulp.task('scripts-ie', function()
 			,	config.app + '/js/libs/ie/matchmedia.polyfill.js'
 			,	config.app + '/js/libs/ie/matchmedia.addListener.js'
 			,	config.app + '/js/libs/ie/respond.js'
+			,	config.app + '/js/libs/ie/*.js'
 		])
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
@@ -232,13 +234,13 @@ gulp.task('images', function(cb)
 		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))))
 		.pipe(gulp.dest(runDir + '/images'))
-		.pipe(refresh(lr));
+		.pipe(gulpif(lrStarted && config.useLR, connect.reload()));
 
 	gulp.src(config.app + '/images/**/*.svg')
 		.pipe(newer(runDir + '/images'))
 		.pipe(gulpif(isProduction, svgmin()))
 		.pipe(gulp.dest(runDir + '/images'))
-		.pipe(refresh(lr));
+		.pipe(gulpif(lrStarted && config.useLR, connect.reload()));
 
 	cb(null);
 });
@@ -252,7 +254,7 @@ gulp.task('fonts', function()
 	return gulp.src(config.app + '/fonts/*')
 		.pipe(newer(runDir + '/fonts'))
 		.pipe(gulp.dest(runDir + '/fonts'))
-		.pipe(refresh(lr));;
+		.pipe(gulpif(lrStarted && config.useLR, connect.reload()));;
 });
 
 // Misc -----------------------------------------------------------------------
@@ -311,10 +313,9 @@ gulp.task('html', ['hint-html'], function(cb)
 						ignorePath: ['/dev', '/app', '/dist']
 					,	addRootSlash: false
 				}))
-				.pipe(gulpif(!isProduction, embedlr()))
-				.pipe(gulpif(isProduction, htmlmin()))
+				.pipe(gulpif(isProduction && config.minifyHTML, htmlmin()))
 				.pipe(gulp.dest(runDir))
-				.pipe(refresh(lr));
+				.pipe(gulpif(lrStarted && config.useLR, connect.reload()));
 		}));
 
 	cb(null);
@@ -324,50 +325,23 @@ gulp.task('html', ['hint-html'], function(cb)
 //
 // Sets up a livereload server, and opens files in the browser
 
-gulp.task('connect-livereload', function()
-{
-	var		middleware = [
-					require('connect-livereload')({ port: config.lr })
-				,	connect.static(config.dev)
-				,	connect.directory(config.dev)
-			]
-		,	app = connect.apply(null, middleware)
-		,	server = http.createServer(app);
-
-	server
-		.listen(config.port)
-		.on('listening', function()
-		{
-			gulputil.log('Started connect web server on http://localhost:' + config.port + '.');
-			lrStarted = true;
-
-			// Open the default .html file in the browser
-			if(!config.openAllFiles) open('http://localhost:' + config.port + '/' + config.defaultPage, config.browser);
-			// or open all the files
-			else
-			{
-				gulp.src(config.app + '/html/*.html')
-					.pipe(tap(function(htmlFile)
-					{
-						open('http://localhost:' + config.port + '/' + path.basename(htmlFile.path), config.browser);
-					}));
-			}
-		});
-});
- 
-gulp.task('tinylr', function()
-{
-	lr.listen(config.lr, function(err){
-		if (err) {
-			return gulputil.log(err);
+gulp.task('connect-livereload', connect.server({
+			root: [config.dev]
+		,	port: config.port
+		,	livereload: true
+		,	open: {
+				file: config.defaultPage,
+				browser: config.browser
 		}
-	});
-});
+}));
 
 gulp.task('server', function()
 {
 	// Startup the livereload server and connect to it
-	gulp.start('connect-livereload', 'tinylr');
+	sequence('connect-livereload', function()
+	{
+		lrStarted = true;
+	});
 
 	// SCSS specific cwatch
 	// Note: Compilation is repeated here so the process can work with single files (= faster)
@@ -377,14 +351,14 @@ gulp.task('server', function()
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(runDir + '/css'))
-		.pipe(refresh(lr));
+		.pipe(gulpif(lrStarted && config.useLR, connect.reload()));
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again (when needed) to update the linked files
 	watch({ glob: config.app + '/js/**/ie/*.js', emitOnGlob: false, name: 'JS-IE', emit: 'all' }, function() {
 		gulp.start('scripts-ie');
 	}).pipe(plumber())
-		.pipe(refresh(lr));
+		.pipe(gulpif(lrStarted && config.useLR, connect.reload()));
 
 	watch({ glob: [config.app + '/**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', emit: 'all' }, function() {
 		sequence('scripts-view', 'html');
