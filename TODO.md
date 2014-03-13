@@ -14,9 +14,7 @@
   - Google Chrome audits don't seem to use the gzipping from the .htaccess. Maybe files need to be gzipped themselves (there's a plugin for that!)?
   - When having multiple HTML pages, each one is rendered again when only one of them changes.
   - Certain ruby-sass (and maybe even autoprefixer) errors make the watches block. The system doesn't crash, but reloading stops working and tasks don't run.
-  - Add IE fixes in lite version
   - Think about fixed size columns for eg ads
-  - Include ie specific js file, expand task by importing all other files at the end
 
 ### Website TODO's
 
