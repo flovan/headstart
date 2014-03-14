@@ -34,7 +34,8 @@
     "gulp-svgmin": "~0.4.4",
     "gulp-replace": "~0.2.0",
     "run-sequence": "~0.3.6",
-    "gulp-sass": "^0.7.1"
+    "gulp-sass": "^0.7.1",
+    "gulp-ruby-sass": "^0.4.0"
   },
   "devDependencies": {
     "gulp-using": "0.0.1",
