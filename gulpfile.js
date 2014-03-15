@@ -353,13 +353,17 @@ gulp.task('server', function()
 		//.pipe(plumber())
 		//.pipe(sassgraph([config.app + '/sass']))
 		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
-		.pipe(plumber({ errorHandler: handleError }))
 		.pipe(sassgraph([config.app + '/sass']))
-		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
-		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
-		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
-		.pipe(gulp.dest(runDir + '/css'))
-		.pipe(gulpif(lrStarted && config.useLR, connect.reload()));
+		.on('data', function(file)
+		{
+			gulp.src(file.path)
+				.pipe(plumber({ errorHandler: handleError }))
+				.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
+				.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
+				.pipe(gulpif(isProduction, rename({suffix: '.min'})))
+				.pipe(gulp.dest(runDir + '/css'))
+				.pipe(gulpif(lrStarted && config.useLR, connect.reload()));
+		});
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again (when needed) to update the linked files
