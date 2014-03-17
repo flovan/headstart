@@ -5,7 +5,7 @@
 /* global App: false */
 
 /** @namespace A wrapper class for making Ajax calls */
-var Api = function() {
+var Api = (function() {
 
 	'use strict';
 	
@@ -19,14 +19,14 @@ var Api = function() {
 		
 		// If cancellable set timouts
 		// configureable through config.js
-		if(options.cancellable) {
+		if(options.timed) {
 
 			hangTO = setTimeout(function() {
 
 				// Let observers know the call is hanging
 				App.dispatcher.trigger(EVENTS.api.apiHang, { route: options.route });
 				
-			}, App.config.serviceHangWait);
+			}, options.hang);
 			
 			cancelTO = setTimeout(function() {
 
@@ -35,7 +35,7 @@ var Api = function() {
 				// Let observers know the call was cancelled
 				App.dispatcher.trigger(EVENTS.api.apiCancel, { route: options.route });
 				
-			}, App.config.serviceCancelWait);
+			}, options.cancel);
 		}
 		
 		// make the ajax call
@@ -77,12 +77,19 @@ var Api = function() {
 	 * @param  {Function} [args.done] Callback fct, called when a result is returned.
 	 * @param  {Function} [args.fail] Callback fct, called on route failure.
 	 * @param  {String} [args.method='POST'] Method of the call.
-	 * @param  {Boolean} [args.cancellable=false] Enforce timelimits to call, defaults to false
+	 * @param  {Boolean} [args.timed=false] Enforce timelimits to call, defaults to false
+	 * @param  {Boolean} [args.hang=5000] Amount of milisecons to wait before declaring a call to be "hanging", defaults to 5000
+	 * @param  {Boolean} [args.cancel=10000] Amount of milisecons to wait before declaring a call to be "cancelled", defaults to 10000
 	 */
 	function call(route, args)
 	{
 		// Extend default settings object
-		args = $.extend({}, { method: 'POST', cancellable: false }, args);
+		args = $.extend({}, {
+			method:	'POST',
+			timed:	false,
+			hang:	5000,
+			cancel:	10000
+		}, args);
 
 		args.route = route;
 		_ajax(args);
@@ -94,4 +101,4 @@ var Api = function() {
 		},
 		call: call
 	};
-};
+}());

@@ -5,7 +5,7 @@
 /* global App: false */
 
 /** @namespace  */
-var Utils = function() {
+var Utils = (function() {
 
 	'use strict';
 
@@ -15,7 +15,7 @@ var Utils = function() {
 	// Detect IE through condifional comments.
 	// Read: http://james.padolsey.com/javascript/detect-ie-in-js-using-conditional-comments/
 
-	var ie = (function() {
+	/*var ie = (function() {
  
 		var undef,
 			v		= 3,
@@ -28,7 +28,7 @@ var Utils = function() {
 		);
 
 		return v > 4 ? v : undef;
-	}());
+	}());*/
 
 	return {
 
@@ -47,78 +47,10 @@ var Utils = function() {
 		 * Detects whether a browser is "old", i.e. less than IE 9.
 		 * @return {Boolean}
 		 */
-		isOldie: function() {
+		/*isOldie: function() {
 
 			if(_.isNull(isOldie)) isOldie = ie < 9;
 			return isOldie;
-		},
-
-		/**
-		 * Makes it easy to add reporting messages to the DOM.
-		 * To be used with the "reporting" scss module.
-		 * @param  {Object} args The options object.
-		 * @param  {Object|String} args.target Target selector String or jQuery Object.
-		 * @param  {String|Array} args.message The message(s) that should be displayed.
-		 * @param  {String} [args.type='error'] The type of report. Can be "error", "success", "info" or "warning".
-		 * @param  {Boolean} [args.addAfter=true] Will inject message(s) after the target when true. Will inject before the target when set to "false".
-		 * @param  {Boolean} [args.addClose=false] Will add a functioning self-closing button when set to true.
-		 * @param  {Function} [args.onClose] A function that will be called after the report has been closed. Also set "addClose" to true to use.
-		 */
-		/*insertReporting: function(args) {
-
-			// Extend arguments with default options
-			$.extend({
-				target:		null,
-				message:	null,
-				type:		'error',
-				addAfter:	true,
-				addClose:	false,
-				onClose:	null,
-			}, args);
-
-			// Cast target to jQuery if it isn't already
-			args.target = args.target instanceof jQuery ? args.target : $(args.target);
-
-			// Decide whether a <p> or <ul> should be used
-			args.message = _.isString(args.message) ?
-						'<p class="report ' + args.type + '">' + args.message + '</p>'
-						:
-						'<ul class="report ' + args.type + '"><li>' + args.message.join('</li><li>') + '</li></ul>';
-
-			// Insert after or before the target element
-			if(args.addAfter) {
-
-				// If there is a .report, remove it first
-				if(args.target.next().is('.report')) args.target.next().remove();
-				// Append and update reference
-				args.message = args.target.after(args.message).next();
-			} else {
-
-				// If there is a .report, remove it first
-				if(args.target.prev().is('.report')) args.target.prev().remove();
-				// Prepend and update reference
-				args.message = args.target.before(args.message).prev();
-			}
-
-			// Optionally include a close button
-			// and bind a click action
-			if(args.addClose) {
-
-				var cbtn = $('<button class="closebtn">&#215;</button>');
-				args.message.prepend(cbtn);
-
-				cbtn.on('click', function(e) {
-
-					// Fade-out the report
-					cbtn.parent().fadeOut(300, function()
-					{
-						// Remove it
-						cbtn.parent().remove();
-						// Call callback if there is one
-						if(_.isFunction(args.onClose)) args.onClose();
-					});
-				});
-			}
 		},*/
 
 		/**
@@ -173,7 +105,7 @@ var Utils = function() {
 			}
 		}*/
 	};
-}();
+}());
 
 /**
  * Serializes a form to an object, rather than a string.
