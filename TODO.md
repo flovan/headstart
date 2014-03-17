@@ -7,12 +7,12 @@
   - Look at Deporder again to improve script deps (https://www.npmjs.org/package/gulp-deporder/)
   - Implement W3C validator (https://www.npmjs.org/package/gulp-w3cjs/)
   - Implement app manifest generator (https://www.npmjs.org/package/gulp-manifest/ + http://diveintohtml5.info/offline.html)
+  - git tag the repo's (http://git-scm.com/book/en/Git-Basics-Tagging)
 
 ### Common TODO's:
 
-  - Google Chrome audits don't seem to use the gzipping from the .htaccess. Maybe files need to be gzipped themselves (there's a plugin for that!)?
   - When having multiple HTML pages, each one is rendered again when only one of them changes.
-  - git tag the repo's (http://git-scm.com/book/en/Git-Basics-Tagging)
+  - Fix image optimization (currently disabled)
 
 ### Main TODO's:
 
