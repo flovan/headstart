@@ -12,6 +12,8 @@
   - When having multiple HTML pages, each one is rendered again when only one of them changes.
   - Implement W3C validator (https://www.npmjs.org/package/gulp-w3cjs/)
   - Implement app manifest generator (https://www.npmjs.org/package/gulp-manifest/ + http://diveintohtml5.info/offline.html)
+  - Put in "silent file" feature with "_afile.js" syntax
+  - Replace "cancellable" with options
 
 ### Main TODO's:
 
@@ -20,6 +22,8 @@
 ### Lite TODO's:
 
   - Try implementing uncss (https://www.npmjs.org/package/gulp-uncss)
+  - Convert $(document).on('ready') to .ready()
+  - Remove js/core files
 
 ### Website TODO's
 
