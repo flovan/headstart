@@ -8,6 +8,7 @@
   - Implement W3C validator (https://www.npmjs.org/package/gulp-w3cjs/)
   - Implement app manifest generator (https://www.npmjs.org/package/gulp-manifest/ + http://diveintohtml5.info/offline.html)
   - git tag the repo's (http://git-scm.com/book/en/Git-Basics-Tagging)
+  - More flags https://www.npmjs.org/package/minimist
 
 ### Common TODO's:
 
