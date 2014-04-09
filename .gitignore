@@ -3,4 +3,4 @@
 .temp
 node_modules
 dist
-dev
+/dev
