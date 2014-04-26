@@ -1,0 +1,58 @@
+{
+  "name": "headstart",
+  "version": "0.6.0",
+  "description": "An easy-to-use automated front-end setup.",
+  "author": {
+    "name": "Florian Vanthuyne",
+    "email": "hello@flovan.me",
+    "url": "http://flovan.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/flovan/Headstart"
+  },
+  "bugs": {
+    "url": "https://github.com/flovan/headstart/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^0.4.0",
+    "gulp": "^3.6.2",
+    "gulp-autoprefixer": "0.0.7",
+    "gulp-concat": "^2.2.0",
+    "gulp-connect": "^2.0.5",
+    "gulp-debug": "^0.3.0",
+    "gulp-footer": "^1.0.4",
+    "gulp-header": "^1.0.2",
+    "gulp-htmlhint": "0.0.7",
+    "gulp-if": "^1.0.0",
+    "gulp-ignore": "^1.0.1",
+    "gulp-imagemin": "^0.4.0",
+    "gulp-inject": "^0.4.1",
+    "gulp-jshint": "^1.5.5",
+    "gulp-newer": "^0.3.0",
+    "gulp-plumber": "^0.6.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-replace": "^0.2.0",
+    "gulp-ruby-sass": "^0.4.3",
+    "gulp-sass-graph": "^1.0.0",
+    "gulp-tap": "^0.1.1",
+    "gulp-uglify": "^0.2.1",
+    "gulp-watch": "^0.6.2",
+    "inquirer": "^0.4.1",
+    "jshint-stylish": "^0.1.5",
+    "liftoff": "^0.9.8",
+    "lodash": "^2.4.1",
+    "minimist": "0.0.8",
+    "ncp": "^0.5.1",
+    "rimraf": "^2.2.6",
+    "sequence": "^3.0.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "bin": {
+    "headstart": "./bin/headstart.js"
+  }
+}
