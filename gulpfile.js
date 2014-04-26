@@ -9,9 +9,9 @@ var
 	prompt = require('inquirer').prompt,
 	sequence = require('run-sequence'),
 	stylish = require('jshint-stylish'),
+	open = require('open'),
 
 	gulp = require('gulp'),
-	debug = require('gulp-debug'),
 	rimraf = require('gulp-rimraf'),
 	watch = require('gulp-watch'),
 	plumber = require('gulp-plumber'),
@@ -24,7 +24,6 @@ var
 	sass = require('gulp-ruby-sass'),
 	sassgraph = require('gulp-sass-graph'),
 	autoprefixer = require('gulp-autoprefixer'),
-	htmlhint = require('gulp-htmlhint'),
 	jshint = require('gulp-jshint'),
 	concat = require('gulp-concat'),
 	replace = require('gulp-replace'),
@@ -72,7 +71,7 @@ gulp.task('init', function (cb) {
 	if (cwdFiles.length > 0) {
 
 		// Make sure the user knows what is about to happen
-		console.log(chalk.yellow('The current directory is not empty!'))
+		console.log(chalk.yellow('The current directory is not empty!'));
 		prompt({
 			type: 'confirm',
 			message: 'Initializing will empty the current directory. Continue?',
@@ -88,7 +87,12 @@ gulp.task('init', function (cb) {
 					name: 'overridconfirm',
 					default: false
 				}, function (answer) {
-					if (answer.overridconfirm) moveBoilerplateFiles();
+
+					if (answer.overridconfirm) {
+						// Clean up directory
+						console.log(chalk.grey('Emptying current directory'));
+						gulp.start('clean-cwd', moveBoilerplateFiles);
+					}
 					else process.exit(0);
 				});
 			}
@@ -101,10 +105,6 @@ gulp.task('init', function (cb) {
 });
 
 function moveBoilerplateFiles () {
-
-	// Clean up directory
-	console.log(chalk.green('Emptying current directory'))
-	rimraf.sync(cwd);
 
 	// Move files from the global boilerplate folder
 	// into the current working directory
@@ -123,12 +123,36 @@ function moveBoilerplateFiles () {
 		prompt({
 				type: 'confirm',
 				message: 'Would you like to have these files served?',
-				name: 'serve',
+				name: 'build',
 				default: true
+		}, function (buildAnswer) {
 
-		}, function (answer) {
+			if (buildAnswer.build) {
+				flags.serve = true;
+				prompt({
+						type: 'confirm',
+						message: 'Should they be opened in the browser?',
+						name: 'open',
+						default: true
 
-			if (answer.serve) gulp.start('serve');
+				}, function (openAnswer) {
+
+					if (openAnswer.open) {
+						flags.open = true;
+						prompt({
+								type: 'confirm',
+								message: 'Should they be opened in an editor?',
+								name: 'edit',
+								default: true
+
+						}, function (editAnswer) {
+
+							if (editAnswer.edit) flags.edit = true;
+							gulp.start('build')
+						});
+					}
+				});
+			}
 			else process.exit(0);
 		});
 	});
@@ -140,7 +164,7 @@ function moveBoilerplateFiles () {
 gulp.task('build', function (cb) {
 
 	// Load the config.json file
-	console.log(chalk.green('Loading config.json...'));
+	console.log(chalk.grey('Loading config.json...'));
 	fs.readFile('config.json', 'utf8', function (err, data) {
 
 		if (err) {
@@ -158,11 +182,11 @@ gulp.task('build', function (cb) {
 
 		// Run build tasks
 		// Serve files if Headstart was run with the --serve flag
-		console.log(chalk.green('Building...'));
+		console.log(chalk.grey('Building...'));
 		if (flags.serve) {
-			sequence('clean', ['sass', 'scripts-view', 'scripts-main', 'fonts', 'images', 'misc', 'other'], 'html', 'server', cb);
+			sequence('clean-export', ['sass', 'scripts-view', 'scripts-main', 'images', 'misc', 'other'], 'templates', 'server', cb);
 		} else {
-			sequence('clean', ['sass', 'scripts-view', 'scripts-main', 'fonts', 'images', 'misc', 'other'], 'html', cb);
+			sequence('clean-export', ['sass', 'scripts-view', 'scripts-main', 'images', 'misc', 'other'], 'templates', cb);
 		}	
 	});
 });
@@ -170,13 +194,20 @@ gulp.task('build', function (cb) {
 // CLEAN ----------------------------------------------------------------------
 //
 
-gulp.task('clean', function (cb) {
+gulp.task('clean-export', function (cb) {
 
 	// Remove export folder and files
 	return gulp.src(config.export, {read: false})
-		.pipe(rimraf())
+		.pipe(rimraf({force: true}))
 	;
 });
+
+gulp.task('clean-cwd', function (cb) {
+	// Remove export folder and files
+	return gulp.src(cwd + '/**/*', {read: false})
+		.pipe(rimraf({force: true}))
+	;
+})
 
 // SASS -----------------------------------------------------------------------
 //
@@ -247,7 +278,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 				'./assets/js/core/*.js',
 				'./assets/js/*.js',
 				'!' + './assets/js/view-*.js',
-				'!_*.js'
+				'!**/_*.js'
 			], {base: './' + './assets/js'}
 		)
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
@@ -283,7 +314,7 @@ gulp.task('images', function (cb) {
 		])
 		.pipe(plumber({ errorHandler: handleError }))
 		.pipe(newer(config.export + '/images'))
-		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
+		//.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
 		.pipe(gulp.dest(config.export + '/assets/images'))
 		.pipe(gulpif(lrStarted, connect.reload()))
 	;
@@ -336,21 +367,8 @@ gulp.task('misc', function (cb) {
 
 // HTML -----------------------------------------------------------------------
 //
-
-// HTMLHint option:	https://github.com/yaniswang/HTMLHint/wiki/Rules
-
-gulp.task('hint-html', function (cb) {
-
-	if (!config.hint) cb(null);
-	else {
-		return gulp.src('./templates/*.html')
-			.pipe(htmlhint('./.htmlhintrc'))
-			.pipe(htmlhint.reporter(stylish))
-		;
-	}
-});
  
-gulp.task('templates', ['hint-html'], function (cb) {
+gulp.task('templates', function (cb) {
 
 	// Inject links to correct assets in all the .html files
 	// Add livereload tag in development
@@ -385,27 +403,28 @@ gulp.task('templates', ['hint-html'], function (cb) {
 						'./assets/js/*.js',
 
 						'!' + './assets/js/view-*.js',
-						'!_*.js'
+						'!**/_*.js'
 					],
 				baseName = path.basename(htmlFile.path),
-				viewName = baseName.split('.')[0]
+				viewBaseName = _.last(baseName.split('.')[0].split('-')),
+				viewName = 'view-' + viewBaseName + (isProduction ? '.min' : '')
 			;
 
 			// Add specific js and css files to inject queue
-			injectItems.push(config.export + '/assets/js/view-' + viewName+ (isProduction ? '.min' : '') + '.js');
+			injectItems.push(config.export + '/assets/js/' + viewName + '.js');
 			injectItems.push(config.export + '/assets/css/common' + (isProduction ? '.min' : '') + '.css')
-			injectItems.push(config.export + '/assets/css/' + viewSpecificName + '.css');
+			injectItems.push(config.export + '/assets/css/' + viewName + '.css');
 
 			// Combine with header and footer and
 			// inject files into the HTML file
 			gulp.src('./templates/' + baseName)
-				.pipe(header.fromFile('./templates/common/header.html'))
-				.pipe(footer.fromFile('./templates/common/footer.html'))
+				.pipe(header(fs.readFileSync('./templates/common/header.html', 'utf8')))
+				.pipe(footer(fs.readFileSync('./templates/common/footer.html', 'utf8')))
 				.pipe(inject(gulp.src(injectItems, {read: false}), {
-						ignorePath: ['/dev', '/app', '/dist']
+						ignorePath: ['/export']
 					,	addRootSlash: false
 				}))
-				.pipe(rename({basename: viewName}))
+				.pipe(rename({basename: viewBaseName}))
 				.pipe(gulp.dest(config.export))
 				.pipe(gulpif(lrStarted, connect.reload()));
 		}));
@@ -418,15 +437,42 @@ gulp.task('templates', ['hint-html'], function (cb) {
 
 gulp.task('server', function (cb) {
 
-	console.log(chalk.green('Serving files...'));
+	console.log(chalk.grey('Serving files...'));
 
 	// Start the livereload server and connect to it
 	sequence('connect-livereload', function () {
+
 		// Store started state globally
 		lrStarted = true;
+
 		// Sass watch is integrated into task with a switch
 		// based on the flag above
 		gulp.start('sass');
+
+		// Open browser window
+		if (flags.open) {
+			console.log(
+				chalk.grey('Opening'),
+				chalk.magenta('http://' + config.host + ':' + config.port),
+				chalk.grey('in'),
+				chalk.magenta(config.browser)
+			);
+			open('http://' + config.host + ':' + config.port, config.browser);
+		}
+
+		if(flags.edit) {
+			console.log(
+				chalk.grey('Opening'),
+				chalk.magenta(cwd),
+				chalk.grey('in'),
+				chalk.magenta(config.editor)
+			);
+			open(cwd, config.editor);
+		}
+
+		console.log(chalk.green('Ready ... set ... go!'));
+
+		cb();
 	});
 
 	// JS specific watches to also detect removing/adding of files
@@ -440,23 +486,25 @@ gulp.task('server', function (cb) {
 	}).pipe(plumber({ errorHandler: handleError }));
 
 	// Watch images and call their task
-	gulp.watch('./assets/images/**/*', ['images']);
+	gulp.watch('./assets/images/**/*', function () {
+		gulp.start('images');
+	});
 
 	// Watch templates and call its task
-	gulp.watch('./templates/**/*', ['templates']);
-
-	cb();
+	gulp.watch('./templates/**/*', function () {
+		gulp.start('templates');
+	});
 });
 
-gulp.task('connect-livereload', connect.server({
-	root: [config.export],
-	port: config.port,
-	livereload: flags.nolr ? false : true,
-	open: flags.open ? {
-			file: config.defaultPage,
-			browser: config.browser
-		} : null
-}));
+gulp.task('connect-livereload', function () {
+	//connect.__proto__.log = function () { console.log(chalk.magenta('I caught a log!')); };
+	connect.server({
+		root: [config.export],
+		host: config.host,
+		port: config.port,
+		livereload: flags.nolr ? false : true
+	});
+});
 
 // DEFAULT --------------------------------------------------------------------
 //

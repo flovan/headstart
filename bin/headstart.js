@@ -49,6 +49,7 @@ function launcher (env) {
 		argv = env.argv,
 		cliPackage = require('../package'),
 		versionFlag = argv.v || argv.version,
+		infoFlag = argv.i || argv.info,
 
 		allowedTasks = ['init', 'serve', 'build', 'i', 'info'],
 		task = argv._,
@@ -62,8 +63,8 @@ function launcher (env) {
 	}
 
 	// Log info if no tasks are passed in
-	if (!numTasks) {
-		logInfo();
+	if (!numTasks || infoFlag) {
+		logInfo(cliPackage);
 		process.exit(0);
 	}
 
@@ -96,14 +97,13 @@ function launcher (env) {
 // Helper logging functions ---------------------------------------------------
 //
 
-function logInfo () {
+function logInfo (cliPackage) {
 	console.log(chalk.cyan(
 		'\n' +
 		'▒█░▒█ █▀▀ █▀▀█ ▒█▀▀▄ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀█ ▀▀█▀▀ \n' +
 		'▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ \n' +
-		'▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░ \n' +
-		'\n',
-		chalk.grey('A worry-free front-end workflow\n' +
+		'▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░ \n',
+		chalk.grey('\nv' + cliPackage.version + '\nA worry-free front-end workflow\n' +
 		'➳  https://github.com/flovan/headstart\n' +
 		'\n' +
 		'-------\n')
@@ -118,10 +118,6 @@ function logTasks () {
 		'\t\tAdd the boilerplate files to the current directory'
 	);
 	console.log(
-		chalk.magenta('serve'),
-		'\t\tKickstart the engine and start developing'
-	);
-	console.log(
 		chalk.magenta('build'),
 		'\t\tBuild the project\n',
 		chalk.grey('--production'),
@@ -129,20 +125,22 @@ function logTasks () {
 		chalk.grey('--serve'),
 		'\tServe the files on a static address\n',
 		chalk.grey('--open'),
-		'\tOpen up a browser for you\n',
+		'\tOpen up a browser for you (default Google Chrome)\n',
+		chalk.grey('--edit'),
+		'\tOpen the files in your editor (default Sublime Text)\n',
 		chalk.grey('--nolr'),
 		'\tDisables the livereload snippet\n'
 	);
 	console.log(
 		chalk.magenta('i'),
-		' or ',
+		'or',
 		chalk.magenta('info'),
-		' to print out this message'
+		'to print out this message'
 	);
 	console.log(
 		chalk.magenta('-v'),
-		'or ',
+		'or',
 		chalk.magenta('--version'),
-		' to print out the version of your Headstart CLI\n'
+		'to print out the version of your Headstart CLI\n'
 	);
 }
