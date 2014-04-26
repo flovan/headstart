@@ -20,6 +20,8 @@
   - Try implementing deporder for non-hardcoded js dependency management (https://www.npmjs.org/package/gulp-deporder/)
   - Try using gulp-linker instead of the complicated tap/inject setup (https://www.npmjs.org/package/gulp-linker/)
   - Generate a cache manifeset for --production (https://www.npmjs.org/package/gulp-manifest/ + http://diveintohtml5.info/offline.html)
+  - Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
+  - Make sure flags are inter-changeable (eg running --open without --server should throw error)
 
 ### Website TODO's
 
