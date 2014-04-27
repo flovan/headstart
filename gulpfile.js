@@ -14,6 +14,8 @@ var
 
 	gulp 				= require('gulp'),
 	rimraf 				= require('gulp-rimraf'),
+	download			= require('gulp-download'),
+	unzip				= require('gulp-unzip'),
 	watch 				= require('gulp-watch'),
 	plumber 			= require('gulp-plumber'),
 	gulpif 				= require('gulp-if'),
