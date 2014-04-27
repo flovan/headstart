@@ -8,9 +8,8 @@
 ### Workflow TODO's:
 
   - Fix image optimization (https://www.npmjs.org/package/gulp-imagemin)
-  - Convert $(document).on('ready') to .ready()
   - Check if process still crashed with added/deleted folders
-  - Extract boilerplate files into different repo and scaffold them from there
+  - Scaffold boilerplate them from external repo
   - Allow custom repo's to be set for scaffolding
   - Add W3C validation option to config (https://www.npmjs.org/package/gulp-w3cjs/)
   - See if gulp-sass-graph can be replaced by gulp-newer (https://www.npmjs.org/package/gulp-changed/)
