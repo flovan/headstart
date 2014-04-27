@@ -54,6 +54,30 @@ var Utils = (function() {
 		},*/
 
 		/**
+		 * Injects script and style tags for older browser
+		 */
+		/*patchOldie: function(isProduction)
+		{
+			// Load and include the js patches
+			var script = document.createElement('script');
+			script.onreadystatechange = function() {
+
+				if (script.readyState === 'loaded') {
+					document.body.appendChild(script);
+				}
+			};
+			script.src = 'js/ie' + (isProduction ? '.min' : '') + '.js';
+
+			// Load and include the css patches
+			if (document.createStyleSheet) {
+				document.createStyleSheet('css/ie' + (isProduction ? '.min' : '') + '.css');
+			} else {
+				$('<link rel="stylesheet" type="text/css" href="css/ie' + (isProduction ? '.min' : '') + '.css" />').appendTo('head');
+			}
+			log('testlog');
+		},*/
+
+		/**
 		 * Shares a url through a social service out of the defined set (Facebook, Twitter, Google+, Pinterest or LinkedIn).
 		 * @param  {Sting} service The service to share onto. Can be "facebook", "twitter", "googleplus", "pinterest" or "linkedin".
 		 * @param  {Object} args The options object.
