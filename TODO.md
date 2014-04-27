@@ -7,21 +7,18 @@
 
 ### Workflow TODO's:
 
-  - When having multiple HTML pages, each one is rendered again when only one of them changes.
   - Fix image optimization (https://www.npmjs.org/package/gulp-imagemin)
   - Convert $(document).on('ready') to .ready()
   - Check if process still crashed with added/deleted folders
   - Extract boilerplate files into different repo and scaffold them from there
   - Allow custom repo's to be set for scaffolding
   - Add W3C validation option to config (https://www.npmjs.org/package/gulp-w3cjs/)
-  - See if gulp-sass-graph and gulp-changed can be replaced by gulp-newer (https://www.npmjs.org/package/gulp-changed/)
+  - See if gulp-sass-graph can be replaced by gulp-newer (https://www.npmjs.org/package/gulp-changed/)
   - Find better (smaller, dep-less) way of stripping comments from --production HTML
-  - When --serve without --open, copy url to clipboard (https://www.npmjs.org/package/gulp-clipboard/)
-  - Try implementing deporder for non-hardcoded js dependency management (https://www.npmjs.org/package/gulp-deporder/)
-  - Try using gulp-linker instead of the complicated tap/inject setup (https://www.npmjs.org/package/gulp-linker/)
   - Generate a cache manifeset for --production (https://www.npmjs.org/package/gulp-manifest/ + http://diveintohtml5.info/offline.html)
   - Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
   - Make sure flags are inter-changeable (eg running --open without --server should throw error)
+  - Fix sass and js watch to trigger on new/deleted files
 
 ### Website TODO's
 

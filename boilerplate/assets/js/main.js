@@ -9,7 +9,7 @@ var _ = require('underscore');
 
 $.domReady(function() {
 
-	log('_## Index script running_');
+	log('_## Document ready_');
 
 	// VARS -------------------------------------------------------------------
 	//

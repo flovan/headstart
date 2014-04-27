@@ -1,46 +1,46 @@
 'use strict';
 
 var
-	path = require('path'),
-	fs = require('fs'),
-	ncp = require('ncp').ncp,
-	chalk = require('chalk'),
-	_ = require('lodash'),
-	prompt = require('inquirer').prompt,
-	sequence = require('run-sequence'),
-	stylish = require('jshint-stylish'),
-	open = require('open'),
+	path 				= require('path'),
+	fs 					= require('fs'),
+	ncp 				= require('ncp').ncp,
+	chalk 				= require('chalk'),
+	_ 					= require('lodash'),
+	prompt 				= require('inquirer').prompt,
+	sequence 			= require('run-sequence'),
+	stylish 			= require('jshint-stylish'),
+	open 				= require('open'),
+	copy_paste 			= require("copy-paste").silent(),
 
-	gulp = require('gulp'),
-	rimraf = require('gulp-rimraf'),
-	watch = require('gulp-watch'),
-	plumber = require('gulp-plumber'),
-	gulpif = require('gulp-if'),
-	rename = require('gulp-rename'),
-	connect = require('gulp-connect'),
-	exclude = require('gulp-ignore').exclude,
-	include = require('gulp-ignore').include,
-	//	sass = require('gulp-sass')
-	sass = require('gulp-ruby-sass'),
-	sassgraph = require('gulp-sass-graph'),
-	autoprefixer = require('gulp-autoprefixer'),
-	jshint = require('gulp-jshint'),
-	concat = require('gulp-concat'),
-	replace = require('gulp-replace'),
-	uglify = require('gulp-uglify'),
-	newer = require('gulp-newer'),
-	imagemin = require('gulp-imagemin'),
-	header = require('gulp-header'),
-	footer = require('gulp-footer'),
-	tap	= require('gulp-tap'),
-	inject = require('gulp-inject'),
+	gulp 				= require('gulp'),
+	rimraf 				= require('gulp-rimraf'),
+	watch 				= require('gulp-watch'),
+	plumber 			= require('gulp-plumber'),
+	gulpif 				= require('gulp-if'),
+	rename 				= require('gulp-rename'),
+	connect 			= require('gulp-connect'),
+	//	sass 			= require('gulp-sass')
+	sass 				= require('gulp-ruby-sass'),
+	sassgraph 			= require('gulp-sass-graph'),
+	autoprefixer 		= require('gulp-autoprefixer'),
+	jshint 				= require('gulp-jshint'),
+	deporder 			= require('gulp-deporder'),
+	concat 				= require('gulp-concat'),
+	replace 			= require('gulp-replace'),
+	uglify 				= require('gulp-uglify'),
+	newer 				= require('gulp-newer'),
+	imagemin 			= require('gulp-imagemin'),
+	header 				= require('gulp-header'),
+	footer 				= require('gulp-footer'),
+	tap					= require('gulp-tap'),
+	inject 				= require('gulp-inject'),
 
-	flags = require('minimist')(process.argv.slice(2)),
-	boilerplatePath = __dirname + '/boilerplate',
-	cwd = process.cwd(),
-	lrStarted = false,
-	lrDisable = flags.nolr || false,
-	isProduction = flags.production || flags.prod || false,
+	flags 				= require('minimist')(process.argv.slice(2)),
+	boilerplatePath 	= __dirname + '/boilerplate',
+	cwd 				= process.cwd(),
+	lrStarted 			= false,
+	lrDisable 			= flags.nolr || false,
+	isProduction 		= flags.production || flags.prod || false,
 	config;
 ;
 
@@ -184,10 +184,40 @@ gulp.task('build', function (cb) {
 		// Serve files if Headstart was run with the --serve flag
 		console.log(chalk.grey('Building...'));
 		if (flags.serve) {
-			sequence('clean-export', ['sass', 'scripts-view', 'scripts-main', 'images', 'misc', 'other'], 'templates', 'server', cb);
+			sequence(
+				'clean-export',
+				[
+					'sass',
+					'scripts-view',
+					'scripts-main',
+					'scripts-ie',
+					'images',
+					'misc',
+					'other'
+				],
+				'templates',
+				'server',
+				cb
+			);
 		} else {
-			sequence('clean-export', ['sass', 'scripts-view', 'scripts-main', 'images', 'misc', 'other'], 'templates', cb);
-		}	
+			sequence(
+				'clean-export',
+				[
+					'sass',
+					'scripts-view',
+					'scripts-main',
+					'scripts-ie',
+					'images',
+					'misc',
+					'other'
+				],
+				'templates',
+				function () {
+					openEditor(flags.edit);
+					cb(null);
+				}
+			);
+		}
 	});
 });
 
@@ -223,7 +253,7 @@ gulp.task('sass', function (cb) {
 	return ( !lrStarted ?
 			gulp.src('./assets/sass/*.scss')
 			:
-			watch({ glob: './assets/sass/**/*.scss', emitOnGlob: false, name: 'SCSS' })
+			watch({ glob: './assets/sass/**/*.scss', emitOnGlob: false, name: 'SCSS', silent: true })
 		)
 		.pipe(plumber({ errorHandler: handleError }))
 		.pipe(gulpif(lrStarted, sassgraph(['./assets/sass'])))
@@ -269,11 +299,6 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 
 				(isProduction ? '!' : '') + './assets/js/libs/dev/*.js',
 
-				'./assets/js/libs/patches/matchmedia.polyfill.js',
-				'./assets/js/libs/patches/matchmedia.addListener.js',
-				'./assets/js/libs/patches/respond.js',
-				'./assets/js/libs/patches/*.js',
-
 				'./assets/js/libs/*.js',
 				'./assets/js/core/*.js',
 				'./assets/js/*.js',
@@ -298,6 +323,17 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 	;
 });
 
+gulp.task('scripts-ie', function (cb) {
+
+	// Process .js files
+	// Files are ordered for dependency sake
+	return gulp.src('./assets/js/libs/patches/**/*.js')
+		.pipe(deporder())
+		.pipe(concat('ie.min.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest(config.export + '/assets/js'));
+})
+
 // IMAGES ---------------------------------------------------------------------
 //
 
@@ -313,7 +349,7 @@ gulp.task('images', function (cb) {
 			'./assets/images/**/*.svg'
 		])
 		.pipe(plumber({ errorHandler: handleError }))
-		.pipe(newer(config.export + '/images'))
+		.pipe(newer(config.export + '/assets/images'))
 		//.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
 		.pipe(gulp.dest(config.export + '/assets/images'))
 		.pipe(gulpif(lrStarted, connect.reload()))
@@ -321,10 +357,10 @@ gulp.task('images', function (cb) {
 
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
-	gulpif(isProduction, gulp.src('./assets/images/icons/favicon.png')
+	gulp.src('./assets/images/icons/favicon.png')
 		.pipe(rename({extname: '.ico'}))
 		.pipe(gulp.dest(config.export))
-	);
+	;
 
 	cb(null);
 });
@@ -339,10 +375,11 @@ gulp.task('other', function (cb) {
 	return gulp.src([
 			'./assets/**/*',
 			'!./assets/sass',
-			'!./assets/js',
-			'!./assets/images'
+			'!./assets/sass/**/*',
+			'!./assets/js/**/*',
+			'!./assets/images/**/*'
 		])
-		.pipe(gulp.dest(config.export))
+		.pipe(gulp.dest(config.export + '/assets'))
 	;
 });
 
@@ -370,15 +407,10 @@ gulp.task('misc', function (cb) {
  
 gulp.task('templates', function (cb) {
 
-	// Inject links to correct assets in all the .html files
-	// Add livereload tag in development
-	// Minify in production
-	//
-	// Note:
-	// HTML comments are being left in for the purpose of having conditional statements.
-	// Perhaps this could be made optional through the config setting.
+	// Inject links to correct assets in all the .* template files
+	// Add livereload tag when not in --production
 
-	gulp.src('./templates/*.html')
+	gulp.src('./templates/*.*')
 		.pipe(tap(function(htmlFile)
 		{
 			// Production will get 1 file only
@@ -393,11 +425,6 @@ gulp.task('templates', function (cb) {
 
 						(isProduction ? '!' : '') + './assets/js/libs/dev/*.js',
 
-						'./assets/js/libs/patches/matchmedia.polyfill.js',
-						'./assets/js/libs/patches/matchmedia.addListener.js',
-						'./assets/js/libs/patches/respond.js',
-						'./assets/js/libs/patches/*.js',
-
 						'./assets/js/libs/*.js',
 						'./assets/js/core/*.js',
 						'./assets/js/*.js',
@@ -406,18 +433,22 @@ gulp.task('templates', function (cb) {
 						'!**/_*.js'
 					],
 				baseName = path.basename(htmlFile.path),
-				viewBaseName = _.last(baseName.split('.')[0].split('-')),
+				nameParts = baseName.split('.'),
+				ext = _.last(nameParts),
+				viewBaseName = _.last(nameParts[0].split('view-')),
 				viewName = 'view-' + viewBaseName + (isProduction ? '.min' : '')
 			;
 
 			// Add specific js and css files to inject queue
 			injectItems.push(config.export + '/assets/js/' + viewName + '.js');
-			injectItems.push(config.export + '/assets/css/common' + (isProduction ? '.min' : '') + '.css')
+			injectItems.push(config.export + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
 			injectItems.push(config.export + '/assets/css/' + viewName + '.css');
 
 			// Combine with header and footer and
 			// inject files into the HTML file
+
 			gulp.src('./templates/' + baseName)
+				.pipe(newer(config.export))
 				.pipe(header(fs.readFileSync('./templates/common/header.html', 'utf8')))
 				.pipe(footer(fs.readFileSync('./templates/common/footer.html', 'utf8')))
 				.pipe(inject(gulp.src(injectItems, {read: false}), {
@@ -426,8 +457,10 @@ gulp.task('templates', function (cb) {
 				}))
 				.pipe(rename({basename: viewBaseName}))
 				.pipe(gulp.dest(config.export))
-				.pipe(gulpif(lrStarted, connect.reload()));
-		}));
+				.pipe(gulpif(lrStarted, connect.reload()))
+			;
+		}))
+	;
 
 	cb(null);
 });
@@ -435,9 +468,38 @@ gulp.task('templates', function (cb) {
 // SERVER ---------------------------------------------------------------------
 //
 
+// Open served files in browser
+function openBrowser (open) {
+	if (open || flags.open) {
+		console.log(
+			chalk.grey('Opening'),
+			chalk.magenta('http://' + config.host + ':' + config.port),
+			chalk.grey('in'),
+			chalk.magenta(config.browser)
+		);
+		open('http://' + config.host + ':' + config.port, config.browser);
+	} else {
+		copy('http://' + config.host + ':' + config.port);
+		console.log(chalk.cyan('Copied url to clipboard!'));
+	}
+}
+
+// Open files in editor
+function openEditor (edit) {
+	if(edit || flags.edit) {
+		console.log(
+			chalk.grey('Opening'),
+			chalk.magenta(cwd),
+			chalk.grey('in'),
+			chalk.magenta(config.editor)
+		);
+		open(cwd, config.editor);
+	}
+}
+
 gulp.task('server', function (cb) {
 
-	console.log(chalk.grey('Serving files...'));
+	console.log(chalk.grey('Starting server...'));
 
 	// Start the livereload server and connect to it
 	sequence('connect-livereload', function () {
@@ -449,27 +511,9 @@ gulp.task('server', function (cb) {
 		// based on the flag above
 		gulp.start('sass');
 
-		// Open browser window
-		if (flags.open) {
-			console.log(
-				chalk.grey('Opening'),
-				chalk.magenta('http://' + config.host + ':' + config.port),
-				chalk.grey('in'),
-				chalk.magenta(config.browser)
-			);
-			open('http://' + config.host + ':' + config.port, config.browser);
-		}
-
-		if(flags.edit) {
-			console.log(
-				chalk.grey('Opening'),
-				chalk.magenta(cwd),
-				chalk.grey('in'),
-				chalk.magenta(config.editor)
-			);
-			open(cwd, config.editor);
-		}
-
+		console.log(chalk.cyan('Serving files at'), chalk.magenta('http://' + config.host + ':' + config.port));
+		openBrowser(flags.open);
+		openEditor(flags.edit);
 		console.log(chalk.green('Ready ... set ... go!'));
 
 		cb();
@@ -477,12 +521,12 @@ gulp.task('server', function (cb) {
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
-	watch({ glob: ['./**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', emit: 'all' }, function() {
+	watch({ glob: ['./**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', silent: true }, function() {
 		sequence('scripts-view', 'templates');
 	}).pipe(plumber({ errorHandler: handleError }));
 
-	watch({ glob: ['./assets/js/**/*.js', '!**/view-*.js'], emitOnGlob: false, name: 'JS-MAIN', emit: 'all' }, function() {
-		sequence('scripts-main', 'templates');
+	watch({ glob: ['./assets/js/**/*.js', '!**/view-*.js'], emitOnGlob: false, name: 'JS-MAIN', silent: true }, function() {
+		sequence('scripts-main', 'scripts-ie', 'templates');
 	}).pipe(plumber({ errorHandler: handleError }));
 
 	// Watch images and call their task
@@ -491,18 +535,18 @@ gulp.task('server', function (cb) {
 	});
 
 	// Watch templates and call its task
-	gulp.watch('./templates/**/*', function () {
-		gulp.start('templates');
-	});
+	watch({ glob: ['./templates/**/*'], emitOnGlob: false, name: 'TEMPLATE', silent: true }, function() {
+		sequence('templates');
+	}).pipe(plumber({ errorHandler: handleError }));
 });
 
 gulp.task('connect-livereload', function () {
-	//connect.__proto__.log = function () { console.log(chalk.magenta('I caught a log!')); };
 	connect.server({
 		root: [config.export],
 		host: config.host,
 		port: config.port,
-		livereload: flags.nolr ? false : true
+		livereload: flags.nolr ? false : true,
+		silent: true
 	});
 });
 
