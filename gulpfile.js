@@ -121,7 +121,7 @@ function moveBoilerplateFiles () {
 
 		// Ask the user if he wants to continue and
 		// have the files served
-		console.log(chalk.green('All done!'));
+		console.log(chalk.green('✔ All done!'));
 		prompt({
 				type: 'confirm',
 				message: 'Would you like to have these files served?',
@@ -341,9 +341,16 @@ gulp.task('scripts-ie', function (cb) {
 
 gulp.task('images', function (cb) {
 
+	// Make a copy of the favicon.png, and make a .ico version for IE
+	// Move to root of export folder
+	gulp.src('./assets/images/icons/favicon.png')
+		.pipe(rename({extname: '.ico'}))
+		.pipe(gulp.dest(config.export))
+	;
+
 	// Grab all image files, filter out the new ones and copy over
 	// In --production mode, optimize them first
-	gulp.src([
+	return gulp.src([
 			'./assets/images/**/*.jpg',
 			'./assets/images/**/*.jpeg',
 			'./assets/images/**/*.png',
@@ -352,19 +359,10 @@ gulp.task('images', function (cb) {
 		])
 		.pipe(plumber({ errorHandler: handleError }))
 		.pipe(newer(config.export + '/assets/images'))
-		//.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
+		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true }))
 		.pipe(gulp.dest(config.export + '/assets/images'))
 		.pipe(gulpif(lrStarted, connect.reload()))
 	;
-
-	// Make a copy of the favicon.png, and make a .ico version for IE
-	// Move to root of export folder
-	gulp.src('./assets/images/icons/favicon.png')
-		.pipe(rename({extname: '.ico'}))
-		.pipe(gulp.dest(config.export))
-	;
-
-	cb(null);
 });
 
 // OTHER ----------------------------------------------------------------------
@@ -398,7 +396,7 @@ gulp.task('misc', function (cb) {
 	// In --production mode, copy over all the other stuff
 	if (isProduction) {
 		gulp.src(['./misc/*', '!**/htaccess.txt'])
-			.pipe(gulp.dest(config.dist));
+			.pipe(gulp.dest(config.export));
 	}
 
     cb(null);
