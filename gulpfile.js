@@ -4,7 +4,6 @@ var
 	path 				= require('path'),
 	http				= require ('http'),
 	fs 					= require('fs'),
-	statusbar			= require('status-bar'),
 	ncp 				= require('ncp').ncp,
 	chalk 				= require('chalk'),
 	_ 					= require('lodash'),
@@ -13,6 +12,7 @@ var
 	stylish 			= require('jshint-stylish'),
 	open 				= require('open'),
 	copy_paste 			= require('copy-paste').silent(),
+	ghdownload			= require('github-download'),
 
 	gulp 				= require('gulp'),
 	rimraf 				= require('gulp-rimraf'),
@@ -38,9 +38,9 @@ var
 	inject 				= require('gulp-inject'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
-	boilerplateUrl		= 'https://github.com/flovan/headstart-boilerplate/archive/master.zip',
-	tmpFolder			= '.tmp',
+	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate'},
 	cwd 				= process.cwd(),
+	tmpFolder			= '.tmp',
 	lrStarted 			= false,
 	lrDisable 			= flags.nolr || false,
 	isProduction 		= flags.production || flags.prod || false,
@@ -94,7 +94,7 @@ gulp.task('init', function (cb) {
 					if (answer.overridconfirm) {
 						// Clean up directory
 						console.log(chalk.grey('Emptying current directory'));
-						gulp.start('clean-cwd', downloadBoilerplateFiles);
+						sequence('clean-tmp', 'clean-cwd', downloadBoilerplateFiles);
 					}
 					else process.exit(0);
 				});
@@ -109,92 +109,72 @@ gulp.task('init', function (cb) {
 
 function downloadBoilerplateFiles () {
 
-	var bar;
-
+	// Download the boilerplate files with a progress bar
 	console.log(chalk.grey('Downloading boilerplate files...'));
-	http.get(boilerplateUrl, function (res) {
 
-		bar = statusbar
-			.create ({total: res.headers["content-length"]})
-			.on("render", function (stats) {
-
-				process.stdout.write (
-				path.basename(url) + " " +
-				this.format.storage(stats.currentSize) + " " +
-				this.format.speed(stats.speed) + " " +
-				this.format.time(stats.elapsedTime) + " " +
-				this.format.time(stats.remainingTime) + " [" +
-				this.format.progressBar(stats.percentage) + "] " +
-				this.format.percentage(stats.percentage));
-				process.stdout.cursorTo(0);
-			})
-			.on('finish', function () {
-
-			})
-		;
-
-		res.pipe (bar);
-	}).on ("error", function (error) {
-
-		if (bar) bar.cancel ();
-		console.error(chalk.red('An error occurred. Aborting.'), error);
-	});
-
-	// download(boilerplateUrl)
-	// 	.pipe(unzip())
-	// 	.pipe(gulp.dest(tmpFolder))
-	// ;
-
-	// Move files from the global boilerplate folder
-	// into the current working directory
-	//console.log(chalk.grey('Moving boilerplate files to'), chalk.magenta(cwd));
-
-	/*ncp(boilerplatePath, cwd, function (err) {
-
-		if (err) {
-			console.log(chalk.red('Something went wrong'), err);
+	ghdownload(gitConfig, tmpFolder)
+		.on('error', function (error) {
+			console.log(chalk.red('An error occurred. Aborting.', error));
 			process.exit(0);
-		}
+		})
+		.on('end', function () {
+			console.log(chalk.green('✔ Download complete!'));
+			console.log(chalk.grey('Cleaning up...'));
 
-		// Ask the user if he wants to continue and
-		// have the files served
-		console.log(chalk.green('✔ All done!'));
-		prompt({
-				type: 'confirm',
-				message: 'Would you like to have these files served?',
-				name: 'build',
-				default: true
-		}, function (buildAnswer) {
+			ncp(tmpFolder, cwd, function (err) {
 
-			if (buildAnswer.build) {
-				flags.serve = true;
-				prompt({
-						type: 'confirm',
-						message: 'Should they be opened in the browser?',
-						name: 'open',
-						default: true
+				if (err) {
+					console.log(chalk.red('Something went wrong. Please try again'), err);
+					process.exit(0);
+				}
 
-				}, function (openAnswer) {
-
-					if (openAnswer.open) {
-						flags.open = true;
-						prompt({
-								type: 'confirm',
-								message: 'Should they be opened in an editor?',
-								name: 'edit',
-								default: true
-
-						}, function (editAnswer) {
-
-							if (editAnswer.edit) flags.edit = true;
-							gulp.start('build')
-						});
-					}
+				sequence('clean-tmp', function () {
+					finishInit();
 				});
-			}
-			else process.exit(0);
-		});
-	});*/
+			});
+		})
+	;
+}
+
+function finishInit () {
+
+	// Ask the user if he wants to continue and
+	// have the files served
+	prompt({
+			type: 'confirm',
+			message: 'Would you like to have these files served?',
+			name: 'build',
+			default: true
+	}, function (buildAnswer) {
+
+		if (buildAnswer.build) {
+			flags.serve = true;
+			prompt({
+					type: 'confirm',
+					message: 'Should they be opened in the browser?',
+					name: 'open',
+					default: true
+
+			}, function (openAnswer) {
+
+				if (openAnswer.open) {
+					flags.open = true;
+					prompt({
+							type: 'confirm',
+							message: 'Should they be opened in an editor?',
+							name: 'edit',
+							default: true
+
+					}, function (editAnswer) {
+
+						if (editAnswer.edit) flags.edit = true;
+						gulp.start('build');
+					});
+				}
+			});
+		}
+		else process.exit(0);
+	});
 }
 
 // BUILD ----------------------------------------------------------------------
@@ -252,7 +232,7 @@ gulp.task('build', function (cb) {
 				],
 				'templates',
 				function () {
-					openEditor(flags.edit);
+					openEditor();
 					console.log(chalk.green('✔ All done!'));
 					cb(null);
 				}
@@ -273,11 +253,20 @@ gulp.task('clean-export', function (cb) {
 });
 
 gulp.task('clean-cwd', function (cb) {
-	// Remove export folder and files
+
+	// Remove cwd files
 	return gulp.src(cwd + '/**/*', {read: false})
 		.pipe(rimraf({force: true}))
 	;
-})
+});
+
+gulp.task('clean-tmp', function (cb) {
+
+	// Remove temp folder
+	return gulp.src(tmpFolder, {read: false})
+		.pipe(rimraf({force: true}))
+	;
+});
 
 // SASS -----------------------------------------------------------------------
 //
@@ -507,32 +496,29 @@ gulp.task('templates', function (cb) {
 //
 
 // Open served files in browser
-function openBrowser (open) {
-	if (open || flags.open) {
-		console.log(
-			chalk.grey('Opening'),
-			chalk.magenta('http://' + config.host + ':' + config.port),
-			chalk.grey('in'),
-			chalk.magenta(config.browser)
-		);
-		open('http://' + config.host + ':' + config.port, config.browser);
-	} else {
-		copy('http://' + config.host + ':' + config.port);
-		console.log(chalk.cyan('Copied url to clipboard!'));
-	}
+function openBrowser () {
+
+	console.log(
+		chalk.grey('Opening'),
+		chalk.magenta('http://' + config.host + ':' + config.port),
+		chalk.grey('in'),
+		chalk.magenta(config.browser)
+	);
+	open('http://' + config.host + ':' + config.port, config.browser);
+
+	console.log(chalk.cyan('Copied url to clipboard!'));
+	copy('http://' + config.host + ':' + config.port);
 }
 
 // Open files in editor
-function openEditor (edit) {
-	if(edit || flags.edit) {
-		console.log(
-			chalk.grey('Opening'),
-			chalk.magenta(cwd),
-			chalk.grey('in'),
-			chalk.magenta(config.editor)
-		);
-		open(cwd, config.editor);
-	}
+function openEditor () {
+	console.log(
+		chalk.grey('Opening'),
+		chalk.magenta(cwd),
+		chalk.grey('in'),
+		chalk.magenta(config.editor)
+	);
+	open(cwd, config.editor);
 }
 
 gulp.task('server', function (cb) {
@@ -550,8 +536,8 @@ gulp.task('server', function (cb) {
 		gulp.start('sass');
 
 		console.log(chalk.cyan('Serving files at'), chalk.magenta('http://' + config.host + ':' + config.port));
-		openBrowser(flags.open);
-		openEditor(flags.edit);
+		if(flags.open) openBrowser();
+		if(flags.edit) openEditor();
 		console.log(chalk.green('Ready ... set ... go!'));
 
 		cb();
