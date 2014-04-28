@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/flovan/Headstart"
+    "url": "git://github.com/flovan/headstart"
   },
   "bugs": {
     "url": "https://github.com/flovan/headstart/issues"
@@ -18,7 +18,7 @@
   "dependencies": {
     "chalk": "^0.4.0",
     "copy-paste": "^0.2.0",
-    "github-download": "0.2.0",
+    "github-download": "^0.2.0",
     "gulp": "^3.6.2",
     "gulp-autoprefixer": "0.0.7",
     "gulp-concat": "^2.2.0",
