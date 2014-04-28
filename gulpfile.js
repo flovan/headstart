@@ -38,7 +38,7 @@ var
 	inject 				= require('gulp-inject'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
-	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate'},
+	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate', ref: 'wip'}, // ref: 'master'
 	cwd 				= process.cwd(),
 	tmpFolder			= '.tmp',
 	lrStarted 			= false,
@@ -157,20 +157,18 @@ function finishInit () {
 
 			}, function (openAnswer) {
 
-				if (openAnswer.open) {
-					flags.open = true;
-					prompt({
-							type: 'confirm',
-							message: 'Should they be opened in an editor?',
-							name: 'edit',
-							default: true
+				if (openAnswer.open) flags.open = true;
+				prompt({
+					type: 'confirm',
+					message: 'Should they be opened in an editor?',
+					name: 'edit',
+					default: true
 
-					}, function (editAnswer) {
+				}, function (editAnswer) {
 
-						if (editAnswer.edit) flags.edit = true;
-						gulp.start('build');
-					});
-				}
+					if (editAnswer.edit) flags.edit = true;
+					gulp.start('build');
+				});
 			});
 		}
 		else process.exit(0);
