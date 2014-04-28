@@ -36,7 +36,7 @@
     "gulp-replace": "^0.2.0",
     "gulp-rimraf": "^0.1.0",
     "gulp-ruby-sass": "^0.4.3",
-    "gulp-sass-graph": "^1.0.0",
+    "gulp-sass-graph": "git://github.com/lox/gulp-sass-graph",
     "gulp-tap": "^0.1.1",
     "gulp-uglify": "^0.2.1",
     "gulp-watch": "^0.6.2",
@@ -50,7 +50,9 @@
     "rimraf": "^2.2.6",
     "run-sequence": "^0.3.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp-debug": "^0.3.0"
+  },
   "engines": {
     "node": ">=0.8.0"
   },

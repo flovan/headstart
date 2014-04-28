@@ -280,12 +280,12 @@ gulp.task('sass', function (cb) {
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return ( !lrStarted ?
-			gulp.src('./assets/sass/*.scss')
+			gulp.src('assets/sass/*.scss')
 			:
-			watch({ glob: './assets/sass/**/*.scss', emitOnGlob: false, name: 'SCSS', silent: true })
+			watch({ glob: 'assets/sass/**/*.scss', emitOnGlob: false, name: 'SCSS', silent: true })
+				.pipe(plumber({ errorHandler: handleError }))
+				.pipe(sassgraph(['assets/sass']))
 		)
-		.pipe(plumber({ errorHandler: handleError }))
-		.pipe(gulpif(lrStarted, sassgraph(['./assets/sass'])))
 		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
@@ -308,11 +308,11 @@ gulp.task('hint-scripts', function (cb) {
 	else {
 		// Hint all non-lib js files and exclude _ prefixed files
 		return gulp.src([
-				'./assets/js/*.js',
-				'./assets/js/core/*.js',
+				'assets/js/*.js',
+				'assets/js/core/*.js',
 				'!_*.js'
 			])
-			.pipe(jshint('./.jshintrc'))
+			.pipe(jshint('.jshintrc'))
 			.pipe(jshint.reporter(stylish))
 		;
 	}
@@ -323,17 +323,17 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 	// Process .js files
 	// Files are ordered for dependency sake
 	return gulp.src([
-				'./assets/js/libs/jquery*.js',
-				'./assets/js/libs/ender.js',
+				'assets/js/libs/jquery*.js',
+				'assets/js/libs/ender.js',
 
-				(isProduction ? '!' : '') + './assets/js/libs/dev/*.js',
+				(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
 
-				'./assets/js/libs/*.js',
-				'./assets/js/core/*.js',
-				'./assets/js/*.js',
-				'!' + './assets/js/view-*.js',
+				'assets/js/libs/*.js',
+				'assets/js/core/*.js',
+				'assets/js/*.js',
+				'!' + 'assets/js/view-*.js',
 				'!**/_*.js'
-			], {base: './' + './assets/js'}
+			], {base: '' + 'assets/js'}
 		)
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
@@ -344,7 +344,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 
 gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 
-	return gulp.src('./assets/js/view-*.js')
+	return gulp.src('assets/js/view-*.js')
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
@@ -356,7 +356,7 @@ gulp.task('scripts-ie', function (cb) {
 
 	// Process .js files
 	// Files are ordered for dependency sake
-	return gulp.src('./assets/js/libs/patches/**/*.js')
+	return gulp.src('assets/js/libs/patches/**/*.js')
 		.pipe(deporder())
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
@@ -370,7 +370,7 @@ gulp.task('images', function (cb) {
 
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
-	gulp.src('./assets/images/icons/favicon.png')
+	gulp.src('assets/images/icons/favicon.png')
 		.pipe(rename({extname: '.ico'}))
 		.pipe(gulp.dest(config.export))
 	;
@@ -378,11 +378,11 @@ gulp.task('images', function (cb) {
 	// Grab all image files, filter out the new ones and copy over
 	// In --production mode, optimize them first
 	return gulp.src([
-			'./assets/images/**/*.jpg',
-			'./assets/images/**/*.jpeg',
-			'./assets/images/**/*.png',
-			'./assets/images/**/*.gif',
-			'./assets/images/**/*.svg'
+			'assets/images/**/*.jpg',
+			'assets/images/**/*.jpeg',
+			'assets/images/**/*.png',
+			'assets/images/**/*.gif',
+			'assets/images/**/*.svg'
 		])
 		.pipe(plumber({ errorHandler: handleError }))
 		.pipe(newer(config.export + '/assets/images'))
@@ -400,11 +400,11 @@ gulp.task('other', function (cb) {
 	// Make sure other files and folders are copied over
 	// eg. fonts, videos, ...
 	return gulp.src([
-			'./assets/**/*',
-			'!./assets/sass',
-			'!./assets/sass/**/*',
-			'!./assets/js/**/*',
-			'!./assets/images/**/*'
+			'assets/**/*',
+			'!assets/sass',
+			'!assets/sass/**/*',
+			'!assets/js/**/*',
+			'!assets/images/**/*'
 		])
 		.pipe(gulp.dest(config.export + '/assets'))
 	;
@@ -416,13 +416,13 @@ gulp.task('other', function (cb) {
 gulp.task('misc', function (cb) {
 
 	// Make a functional version of the htaccess.txt
-	gulp.src('./misc/htaccess.txt')
+	gulp.src('misc/htaccess.txt')
 		.pipe(rename('.htaccess'))
 		.pipe(gulp.dest(config.export));
 
 	// In --production mode, copy over all the other stuff
 	if (isProduction) {
-		gulp.src(['./misc/*', '!**/htaccess.txt'])
+		gulp.src(['misc/*', '!**/htaccess.txt'])
 			.pipe(gulp.dest(config.export));
 	}
 
@@ -437,7 +437,7 @@ gulp.task('templates', function (cb) {
 	// Inject links to correct assets in all the .* template files
 	// Add livereload tag when not in --production
 
-	gulp.src('./templates/*.*')
+	gulp.src('templates/*.*')
 		.pipe(tap(function(htmlFile)
 		{
 			// Production will get 1 file only
@@ -447,16 +447,16 @@ gulp.task('templates', function (cb) {
 					[config.export + '/assets/js/core-libs.min.js']
 					:
 					[
-						'./assets/js/libs/jquery*.js',
-						'./assets/js/libs/ender.js',
+						'assets/js/libs/jquery*.js',
+						'assets/js/libs/ender.js',
 
-						(isProduction ? '!' : '') + './assets/js/libs/dev/*.js',
+						(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
 
-						'./assets/js/libs/*.js',
-						'./assets/js/core/*.js',
-						'./assets/js/*.js',
+						'assets/js/libs/*.js',
+						'assets/js/core/*.js',
+						'assets/js/*.js',
 
-						'!' + './assets/js/view-*.js',
+						'!' + 'assets/js/view-*.js',
 						'!**/_*.js'
 					],
 				baseName = path.basename(htmlFile.path),
@@ -474,10 +474,10 @@ gulp.task('templates', function (cb) {
 			// Combine with header and footer and
 			// inject files into the HTML file
 
-			gulp.src('./templates/' + baseName)
+			gulp.src('templates/' + baseName)
 				.pipe(newer(config.export))
-				.pipe(header(fs.readFileSync('./templates/common/header.html', 'utf8')))
-				.pipe(footer(fs.readFileSync('./templates/common/footer.html', 'utf8')))
+				.pipe(header(fs.readFileSync('templates/common/header.html', 'utf8')))
+				.pipe(footer(fs.readFileSync('templates/common/footer.html', 'utf8')))
 				.pipe(inject(gulp.src(injectItems, {read: false}), {
 						ignorePath: ['/export']
 					,	addRootSlash: false
@@ -505,13 +505,11 @@ function openBrowser () {
 		chalk.magenta(config.browser)
 	);
 	open('http://' + config.host + ':' + config.port, config.browser);
-
-	console.log(chalk.cyan('Copied url to clipboard!'));
-	copy('http://' + config.host + ':' + config.port);
 }
 
 // Open files in editor
 function openEditor () {
+
 	console.log(
 		chalk.grey('Opening'),
 		chalk.magenta(cwd),
@@ -538,28 +536,31 @@ gulp.task('server', function (cb) {
 		console.log(chalk.cyan('Serving files at'), chalk.magenta('http://' + config.host + ':' + config.port));
 		if(flags.open) openBrowser();
 		if(flags.edit) openEditor();
-		console.log(chalk.green('Ready ... set ... go!'));
 
+		console.log(chalk.cyan('Copied url to clipboard!'));
+		copy('http://' + config.host + ':' + config.port);
+		
+		console.log(chalk.green('Ready ... set ... go!'))
 		cb();
 	});
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
-	watch({ glob: ['./**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', silent: true }, function() {
+	watch({ glob: ['**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', silent: true }, function() {
 		sequence('scripts-view', 'templates');
 	}).pipe(plumber({ errorHandler: handleError }));
 
-	watch({ glob: ['./assets/js/**/*.js', '!**/view-*.js'], emitOnGlob: false, name: 'JS-MAIN', silent: true }, function() {
+	watch({ glob: ['assets/js/**/*.js', '!**/view-*.js'], emitOnGlob: false, name: 'JS-MAIN', silent: true }, function() {
 		sequence('scripts-main', 'scripts-ie', 'templates');
 	}).pipe(plumber({ errorHandler: handleError }));
 
 	// Watch images and call their task
-	gulp.watch('./assets/images/**/*', function () {
+	gulp.watch('assets/images/**/*', function () {
 		gulp.start('images');
 	});
 
 	// Watch templates and call its task
-	watch({ glob: ['./templates/**/*'], emitOnGlob: false, name: 'TEMPLATE', silent: true }, function() {
+	watch({ glob: ['templates/**/*'], emitOnGlob: false, name: 'TEMPLATE', silent: true }, function() {
 		sequence('templates');
 	}).pipe(plumber({ errorHandler: handleError }));
 });
