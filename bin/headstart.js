@@ -1,17 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-/*
-#
-#	▒█░▒█ █▀▀ █▀▀█ ▒█▀▀▄ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀█ ▀▀█▀▀ 
-#	▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ 
-#	▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░ 
-#
-#	A worry-free front-end workflow
-#	➳  https://github.com/flovan/headstart
-#
-*/
-
 var 
 	path = require('path'),
 	fs = require('fs'),
@@ -100,9 +89,23 @@ function launcher (env) {
 function logInfo (cliPackage) {
 	console.log(chalk.cyan(
 		'\n' +
-		'▒█░▒█ █▀▀ █▀▀█ ▒█▀▀▄ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀█ ▀▀█▀▀ \n' +
-		'▒█▀▀█ █▀▀ █▄▄█ ▒█░▒█ ▀▀█ ░▒█░░ █▄▄█ █▄▄▀ ░▒█░░ \n' +
-		'▒█░▒█ ▀▀▀ ▀░░▀ ▒█▄▄▀ ▀▀▀ ░▒█░░ ▀░░▀ ▀░▀▀ ░▒█░░ \n',
+		'MMMMMMMMMMMMMMMMKo;\'..         .\':d0WMMM\n' +
+		'MMMMMMMMMMMMMNo.  ..\',,;;:::;;,\'.   .:0M\n' +
+		'MMMMMMMMMMMMx  .dKWMMMMMMMMMMMMMMWXx,  o\n' +
+		'MMMMMMMMMMMl  oWMMNl,cWMMMMMMMMMMMMMM;  \n' +
+		'MMMMMMMMMMk  lMMMMWd:dWMMMMMMMMMMMMMK. ,\n' +
+		'MMMMMMMMMM; .NMMMMMMMMMMMMMMMMMMMMNl  ,X\n' +
+		'MMMMMMMMMX. .oc;cNMMMMMMMMMMMMMMMO. .kMM\n' +
+		'MMNxo:,..    .\';oWMMMMMMMMMMMMMMW. .NMMM\n' +
+		'MM0\'\';codk\' .NNKOKMMMMMMMMMMMMMMK  cMMMM\n' +
+		'MMMMWNKOdl.      .KMMMMMMMMMMMMMN. ;MMMM\n' +
+		'd:,.     .\'  .k0XWMMMMMMMMMMMMMMM, .NMMM\n' +
+		'l:coxOKNWWN,  cc;\',OMMMMMMMMMMMMMo  OMMM\n' +
+		'MMMMMMN:.      .:lxNMMMMMMMMMMMMMo  OMMM\n' +
+		'MMMMMMWkdxOKK\' .xWMMMMMMMMMMMMMMO. ,WMMM\n' +
+		'MMMMMMMMMMMMMWo  .o0WMMMMMMMN0o\'  :NMMMM\n' +
+		'MMMMMMMMMMMMMMMNo.   .\'\'\'...   \'lKMMMMMM\n' +
+		'MMMMMMMMMMMMMMMMMMKo,.    .\':xXMMMMMMMMM\n',
 		chalk.grey('\nv' + cliPackage.version + '\nA worry-free front-end workflow\n' +
 		'➳  https://github.com/flovan/headstart\n' +
 		'\n' +
