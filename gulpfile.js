@@ -2,7 +2,9 @@
 
 var
 	path 				= require('path'),
+	http				= require ('http'),
 	fs 					= require('fs'),
+	statusbar			= require('status-bar'),
 	ncp 				= require('ncp').ncp,
 	chalk 				= require('chalk'),
 	_ 					= require('lodash'),
@@ -10,12 +12,10 @@ var
 	sequence 			= require('run-sequence'),
 	stylish 			= require('jshint-stylish'),
 	open 				= require('open'),
-	copy_paste 			= require("copy-paste").silent(),
+	copy_paste 			= require('copy-paste').silent(),
 
 	gulp 				= require('gulp'),
 	rimraf 				= require('gulp-rimraf'),
-	download			= require('gulp-download'),
-	unzip				= require('gulp-unzip'),
 	watch 				= require('gulp-watch'),
 	plumber 			= require('gulp-plumber'),
 	gulpif 				= require('gulp-if'),
@@ -38,7 +38,8 @@ var
 	inject 				= require('gulp-inject'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
-	boilerplatePath 	= __dirname + '/boilerplate',
+	boilerplateUrl		= 'https://github.com/flovan/headstart-boilerplate/archive/master.zip',
+	tmpFolder			= '.tmp',
 	cwd 				= process.cwd(),
 	lrStarted 			= false,
 	lrDisable 			= flags.nolr || false,
@@ -93,7 +94,7 @@ gulp.task('init', function (cb) {
 					if (answer.overridconfirm) {
 						// Clean up directory
 						console.log(chalk.grey('Emptying current directory'));
-						gulp.start('clean-cwd', moveBoilerplateFiles);
+						gulp.start('clean-cwd', downloadBoilerplateFiles);
 					}
 					else process.exit(0);
 				});
@@ -101,18 +102,54 @@ gulp.task('init', function (cb) {
 			else process.exit(0);
 		});
 	}
-	else moveBoilerplateFiles();
+	else downloadBoilerplateFiles();
 
 	cb(null);
 });
 
-function moveBoilerplateFiles () {
+function downloadBoilerplateFiles () {
+
+	var bar;
+
+	console.log(chalk.grey('Downloading boilerplate files...'));
+	http.get(boilerplateUrl, function (res) {
+
+		bar = statusbar
+			.create ({total: res.headers["content-length"]})
+			.on("render", function (stats) {
+
+				process.stdout.write (
+				path.basename(url) + " " +
+				this.format.storage(stats.currentSize) + " " +
+				this.format.speed(stats.speed) + " " +
+				this.format.time(stats.elapsedTime) + " " +
+				this.format.time(stats.remainingTime) + " [" +
+				this.format.progressBar(stats.percentage) + "] " +
+				this.format.percentage(stats.percentage));
+				process.stdout.cursorTo(0);
+			})
+			.on('finish', function () {
+
+			})
+		;
+
+		res.pipe (bar);
+	}).on ("error", function (error) {
+
+		if (bar) bar.cancel ();
+		console.error(chalk.red('An error occurred. Aborting.'), error);
+	});
+
+	// download(boilerplateUrl)
+	// 	.pipe(unzip())
+	// 	.pipe(gulp.dest(tmpFolder))
+	// ;
 
 	// Move files from the global boilerplate folder
 	// into the current working directory
-	console.log(chalk.grey('Moving boilerplate files to'), chalk.magenta(cwd));
+	//console.log(chalk.grey('Moving boilerplate files to'), chalk.magenta(cwd));
 
-	ncp(boilerplatePath, cwd, function (err) {
+	/*ncp(boilerplatePath, cwd, function (err) {
 
 		if (err) {
 			console.log(chalk.red('Something went wrong'), err);
@@ -157,7 +194,7 @@ function moveBoilerplateFiles () {
 			}
 			else process.exit(0);
 		});
-	});
+	});*/
 }
 
 // BUILD ----------------------------------------------------------------------
@@ -184,7 +221,7 @@ gulp.task('build', function (cb) {
 
 		// Run build tasks
 		// Serve files if Headstart was run with the --serve flag
-		console.log(chalk.grey('Building...'));
+		console.log(chalk.grey('Building ' + (flags.production ? ' production' : 'dev') + ' version...'));
 		if (flags.serve) {
 			sequence(
 				'clean-export',
@@ -216,6 +253,7 @@ gulp.task('build', function (cb) {
 				'templates',
 				function () {
 					openEditor(flags.edit);
+					console.log(chalk.green('✔ All done!'));
 					cb(null);
 				}
 			);
@@ -399,7 +437,7 @@ gulp.task('misc', function (cb) {
 			.pipe(gulp.dest(config.export));
 	}
 
-    cb(null);
+	cb(null);
 });
 
 // HTML -----------------------------------------------------------------------
