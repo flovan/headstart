@@ -18,6 +18,7 @@
   - Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
   - Make sure flags are inter-changeable (eg running --open without --server should throw error)
   - Fix sass and js watch to trigger on new/deleted files
+  - Set a watch for folder like fonts/video
 
 ### Website TODO's
 
