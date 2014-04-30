@@ -1,8 +1,0 @@
-{
-  "tag-pair": true,
-  "spec-char-escape": true,
-  "id-unique": true,
-  "attr-value-double-quotes": true,
-  "attr-lowercase": true,
-  "img-alt-require": true
-}
