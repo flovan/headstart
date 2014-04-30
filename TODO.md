@@ -1,27 +1,18 @@
 ### A list of things to explore:
 
-  - Make sure regular css files can be used as well
-  - Think about upgrading (eg. user settings that stay local, app files)-
   - Replace livereloading with browser-sync (https://github.com/shakyShane/browser-sync through http://shakyshane.com/gulpjs-sass-browsersync-ftw/)
   - Think about fixed size columns for eg ads
-  - Look at Deporder again to improve script deps (https://www.npmjs.org/package/gulp-deporder/)
-  - Implement W3C validator (https://www.npmjs.org/package/gulp-w3cjs/)
-  - Implement app manifest generator (https://www.npmjs.org/package/gulp-manifest/ + http://diveintohtml5.info/offline.html)
   - git tag the repo's (http://git-scm.com/book/en/Git-Basics-Tagging)
+  - Generate a cache manifeset for --production (https://www.npmjs.org/package/gulp-manifest/ + http://diveintohtml5.info/offline.html)
+  - Add W3C validation option to config (https://www.npmjs.org/package/gulp-w3cjs/)
+  - Allow custom repo's to be set for scaffolding
 
-### Common TODO's:
+### Workflow TODO's:
 
-  - When having multiple HTML pages, each one is rendered again when only one of them changes.
-  - Fix image optimization (currently disabled)
-
-### Main TODO's:
-
-  - /
-
-### Lite TODO's:
-
-  - Try implementing uncss (https://www.npmjs.org/package/gulp-uncss)
-
-### Website TODO's
-
-  - Lazy load header image to improve initial load time (http://bttrlazyloading.julienrenaux.fr/demo/different-sizes.php OR https://github.com/shprink/bttrlazyloading/ OR something else :)
+  - Check if process still crashed with added/deleted folders
+  - Find better (smaller, dep-less) way of stripping comments from --production HTML
+  - Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
+  - Fix sass and js watch to trigger on new/deleted files
+  - Set a watch for folder like fonts/video
+  - Auto-check for updates (http://stackoverflow.com/questions/20686244/install-programmatically-a-npm-package-providing-its-version and http://stackoverflow.com/questions/11949419/nodejs-npm-show-latest-version-of-a-module)
+  
