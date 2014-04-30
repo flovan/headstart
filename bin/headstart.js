@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
+// To see an extended Error Stack Trace, uncomment
+// Error.stackTraceLimit = 9000;
+
 var 
 	path = require('path'),
 	fs = require('fs'),
@@ -38,9 +41,8 @@ function launcher (env) {
 		argv = env.argv,
 		cliPackage = require('../package'),
 		versionFlag = argv.v || argv.version,
-		infoFlag = argv.i || argv.info,
 
-		allowedTasks = ['init', 'serve', 'build', 'i', 'info'],
+		allowedTasks = ['init', 'build', 'i', 'info'],
 		task = argv._,
 		numTasks = task.length
 	;
@@ -52,7 +54,7 @@ function launcher (env) {
 	}
 
 	// Log info if no tasks are passed in
-	if (!numTasks || infoFlag) {
+	if (!numTasks) {
 		logInfo(cliPackage);
 		process.exit(0);
 	}
@@ -64,9 +66,18 @@ function launcher (env) {
 		process.exit(0);
 	}
 
+	// We are now sure we only have 1 task
+	task = task[0];
+
+	// Print info if needed
+	if(task === 'i' || task === 'info') {
+		logInfo(cliPackage);
+		process.exit(0);
+	}
+
 	// Check if task is valid
-	if (_.indexOf(allowedTasks, task[0]) < 0) {
-		console.log(chalk.red('\nThe provided task "' + task[0] + '" was not recognized. Aborting.\n'));
+	if (_.indexOf(allowedTasks, task) < 0) {
+		console.log(chalk.red('\nThe provided task "' + task + '" was not recognized. Aborting.\n'));
 		logTasks();
 		process.exit(0);
 	}
@@ -79,7 +90,7 @@ function launcher (env) {
 
 	// Start the task through Gulp
 	process.nextTick(function() {
-		gulp.start.apply(gulp, task);
+		gulp.start.apply(gulp, [task]);
 	});
 }
 
