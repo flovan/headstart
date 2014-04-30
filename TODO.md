@@ -19,6 +19,7 @@
   - Make sure flags are inter-changeable (eg running --open without --server should throw error)
   - Fix sass and js watch to trigger on new/deleted files
   - Set a watch for folder like fonts/video
+  - "build" without flags shouldn't op in the editor
 
 ### Website TODO's
 
