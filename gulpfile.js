@@ -21,7 +21,7 @@ var
 	gulpif 				= require('gulp-if'),
 	rename 				= require('gulp-rename'),
 	connect 			= require('gulp-connect'),
-	//	sass 			= require('gulp-sass')
+	//	sass 			= require('gulp-sass'),
 	sass 				= require('gulp-ruby-sass'),
 	sassgraph 			= require('gulp-sass-graph'),
 	autoprefixer 		= require('gulp-autoprefixer'),
@@ -32,8 +32,6 @@ var
 	uglify 				= require('gulp-uglify'),
 	newer 				= require('gulp-newer'),
 	imagemin 			= require('gulp-imagemin'),
-	header 				= require('gulp-header'),
-	footer 				= require('gulp-footer'),
 	tap					= require('gulp-tap'),
 	inject 				= require('gulp-inject'),
 
@@ -59,6 +57,9 @@ function handleError (err) {
 	console.log(err.toString());
 	this.emit('end');
 }
+
+// To see an extended Error Stack Trace, uncomment
+// Error.stackTraceLimit = 9000;
 
 // INIT -----------------------------------------------------------------------
 //
@@ -230,7 +231,7 @@ gulp.task('build', function (cb) {
 				],
 				'templates',
 				function () {
-					openEditor();
+					if(flags.edit) openEditor();
 					console.log(chalk.green('✔ All done!'));
 					cb(null);
 				}
@@ -245,7 +246,10 @@ gulp.task('build', function (cb) {
 gulp.task('clean-export', function (cb) {
 
 	// Remove export folder and files
-	return gulp.src(config.export, {read: false})
+	return gulp.src([
+			config.export_templates,
+			config.export_assets + '/assets'
+		], {read: false})
 		.pipe(rimraf({force: true}))
 	;
 });
@@ -288,7 +292,7 @@ gulp.task('sass', function (cb) {
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
-		.pipe(gulp.dest(config.export + '/assets/css'))
+		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 		.pipe(gulpif(lrStarted, connect.reload()))
 	;
 
@@ -336,7 +340,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
-		.pipe(gulp.dest(config.export + '/assets/js'))
+		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
 });
 
@@ -346,7 +350,7 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
-		.pipe(gulp.dest(config.export + '/assets/js'))
+		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
 });
 
@@ -358,7 +362,7 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(deporder())
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
-		.pipe(gulp.dest(config.export + '/assets/js'));
+		.pipe(gulp.dest(config.export_assets + '/assets/js'));
 })
 
 // IMAGES ---------------------------------------------------------------------
@@ -370,7 +374,7 @@ gulp.task('images', function (cb) {
 	// Move to root of export folder
 	gulp.src('assets/images/icons/favicon.png')
 		.pipe(rename({extname: '.ico'}))
-		.pipe(gulp.dest(config.export))
+		.pipe(gulp.dest(config.export_misc))
 	;
 
 	// Grab all image files, filter out the new ones and copy over
@@ -383,9 +387,9 @@ gulp.task('images', function (cb) {
 			'assets/images/**/*.svg'
 		])
 		.pipe(plumber({ errorHandler: handleError }))
-		.pipe(newer(config.export + '/assets/images'))
+		.pipe(newer(config.export_assets+ '/assets/images'))
 		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true }))
-		.pipe(gulp.dest(config.export + '/assets/images'))
+		.pipe(gulp.dest(config.export_assets + '/assets/images'))
 		.pipe(gulpif(lrStarted, connect.reload()))
 	;
 });
@@ -404,7 +408,7 @@ gulp.task('other', function (cb) {
 			'!assets/js/**/*',
 			'!assets/images/**/*'
 		])
-		.pipe(gulp.dest(config.export + '/assets'))
+		.pipe(gulp.dest(config.export_assets + '/assets'))
 	;
 });
 
@@ -416,12 +420,12 @@ gulp.task('misc', function (cb) {
 	// Make a functional version of the htaccess.txt
 	gulp.src('misc/htaccess.txt')
 		.pipe(rename('.htaccess'))
-		.pipe(gulp.dest(config.export));
+		.pipe(gulp.dest(config.export_misc));
 
 	// In --production mode, copy over all the other stuff
 	if (isProduction) {
-		gulp.src(['misc/*', '!**/htaccess.txt'])
-			.pipe(gulp.dest(config.export));
+		gulp.src(['misc/*', '!misc/htaccess.txt'])
+			.pipe(gulp.dest(config.export_misc));
 	}
 
 	cb(null);
@@ -432,9 +436,13 @@ gulp.task('misc', function (cb) {
  
 gulp.task('templates', function (cb) {
 
+	if(flags.onlyassets) {
+		cb(null);
+		return;
+	}
+
 	// Inject links to correct assets in all the .* template files
 	// Add livereload tag when not in --production
-
 	gulp.src('templates/*.*')
 		.pipe(tap(function(htmlFile)
 		{
@@ -442,7 +450,7 @@ gulp.task('templates', function (cb) {
 			// Development gets raw base files
 			var 
 				injectItems = isProduction ?
-					[config.export + '/assets/js/core-libs.min.js']
+					[config.export_assets + '/assets/js/core-libs.min.js']
 					:
 					[
 						'assets/js/libs/jquery*.js',
@@ -459,33 +467,43 @@ gulp.task('templates', function (cb) {
 					],
 				baseName = path.basename(htmlFile.path),
 				nameParts = baseName.split('.'),
-				ext = _.last(nameParts),
+				ext = _.without(nameParts, _.first(nameParts)).join('.'),
 				viewBaseName = _.last(nameParts[0].split('view-')),
 				viewName = 'view-' + viewBaseName + (isProduction ? '.min' : '')
 			;
 
 			// Add specific js and css files to inject queue
-			injectItems.push(config.export + '/assets/js/' + viewName + '.js');
-			injectItems.push(config.export + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
-			injectItems.push(config.export + '/assets/css/' + viewName + '.css');
+			injectItems.push(config.export_assets + '/assets/js/' + viewName + '.js');
+			injectItems.push(config.export_assets + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
+			injectItems.push(config.export_assets + '/assets/css/' + viewName + '.css');
 
-			// Combine with header and footer and
-			// inject files into the HTML file
-
-			gulp.src('templates/' + baseName)
-				.pipe(newer(config.export))
-				.pipe(header(fs.readFileSync('templates/common/header.html', 'utf8')))
-				.pipe(footer(fs.readFileSync('templates/common/footer.html', 'utf8')))
+			// If assembly is on (default), combine with header and footer
+			// and inject asset file references
+			gulp.src([
+					config.assemble_templates ? 'templates/**/header.*' : '',
+					'templates/' + baseName,
+					config.assemble_templates ? 'templates/**/footer.*' : ''
+				])
+				.pipe(concat(baseName))
 				.pipe(inject(gulp.src(injectItems, {read: false}), {
-						ignorePath: ['/export']
-					,	addRootSlash: false
+					ignorePath: [
+						_.without(cwd.split('/'), cwd.split('/').splice(-1)[0]).join('/')
+					].concat(config.export_assets.split('/')),
+					addRootSlash: false,
+					addPrefix: config.template_asset_prefix
 				}))
-				.pipe(rename({basename: viewBaseName}))
-				.pipe(gulp.dest(config.export))
+				//.pipe(rename({basename: viewBaseName}))
+				.pipe(gulp.dest(config.export_templates))
 				.pipe(gulpif(lrStarted, connect.reload()))
 			;
 		}))
 	;
+
+	// If assebly is off, export all other folders and files
+	if (!config.assemble_templates) {
+		gulp.src(['templates/**/*', '!templates/*.*'])
+			.pipe(gulp.dest(config.export_templates));
+	}
 
 	cb(null);
 });
@@ -565,7 +583,7 @@ gulp.task('server', function (cb) {
 
 gulp.task('connect-livereload', function () {
 	connect.server({
-		root: [config.export],
+		root: [config.export_templates],
 		host: config.host,
 		port: config.port,
 		livereload: flags.nolr ? false : true,
