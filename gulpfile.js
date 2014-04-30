@@ -36,7 +36,7 @@ var
 	inject 				= require('gulp-inject'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
-	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate', ref: 'wip'}, // ref: 'master'
+	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate'}, // , ref: 'wip'
 	cwd 				= process.cwd(),
 	tmpFolder			= '.tmp',
 	lrStarted 			= false,
@@ -57,9 +57,6 @@ function handleError (err) {
 	console.log(err.toString());
 	this.emit('end');
 }
-
-// To see an extended Error Stack Trace, uncomment
-// Error.stackTraceLimit = 9000;
 
 // INIT -----------------------------------------------------------------------
 //
@@ -186,7 +183,7 @@ gulp.task('build', function (cb) {
 	fs.readFile('config.json', 'utf8', function (err, data) {
 
 		if (err) {
-			console.log(chalk.red('Something went wrong. Most likely Headstart hasn\'t been initiated yet. Aborting.'), err);
+			console.log(chalk.red('Cannot find config.json. Have you initiated Headstart?'), err);
 			process.exit(0);
 		}
 
