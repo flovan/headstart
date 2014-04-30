@@ -89,10 +89,11 @@ function launcher (env) {
 function logInfo (cliPackage) {
 	console.log(chalk.cyan(
 		'\n' +
+		'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n' +
 		'MMMMMMMMMMMMMMMMKo;\'..         .\':d0WMMM\n' +
 		'MMMMMMMMMMMMMNo.  ..\',,;;:::;;,\'.   .:0M\n' +
 		'MMMMMMMMMMMMx  .dKWMMMMMMMMMMMMMMWXx,  o\n' +
-		'MMMMMMMMMMMl  oWMMNl,cWMMMMMMMMMMMMMM;  \n' +
+		'MMMMMMMMMMMl  oWMMNl  WMMMMMMMMMMMMMM;  \n' +
 		'MMMMMMMMMMk  lMMMMWd:dWMMMMMMMMMMMMMK. ,\n' +
 		'MMMMMMMMMM; .NMMMMMMMMMMMMMMMMMMMMNl  ,X\n' +
 		'MMMMMMMMMX. .oc;cNMMMMMMMMMMMMMMMO. .kMM\n' +
@@ -105,9 +106,10 @@ function logInfo (cliPackage) {
 		'MMMMMMWkdxOKK\' .xWMMMMMMMMMMMMMMO. ,WMMM\n' +
 		'MMMMMMMMMMMMMWo  .o0WMMMMMMMN0o\'  :NMMMM\n' +
 		'MMMMMMMMMMMMMMMNo.   .\'\'\'...   \'lKMMMMMM\n' +
-		'MMMMMMMMMMMMMMMMMMKo,.    .\':xXMMMMMMMMM\n',
+		'MMMMMMMMMMMMMMMMMMKo,.    .\':xXMMMMMMMMM\n' +
+		'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n',
 		chalk.grey('\nv' + cliPackage.version + '\nA worry-free front-end workflow\n' +
-		'➳  https://github.com/flovan/headstart\n' +
+		'➳  http://headstart.flovan.me\n' +
 		'\n' +
 		'-------\n')
 	));
