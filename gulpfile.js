@@ -446,9 +446,10 @@ gulp.task('templates', function (cb) {
 	gulp.src('templates/*.*')
 		.pipe(tap(function(htmlFile)
 		{
-			// Production will get 1 file only
-			// Development gets raw base files
-			var 
+			var
+				// Select JS files
+				// Production will get 1 file only
+				// Development gets raw base files 
 				injectItems = isProduction ?
 					[config.export_assets + '/assets/js/core-libs.min.js']
 					:
@@ -465,11 +466,14 @@ gulp.task('templates', function (cb) {
 						'!' + 'assets/js/view-*.js',
 						'!**/_*.js'
 					],
+				// Extract bits from filename
 				baseName = path.basename(htmlFile.path),
 				nameParts = baseName.split('.'),
 				ext = _.without(nameParts, _.first(nameParts)).join('.'),
 				viewBaseName = _.last(nameParts[0].split('view-')),
-				viewName = 'view-' + viewBaseName + (isProduction ? '.min' : '')
+				viewName = 'view-' + viewBaseName + (isProduction ? '.min' : ''),
+				// Make sure Windows paths work down below
+				cwdParts = cwd.replace(/\\/g, '/').split('/')
 			;
 
 			// Add specific js and css files to inject queue
@@ -487,7 +491,7 @@ gulp.task('templates', function (cb) {
 				.pipe(concat(baseName))
 				.pipe(inject(gulp.src(injectItems, {read: false}), {
 					ignorePath: [
-						_.without(cwd.split('/'), cwd.split('/').splice(-1)[0]).join('/')
+						_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
 					].concat(config.export_assets.split('/')),
 					addRootSlash: false,
 					addPrefix: config.template_asset_prefix
