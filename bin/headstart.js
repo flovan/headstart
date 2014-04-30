@@ -132,7 +132,9 @@ function logTasks () {
 		chalk.grey('--edit'),
 		'\tOpen the files in your editor (default Sublime Text)\n',
 		chalk.grey('--nolr'),
-		'\tDisables the livereload snippet\n'
+		'\tDisables the livereload snippet\n',
+		chalk.grey('--onlyassets'),
+		'\tOnly build the assets\n'
 	);
 	console.log(
 		chalk.magenta('i'),
