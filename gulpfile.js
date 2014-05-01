@@ -230,11 +230,12 @@ gulp.task('build', function (cb) {
 				function () {
 					if(flags.edit) openEditor();
 					console.log(chalk.green('✔ All done!'));
-					cb(null);
 				}
 			);
 		}
 	});
+
+	cb(null);
 });
 
 // CLEAN ----------------------------------------------------------------------
@@ -414,15 +415,17 @@ gulp.task('other', function (cb) {
  
 gulp.task('misc', function (cb) {
 
-	// Make a functional version of the htaccess.txt
-	gulp.src('misc/htaccess.txt')
-		.pipe(rename('.htaccess'))
-		.pipe(gulp.dest(config.export_misc));
-
 	// In --production mode, copy over all the other stuff
 	if (isProduction) {
+		// Make a functional version of the htaccess.txt
+		gulp.src('misc/htaccess.txt')
+			.pipe(rename('.htaccess'))
+			.pipe(gulp.dest(config.export_misc))
+		;
+
 		gulp.src(['misc/*', '!misc/htaccess.txt'])
-			.pipe(gulp.dest(config.export_misc));
+			.pipe(gulp.dest(config.export_misc))
+		;
 	}
 
 	cb(null);
@@ -558,7 +561,6 @@ gulp.task('server', function (cb) {
 		copy('http://' + config.host + ':' + config.port);
 		
 		console.log(chalk.green('Ready ... set ... go!'))
-		cb();
 	});
 
 	// JS specific watches to also detect removing/adding of files
@@ -582,7 +584,7 @@ gulp.task('server', function (cb) {
 	}).pipe(plumber({ errorHandler: handleError }));
 });
 
-gulp.task('connect-livereload', function () {
+gulp.task('connect-livereload', function (cb) {
 	connect.server({
 		root: [config.export_templates],
 		host: config.host,
@@ -590,6 +592,8 @@ gulp.task('connect-livereload', function () {
 		livereload: flags.nolr ? false : true,
 		silent: true
 	});
+
+	cb(null);
 });
 
 // DEFAULT --------------------------------------------------------------------
