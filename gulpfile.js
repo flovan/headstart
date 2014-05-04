@@ -34,6 +34,7 @@ var
 	imagemin 			= require('gulp-imagemin'),
 	tap					= require('gulp-tap'),
 	inject 				= require('gulp-inject'),
+	htmlmin				= require('gulp-htmlmin'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
 	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate'}, // , ref: 'wip'
@@ -497,6 +498,14 @@ gulp.task('templates', function (cb) {
 					addPrefix: config.template_asset_prefix
 				}))
 				//.pipe(rename({basename: viewBaseName}))
+				.pipe(gulpif(config.minifyHTML, htmlmin({
+					removeComments: true,
+					collapseWhitespace: true,
+					removeAttributeQuotes: true,
+					removeRedundantAttributes: true,
+					removeEmptyAttributes: true,
+					collapseBooleanAttributes: true
+				})))
 				.pipe(gulp.dest(config.export_templates))
 				.pipe(gulpif(lrStarted, connect.reload()))
 			;
