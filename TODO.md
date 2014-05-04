@@ -1,3 +1,12 @@
+### TODO's:
+
+  - [ ] Check if process still crashed with added/deleted folders
+  - [ ] Find better (smaller, dep-less) way of stripping comments from --production HTML
+  - [ ] Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
+  - [ ] Fix sass and js watch to trigger on new/deleted files
+  - [ ] Set a watch for folder like fonts/video
+  - [ ] Find a better/smarter templating system https://www.npmjs.org/package/gulp-file-insert/
+
 ### A list of things to explore:
 
   - [ ] Replace livereloading with browser-sync (https://github.com/shakyShane/browser-sync through http://shakyshane.com/gulpjs-sass-browsersync-ftw/)
@@ -7,13 +16,6 @@
   - [ ] Add W3C validation option to config (https://www.npmjs.org/package/gulp-w3cjs/)
   - [ ] Allow custom repo's to be set for scaffolding
   - [ ] Try out revisions to leverage cache control (https://github.com/smysnk/gulp-rev-all, htaccess!!)
-
-### Workflow TODO's:
-
-  - [ ] Check if process still crashed with added/deleted folders
-  - [ ] Find better (smaller, dep-less) way of stripping comments from --production HTML
-  - [ ] Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
-  - [ ] Fix sass and js watch to trigger on new/deleted files
-  - [ ] Set a watch for folder like fonts/video
   - [ ] Auto-check for updates (http://stackoverflow.com/questions/20686244/install-programmatically-a-npm-package-providing-its-version and http://stackoverflow.com/questions/11949419/nodejs-npm-show-latest-version-of-a-module)
+
   
