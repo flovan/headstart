@@ -1,6 +1,6 @@
 {
   "name": "headstart",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An easy-to-use automated front-end setup.",
   "author": {
     "name": "Florian Vanthuyne",
@@ -21,6 +21,7 @@
     "github-download": "^0.2.0",
     "gulp": "^3.6.2",
     "gulp-autoprefixer": "0.0.7",
+    "gulp-compile-handlebars": "git://github.com/flovan/gulp-compile-handlebars#patch-1",
     "gulp-concat": "^2.2.0",
     "gulp-connect": "^2.0.5",
     "gulp-deporder": "^1.0.0",
