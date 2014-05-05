@@ -34,6 +34,7 @@ var
 	imagemin 			= require('gulp-imagemin'),
 	tap					= require('gulp-tap'),
 	inject 				= require('gulp-inject'),
+	handlebars			= require('gulp-compile-handlebars'),
 	htmlmin				= require('gulp-htmlmin'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
@@ -484,12 +485,35 @@ gulp.task('templates', function (cb) {
 
 			// If assembly is on (default), combine with header and footer
 			// and inject asset file references
-			gulp.src([
-					config.assemble_templates ? 'templates/**/header.*' : '',
-					'templates/' + baseName,
-					config.assemble_templates ? 'templates/**/footer.*' : ''
-				])
-				.pipe(concat(baseName))
+			// gulp.src([
+			// 		config.assemble_templates ? 'templates/**/header.*' : '',
+			// 		'templates/' + baseName,
+			// 		config.assemble_templates ? 'templates/**/footer.*' : ''
+			// 	])
+			// 	.pipe(concat(baseName))
+			// 	.pipe(inject(gulp.src(injectItems, {read: false}), {
+			// 		ignorePath: [
+			// 			_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
+			// 		].concat(config.export_assets.split('/')),
+			// 		addRootSlash: false,
+			// 		addPrefix: config.template_asset_prefix
+			// 	}))
+			// 	//.pipe(rename({basename: viewBaseName}))
+			// 	.pipe(gulpif(config.minifyHTML, htmlmin({
+			// 		removeComments: true,
+			// 		collapseWhitespace: true,
+			// 		removeAttributeQuotes: true,
+			// 		removeRedundantAttributes: true,
+			// 		removeEmptyAttributes: true,
+			// 		collapseBooleanAttributes: true
+			// 	})))
+			// 	.pipe(gulp.dest(config.export_templates))
+			// 	.pipe(gulpif(lrStarted, connect.reload()))
+			// ;
+			gulp.src('templates/' + baseName)
+				.pipe(gulpif(config.assemble_templates, handlebars({}, {
+					batch: ['templates/layout', 'templates/partials']
+				})))
 				.pipe(inject(gulp.src(injectItems, {read: false}), {
 					ignorePath: [
 						_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
@@ -497,7 +521,6 @@ gulp.task('templates', function (cb) {
 					addRootSlash: false,
 					addPrefix: config.template_asset_prefix
 				}))
-				//.pipe(rename({basename: viewBaseName}))
 				.pipe(gulpif(config.minifyHTML, htmlmin({
 					removeComments: true,
 					collapseWhitespace: true,
