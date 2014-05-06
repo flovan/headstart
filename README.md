@@ -1,4 +1,4 @@
-# [Headstart 1.0](http://headstart.flovan.me) [![Build Status](https://travis-ci.org/flovan/headstart.png?branch=master)](https://travis-ci.org/flovan/headstart) [![Dependency Status](https://david-dm.org/flovan/headstart.png?theme=shields.io)](https://david-dm.org/flovan/headstart)
+# [Headstart 1.0](http://headstart.io) [![Build Status](https://travis-ci.org/flovan/headstart.png?branch=master)](https://travis-ci.org/flovan/headstart) [![Dependency Status](https://david-dm.org/flovan/headstart.png?theme=shields.io)](https://david-dm.org/flovan/headstart)
 
 > An easy-to-use automated front-end setup.
 
