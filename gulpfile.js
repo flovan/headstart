@@ -511,10 +511,18 @@ gulp.task('templates', function (cb) {
 			// 	.pipe(gulpif(lrStarted, connect.reload()))
 			// ;
 			gulp.src('templates/' + baseName)
-				.pipe(gulpif(config.assemble_templates, handlebars({}, {
-					batch: ['templates/layout', 'templates/partials']
+				//.pipe(newer(config.export_templates + '/' + baseName))
+				.pipe(gulpif(config.assemble_templates, handlebars({
+						templateName: baseName
+					}, {
+						batch: ['templates/layout', 'templates/partials'],
+						helpers: {
+							equal: function (v1, v2, options) {
+								return (v1 == v2) ? options.fn(this) : options.inverse(this);
+							}
+						}
 				})))
-				.pipe(inject(gulp.src(injectItems, {read: false}), {
+				.pipe(inject(gulp.src(injectItems, {read: false}).pipe(deporder()), {
 					ignorePath: [
 						_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
 					].concat(config.export_assets.split('/')),
@@ -551,9 +559,9 @@ gulp.task('templates', function (cb) {
 function openBrowser () {
 
 	console.log(
-		chalk.grey('Opening'),
+		chalk.cyan('Opening'),
 		chalk.magenta('http://' + config.host + ':' + config.port),
-		chalk.grey('in'),
+		chalk.cyan('in'),
 		chalk.magenta(config.browser)
 	);
 	open('http://' + config.host + ':' + config.port, config.browser);
@@ -563,9 +571,9 @@ function openBrowser () {
 function openEditor () {
 
 	console.log(
-		chalk.grey('Opening'),
+		chalk.cyan('Opening'),
 		chalk.magenta(cwd),
-		chalk.grey('in'),
+		chalk.cyan('in'),
 		chalk.magenta(config.editor)
 	);
 	open(cwd, config.editor);
