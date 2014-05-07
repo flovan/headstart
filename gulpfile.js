@@ -483,33 +483,11 @@ gulp.task('templates', function (cb) {
 			injectItems.push(config.export_assets + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
 			injectItems.push(config.export_assets + '/assets/css/' + viewName + '.css');
 
-			// If assembly is on (default), combine with header and footer
-			// and inject asset file references
-			// gulp.src([
-			// 		config.assemble_templates ? 'templates/**/header.*' : '',
-			// 		'templates/' + baseName,
-			// 		config.assemble_templates ? 'templates/**/footer.*' : ''
-			// 	])
-			// 	.pipe(concat(baseName))
-			// 	.pipe(inject(gulp.src(injectItems, {read: false}), {
-			// 		ignorePath: [
-			// 			_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
-			// 		].concat(config.export_assets.split('/')),
-			// 		addRootSlash: false,
-			// 		addPrefix: config.template_asset_prefix
-			// 	}))
-			// 	//.pipe(rename({basename: viewBaseName}))
-			// 	.pipe(gulpif(config.minifyHTML, htmlmin({
-			// 		removeComments: true,
-			// 		collapseWhitespace: true,
-			// 		removeAttributeQuotes: true,
-			// 		removeRedundantAttributes: true,
-			// 		removeEmptyAttributes: true,
-			// 		collapseBooleanAttributes: true
-			// 	})))
-			// 	.pipe(gulp.dest(config.export_templates))
-			// 	.pipe(gulpif(lrStarted, connect.reload()))
-			// ;
+			// Put items in a stream and order dependencies
+			injectItems = gulp.src(injectItems)
+				.pipe(deporder());
+
+			// On the current template
 			gulp.src('templates/' + baseName)
 				//.pipe(newer(config.export_templates + '/' + baseName))
 				.pipe(gulpif(config.assemble_templates, handlebars({
@@ -522,7 +500,7 @@ gulp.task('templates', function (cb) {
 							}
 						}
 				})))
-				.pipe(inject(gulp.src(injectItems, {read: false}).pipe(deporder()), {
+				.pipe(inject(injectItems, {
 					ignorePath: [
 						_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
 					].concat(config.export_assets.split('/')),
