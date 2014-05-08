@@ -109,9 +109,18 @@ gulp.task('init', function (cb) {
 
 function downloadBoilerplateFiles () {
 
-	// Download the boilerplate files with a progress bar
 	console.log(chalk.grey('Downloading boilerplate files...'));
 
+	// If a custom repo was passed in, use it
+	if(!!flags.base) {
+		flags.base = flags.base.split('/');
+
+		gitConfig.user = flags.base[0];
+		gitConfig.repo = flags.base[1];
+	}
+
+	// Download the boilerplate files to a temp folder
+	// This is to pervent a ENOEMPTY error
 	ghdownload(gitConfig, tmpFolder)
 		.on('error', function (error) {
 			console.log(chalk.red('An error occurred. Aborting.', error));
@@ -121,6 +130,7 @@ function downloadBoilerplateFiles () {
 			console.log(chalk.green('✔ Download complete!'));
 			console.log(chalk.grey('Cleaning up...'));
 
+			// Move to working directory, clean temp, finish
 			ncp(tmpFolder, cwd, function (err) {
 
 				if (err) {
@@ -285,9 +295,9 @@ gulp.task('sass', function (cb) {
 			gulp.src('assets/sass/*.scss')
 			:
 			watch({ glob: 'assets/sass/**/*.scss', emitOnGlob: false, name: 'SCSS', silent: true })
-				.pipe(plumber({ errorHandler: handleError }))
 				.pipe(sassgraph(['assets/sass']))
 		)
+		.pipe(plumber({ errorHandler: handleError }))
 		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
@@ -384,7 +394,8 @@ gulp.task('images', function (cb) {
 			'assets/images/**/*.jpeg',
 			'assets/images/**/*.png',
 			'assets/images/**/*.gif',
-			'assets/images/**/*.svg'
+			'assets/images/**/*.svg',
+			'!_*.*'
 		])
 		.pipe(plumber({ errorHandler: handleError }))
 		.pipe(newer(config.export_assets+ '/assets/images'))
@@ -406,7 +417,8 @@ gulp.task('other', function (cb) {
 			'!assets/sass',
 			'!assets/sass/**/*',
 			'!assets/js/**/*',
-			'!assets/images/**/*'
+			'!assets/images/**/*',
+			'!_*.*'
 		])
 		.pipe(gulp.dest(config.export_assets + '/assets'))
 	;
@@ -425,7 +437,7 @@ gulp.task('misc', function (cb) {
 			.pipe(gulp.dest(config.export_misc))
 		;
 
-		gulp.src(['misc/*', '!misc/htaccess.txt'])
+		gulp.src(['misc/*', '!misc/htaccess.txt', '!_*.*'])
 			.pipe(gulp.dest(config.export_misc))
 		;
 	}
@@ -445,7 +457,7 @@ gulp.task('templates', function (cb) {
 
 	// Inject links to correct assets in all the .* template files
 	// Add livereload tag when not in --production
-	gulp.src('templates/*.*')
+	gulp.src(['templates/*.*', '!_*.*'])
 		.pipe(tap(function(htmlFile)
 		{
 			var
@@ -523,7 +535,7 @@ gulp.task('templates', function (cb) {
 
 	// If assebly is off, export all other folders and files
 	if (!config.assemble_templates) {
-		gulp.src(['templates/**/*', '!templates/*.*'])
+		gulp.src(['templates/**/*', '!templates/*.*', '!_*.*'])
 			.pipe(gulp.dest(config.export_templates));
 	}
 
