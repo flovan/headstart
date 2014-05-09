@@ -24,6 +24,8 @@ var
 	//	sass 			= require('gulp-sass'),
 	sass 				= require('gulp-ruby-sass'),
 	sassgraph 			= require('gulp-sass-graph'),
+	cmq 				= require('gulp-combine-media-queries'),
+	uncss 				= require('gulp-uncss'),
 	autoprefixer 		= require('gulp-autoprefixer'),
 	jshint 				= require('gulp-jshint'),
 	deporder 			= require('gulp-deporder'),
@@ -223,6 +225,7 @@ gulp.task('build', function (cb) {
 					'other'
 				],
 				'templates',
+				'uncss',
 				'server',
 				cb
 			);
@@ -239,6 +242,7 @@ gulp.task('build', function (cb) {
 					'other'
 				],
 				'templates',
+				'uncss',
 				function () {
 					if(flags.edit) openEditor();
 					console.log(chalk.green('✔ All done!'));
@@ -300,6 +304,7 @@ gulp.task('sass', function (cb) {
 		.pipe(plumber({ errorHandler: handleError }))
 		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
+		.pipe(gulpif(config.combineMediaQueries, cmq()))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
@@ -538,6 +543,22 @@ gulp.task('templates', function (cb) {
 		gulp.src(['templates/**/*', '!templates/*.*', '!_*.*'])
 			.pipe(gulp.dest(config.export_templates));
 	}
+
+	cb(null);
+});
+
+// UNCSS ----------------------------------------------------------------------
+// 
+// Clean up unused CSS styles
+
+gulp.task('uncss', function (cb) {
+
+	gulp.src()
+		.pipe(uncss({
+			html: ['index.html', 'about.html']
+		}))
+		.pipe(gulp.dest('./out'))
+	;
 
 	cb(null);
 });
