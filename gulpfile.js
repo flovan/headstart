@@ -2,6 +2,7 @@
 
 var
 	path 				= require('path'),
+	globule				= require('globule'),
 	http				= require ('http'),
 	fs 					= require('fs'),
 	ncp 				= require('ncp').ncp,
@@ -38,6 +39,7 @@ var
 	inject 				= require('gulp-inject'),
 	handlebars			= require('gulp-compile-handlebars'),
 	htmlmin				= require('gulp-htmlmin'),
+	bytediff			= require('gulp-bytediff'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
 	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate'}, // , ref: 'wip'
@@ -58,7 +60,7 @@ var
 
 function handleError (err) {
 
-	console.log(err.toString());
+	//console.log(err.toString());
 	this.emit('end');
 }
 
@@ -225,7 +227,8 @@ gulp.task('build', function (cb) {
 					'other'
 				],
 				'templates',
-				'uncss',
+				'uncss-main',
+				'uncss-view',
 				'server',
 				cb
 			);
@@ -242,7 +245,8 @@ gulp.task('build', function (cb) {
 					'other'
 				],
 				'templates',
-				'uncss',
+				'uncss-main',
+				'uncss-view',
 				function () {
 					if(flags.edit) openEditor();
 					console.log(chalk.green('✔ All done!'));
@@ -395,16 +399,12 @@ gulp.task('images', function (cb) {
 	// Grab all image files, filter out the new ones and copy over
 	// In --production mode, optimize them first
 	return gulp.src([
-			'assets/images/**/*.jpg',
-			'assets/images/**/*.jpeg',
-			'assets/images/**/*.png',
-			'assets/images/**/*.gif',
-			'assets/images/**/*.svg',
-			'!_*.*'
+			'assets/images/**/*',
+			'!_*'
 		])
 		.pipe(plumber({ errorHandler: handleError }))
 		.pipe(newer(config.export_assets+ '/assets/images'))
-		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true }))
+		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true })))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
 		.pipe(gulpif(lrStarted, connect.reload()))
 	;
@@ -423,7 +423,7 @@ gulp.task('other', function (cb) {
 			'!assets/sass/**/*',
 			'!assets/js/**/*',
 			'!assets/images/**/*',
-			'!_*.*'
+			'!_*'
 		])
 		.pipe(gulp.dest(config.export_assets + '/assets'))
 	;
@@ -442,7 +442,7 @@ gulp.task('misc', function (cb) {
 			.pipe(gulp.dest(config.export_misc))
 		;
 
-		gulp.src(['misc/*', '!misc/htaccess.txt', '!_*.*'])
+		gulp.src(['misc/*', '!misc/htaccess.txt', '!_*'])
 			.pipe(gulp.dest(config.export_misc))
 		;
 	}
@@ -455,15 +455,25 @@ gulp.task('misc', function (cb) {
  
 gulp.task('templates', function (cb) {
 
+	// Quit this task if only assets need to be built
 	if(flags.onlyassets) {
 		cb(null);
 		return;
 	}
 
-	// Inject links to correct assets in all the .* template files
-	// Add livereload tag when not in --production
-	gulp.src(['templates/*.*', '!_*.*'])
-		.pipe(tap(function(htmlFile)
+	// If assebly is off, export all folders and files
+	if (!config.assemble_templates) {
+		gulp.src(['templates/**/*', '!templates/*.*', '!_*'])
+			.pipe(gulp.dest(config.export_templates));
+	}
+
+	// Find number of templates to parse and keep counter
+	var numTemplates = globule.find(['templates/*.*', '!_*']).length,
+		count = 0;
+
+	// Go over all root template files
+	gulp.src(['templates/*.*', '!_*'])
+		.pipe(tap(function (htmlFile)
 		{
 			var
 				// Select JS files
@@ -502,10 +512,11 @@ gulp.task('templates', function (cb) {
 
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
-				.pipe(deporder());
+				.pipe(deporder(baseName));
 
 			// On the current template
 			gulp.src('templates/' + baseName)
+				// Piping newer() blocks refreshes on partials and layout parts :(
 				//.pipe(newer(config.export_templates + '/' + baseName))
 				.pipe(gulpif(config.assemble_templates, handlebars({
 						templateName: baseName
@@ -532,35 +543,98 @@ gulp.task('templates', function (cb) {
 					removeEmptyAttributes: true,
 					collapseBooleanAttributes: true
 				})))
+				.pipe(plumber({ errorHandler: handleError }))
 				.pipe(gulp.dest(config.export_templates))
 				.pipe(gulpif(lrStarted, connect.reload()))
 			;
+
+			// Since above changes are made in a tapped stream
+			// We have to count to make sure everythings is parsed
+			// before continuing the build task
+			count = count + 1;
+			if(count == numTemplates) cb(null);
 		}))
 	;
-
-	// If assebly is off, export all other folders and files
-	if (!config.assemble_templates) {
-		gulp.src(['templates/**/*', '!templates/*.*', '!_*.*'])
-			.pipe(gulp.dest(config.export_templates));
-	}
-
-	cb(null);
 });
 
 // UNCSS ----------------------------------------------------------------------
 // 
 // Clean up unused CSS styles
 
-gulp.task('uncss', function (cb) {
+gulp.task('uncss-main', function (cb) {
 
-	gulp.src()
+	// Quit this task if this isn't production mode
+	if(!isProduction) {
+		cb(null);
+		return;
+	}
+
+	console.log(chalk.grey('Parsing and cleaning main stylesheet...'));
+
+	// Grab all templates / partials / layout parts / etc
+	var templates = globule.find(['templates/**/*.*', '!_*']);
+
+	// Parse the main.scss file
+	return gulp.src(config.export_assets + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
+		.pipe(bytediff.start())
 		.pipe(uncss({
-			html: ['index.html', 'about.html']
+			html: templates || [],
+			ignore: config.uncssIgnore || []
 		}))
-		.pipe(gulp.dest('./out'))
+		.pipe(bytediff.stop())
+		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 	;
+});
 
-	cb(null);
+gulp.task('uncss-view', function (cb) {
+
+	// Quit this task if this isn't production mode
+	if(!isProduction) {
+		cb(null);
+		return;
+	}
+
+	console.log(chalk.grey('Parsing and cleaning view stylesheet(s)...'));
+
+	var numViews = globule.find(config.export_assets + '/assets/css/view-*.css').length,
+		count = 0;
+
+	// Parse the view-*.scss files
+	gulp.src(config.export_assets + '/assets/css/view-*.css')
+		.pipe(tap(function (file, t) {
+
+			var baseName = path.basename(file.path),
+				nameParts = baseName.split('.'),
+				viewBaseName = _.last(nameParts[0].split('view-')),
+
+				// Grab all templates that aren't root files
+				// aka views
+				templates = globule.find([
+					'templates/**/*.*',
+					'!templates/*.*',
+					'templates/' + viewBaseName + '.*',
+					'!_*'
+				])
+			;
+
+			gulp.src(config.export_assets + '/assets/css/' + baseName)
+				.pipe(bytediff.start())
+				.pipe(uncss({
+					html: templates || [],
+					ignore: config.uncssIgnore || []
+				}))
+				.pipe(bytediff.stop())
+				.pipe(gulp.dest(config.export_assets + '/assets/css'))
+				.pipe(tap(function (file) {
+
+					// If this was the last file, end the task
+					if(count === numViews) cb(null);
+				}))
+			;
+
+			count = count + 1;
+		}))
+	;
 });
 
 // SERVER ---------------------------------------------------------------------

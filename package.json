@@ -19,8 +19,11 @@
     "chalk": "^0.4.0",
     "copy-paste": "^0.2.0",
     "github-download": "^0.2.0",
+    "globule": "^0.2.0",
     "gulp": "^3.6.2",
     "gulp-autoprefixer": "0.0.7",
+    "gulp-bytediff": "^0.2.0",
+    "gulp-combine-media-queries": "0.0.1",
     "gulp-compile-handlebars": "git://github.com/flovan/gulp-compile-handlebars#patch-1",
     "gulp-concat": "^2.2.0",
     "gulp-connect": "^2.0.5",
@@ -39,6 +42,7 @@
     "gulp-sass-graph": "git://github.com/lox/gulp-sass-graph",
     "gulp-tap": "^0.1.1",
     "gulp-uglify": "^0.2.1",
+    "gulp-uncss": "^0.4.3",
     "gulp-watch": "^0.6.4",
     "inquirer": "^0.4.1",
     "jshint-stylish": "^0.2.0",
@@ -48,8 +52,7 @@
     "ncp": "^0.5.1",
     "open": "0.0.5",
     "rimraf": "^2.2.6",
-    "run-sequence": "^0.3.6",
-    "gulp-combine-media-queries": "0.0.1"
+    "run-sequence": "^0.3.6"
   },
   "devDependencies": {
     "gulp-debug": "^0.3.0"
