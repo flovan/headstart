@@ -213,7 +213,7 @@ gulp.task('build', function (cb) {
 
 		// Run build tasks
 		// Serve files if Headstart was run with the --serve flag
-		console.log(chalk.grey('Building ' + (flags.production ? ' production' : 'dev') + ' version...'));
+		console.log(chalk.grey('Building ' + (flags.production ? 'production' : 'dev') + ' version...'));
 		if (flags.serve) {
 			sequence(
 				'clean-export',
@@ -564,7 +564,7 @@ gulp.task('templates', function (cb) {
 gulp.task('uncss-main', function (cb) {
 
 	// Quit this task if this isn't production mode
-	if(!isProduction) {
+	if(!isProduction || !config.useUncss) {
 		cb(null);
 		return;
 	}
@@ -589,15 +589,15 @@ gulp.task('uncss-main', function (cb) {
 gulp.task('uncss-view', function (cb) {
 
 	// Quit this task if this isn't production mode
-	if(!isProduction) {
+	if(!isProduction || !config.useUncss) {
 		cb(null);
 		return;
 	}
 
-	console.log(chalk.grey('Parsing and cleaning view stylesheet(s)...'));
-
 	var numViews = globule.find(config.export_assets + '/assets/css/view-*.css').length,
 		count = 0;
+
+	if(numViews) console.log(chalk.grey('Parsing and cleaning view stylesheet(s)...'));
 
 	// Parse the view-*.scss files
 	gulp.src(config.export_assets + '/assets/css/view-*.css')
