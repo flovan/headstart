@@ -3,7 +3,6 @@
   - [ ] Fix crashes with added/deleted folders
   - [ ] Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
   - [ ] Fix sass and js watch to trigger on new/deleted files
-  - [ ] Fix sass and htmlmin error crashes
   - [ ] Set a watch for folder like fonts/video
   - [ ] Watch changes on config, and rebuild
 
@@ -22,3 +21,4 @@
   - [x] Find a better/smarter templating system https://www.npmjs.org/package/gulp-file-insert/
   - [x] Find better (smaller, dep-less) way of stripping comments from --production HTML
   - [x] Allow custom repo's to be set for scaffolding
+  - [x] Fix sass and htmlmin error crashes
