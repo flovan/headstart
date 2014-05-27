@@ -51,19 +51,6 @@ var
 	config;
 ;
 
-// Error handler
-//
-// Errors from sass or autoprefix can crash the CLI process
-// By catching and processing them this can be fixed.
-//
-// Known bug in Gulp (and upcoming feature in v4)
-
-function handleError (err) {
-
-	//console.log(err.toString());
-	this.emit('end');
-}
-
 // INIT -----------------------------------------------------------------------
 //
 
@@ -300,12 +287,12 @@ gulp.task('sass', function (cb) {
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return ( !lrStarted ?
-			gulp.src('assets/sass/*.scss')
+			gulp.src('assets/sass/*.{scss, sass, css}')
 			:
-			watch({ glob: 'assets/sass/**/*.scss', emitOnGlob: false, name: 'SCSS', silent: true })
+			watch({ glob: 'assets/sass/**/*.{scss, sass, css}', emitOnGlob: false, name: 'SCSS', silent: true })
+				.pipe(plumber())
 				.pipe(sassgraph(['assets/sass']))
 		)
-		.pipe(plumber({ errorHandler: handleError }))
 		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.combineMediaQueries, cmq()))
@@ -402,7 +389,7 @@ gulp.task('images', function (cb) {
 			'assets/images/**/*',
 			'!_*'
 		])
-		.pipe(plumber({ errorHandler: handleError }))
+		.pipe(plumber())
 		.pipe(newer(config.export_assets+ '/assets/images'))
 		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true })))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
@@ -516,6 +503,7 @@ gulp.task('templates', function (cb) {
 
 			// On the current template
 			gulp.src('templates/' + baseName)
+				.pipe(plumber())
 				// Piping newer() blocks refreshes on partials and layout parts :(
 				//.pipe(newer(config.export_templates + '/' + baseName))
 				.pipe(gulpif(config.assemble_templates, handlebars({
@@ -543,7 +531,6 @@ gulp.task('templates', function (cb) {
 					removeEmptyAttributes: true,
 					collapseBooleanAttributes: true
 				})))
-				.pipe(plumber({ errorHandler: handleError }))
 				.pipe(gulp.dest(config.export_templates))
 				.pipe(gulpif(lrStarted, connect.reload()))
 			;
@@ -692,11 +679,11 @@ gulp.task('server', function (cb) {
 	// Note: Will also run the HTML task again to update the linked files
 	watch({ glob: ['**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', silent: true }, function() {
 		sequence('scripts-view', 'templates');
-	}).pipe(plumber({ errorHandler: handleError }));
+	}).pipe(plumber());
 
 	watch({ glob: ['assets/js/**/*.js', '!**/view-*.js'], emitOnGlob: false, name: 'JS-MAIN', silent: true }, function() {
 		sequence('scripts-main', 'scripts-ie', 'templates');
-	}).pipe(plumber({ errorHandler: handleError }));
+	}).pipe(plumber());
 
 	// Watch images and call their task
 	gulp.watch('assets/images/**/*', function () {
@@ -706,7 +693,7 @@ gulp.task('server', function (cb) {
 	// Watch templates and call its task
 	watch({ glob: ['templates/**/*'], emitOnGlob: false, name: 'TEMPLATE', silent: true }, function() {
 		sequence('templates');
-	}).pipe(plumber({ errorHandler: handleError }));
+	}).pipe(plumber());
 });
 
 gulp.task('connect-livereload', function (cb) {
