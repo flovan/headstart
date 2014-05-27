@@ -320,6 +320,7 @@ gulp.task('hint-scripts', function (cb) {
 				'assets/js/core/*.js',
 				'!_*.js'
 			])
+			.pipe(plumber())
 			.pipe(jshint('.jshintrc'))
 			.pipe(jshint.reporter(stylish))
 		;
@@ -343,6 +344,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 				'!**/_*.js'
 			], {base: '' + 'assets/js'}
 		)
+		.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
@@ -353,6 +355,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 
 	return gulp.src('assets/js/view-*.js')
+		.pipe(plumber())
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
@@ -365,11 +368,12 @@ gulp.task('scripts-ie', function (cb) {
 	// Process .js files
 	// Files are ordered for dependency sake
 	return gulp.src('assets/js/libs/patches/**/*.js')
+		.pipe(plumber())
 		.pipe(deporder())
 		.pipe(concat('ie.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
-})
+});
 
 // IMAGES ---------------------------------------------------------------------
 //
@@ -379,6 +383,7 @@ gulp.task('images', function (cb) {
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
 	gulp.src('assets/images/icons/favicon.png')
+		.pipe(plumber())
 		.pipe(rename({extname: '.ico'}))
 		.pipe(gulp.dest(config.export_misc))
 	;
@@ -412,6 +417,7 @@ gulp.task('other', function (cb) {
 			'!assets/images/**/*',
 			'!_*'
 		])
+		.pipe(plumber())
 		.pipe(gulp.dest(config.export_assets + '/assets'))
 	;
 });
@@ -677,13 +683,23 @@ gulp.task('server', function (cb) {
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
-	watch({ glob: ['**/view-*.js'], emitOnGlob: false, name: 'JS-VIEW', silent: true }, function() {
+	watch({
+		glob: ['**/view-*.js'],
+		emitOnGlob: false,
+		name: 'JS-VIEW',
+		silent: true
+	}, function() {
 		sequence('scripts-view', 'templates');
-	}).pipe(plumber());
+	});
 
-	watch({ glob: ['assets/js/**/*.js', '!**/view-*.js'], emitOnGlob: false, name: 'JS-MAIN', silent: true }, function() {
+	watch({
+		glob: ['assets/js/**/*.js', '!**/view-*.js'],
+		emitOnGlob: false,
+		name: 'JS-MAIN',
+		silent: true
+	}, function() {
 		sequence('scripts-main', 'scripts-ie', 'templates');
-	}).pipe(plumber());
+	});
 
 	// Watch images and call their task
 	gulp.watch('assets/images/**/*', function () {
@@ -691,9 +707,14 @@ gulp.task('server', function (cb) {
 	});
 
 	// Watch templates and call its task
-	watch({ glob: ['templates/**/*'], emitOnGlob: false, name: 'TEMPLATE', silent: true }, function() {
+	watch({
+		glob: ['templates/**/*'],
+		emitOnGlob: false,
+		name: 'TEMPLATE',
+		silent: true
+	}, function() {
 		sequence('templates');
-	}).pipe(plumber());
+	});
 });
 
 gulp.task('connect-livereload', function (cb) {
