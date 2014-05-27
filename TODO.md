@@ -1,10 +1,7 @@
 ### TODO's:
 
-  - [ ] Fix crashes with added/deleted folders
+  - [ ] Fix crashes with added/deleted folders and new/deleted files
   - [ ] Fix logging by gulp-connect (Pull-req, fork & fix, or muting https://www.npmjs.org/package/mute-stream)
-  - [ ] Fix sass and js watch to trigger on new/deleted files
-  - [ ] Set a watch for folder like fonts/video
-  - [ ] Watch changes on config, and rebuild
 
 ### A list of things to explore:
 
@@ -14,6 +11,8 @@
   - [ ] Add W3C validation option to config (https://www.npmjs.org/package/gulp-w3cjs/)
   - [ ] Try out revisions to leverage cache control (https://github.com/smysnk/gulp-rev-all, htaccess!!)
   - [ ] Auto-check for updates (http://stackoverflow.com/questions/20686244/install-programmatically-a-npm-package-providing-its-version and http://stackoverflow.com/questions/11949419/nodejs-npm-show-latest-version-of-a-module)
+  - [ ] Set a watch for folder like fonts/video
+  - [ ] Watch changes on config, and rebuild
 
   ### Done
 
