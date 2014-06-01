@@ -1,54 +1,59 @@
+/*global require, process, copy*/
+
 'use strict';
 
 var
-	path 				= require('path'),
+	path				= require('path'),
 	globule				= require('globule'),
 	http				= require ('http'),
-	fs 					= require('fs'),
-	ncp 				= require('ncp').ncp,
-	chalk 				= require('chalk'),
-	_ 					= require('lodash'),
-	prompt 				= require('inquirer').prompt,
-	sequence 			= require('run-sequence'),
-	stylish 			= require('jshint-stylish'),
-	open 				= require('open'),
-	copy_paste 			= require('copy-paste').silent(),
+	fs					= require('fs'),
+	ncp					= require('ncp').ncp,
+	chalk				= require('chalk'),
+	_					= require('lodash'),
+	prompt				= require('inquirer').prompt,
+	sequence			= require('run-sequence'),
+	stylish				= require('jshint-stylish'),
+	open				= require('open'),
+	copy_paste			= require('copy-paste').silent(),
 	ghdownload			= require('github-download'),
 
-	gulp 				= require('gulp'),
-	rimraf 				= require('gulp-rimraf'),
-	watch 				= require('gulp-watch'),
-	plumber 			= require('gulp-plumber'),
-	gulpif 				= require('gulp-if'),
-	rename 				= require('gulp-rename'),
-	connect 			= require('gulp-connect'),
-	//	sass 			= require('gulp-sass'),
-	sass 				= require('gulp-ruby-sass'),
-	sassgraph 			= require('gulp-sass-graph'),
-	cmq 				= require('gulp-combine-media-queries'),
-	uncss 				= require('gulp-uncss'),
-	autoprefixer 		= require('gulp-autoprefixer'),
-	jshint 				= require('gulp-jshint'),
-	deporder 			= require('gulp-deporder'),
-	concat 				= require('gulp-concat'),
-	replace 			= require('gulp-replace'),
-	uglify 				= require('gulp-uglify'),
-	newer 				= require('gulp-newer'),
-	imagemin 			= require('gulp-imagemin'),
+	gulp				= require('gulp'),
+	rimraf				= require('gulp-rimraf'),
+	watch				= require('gulp-watch'),
+	plumber				= require('gulp-plumber'),
+	gulpif				= require('gulp-if'),
+	rename				= require('gulp-rename'),
+	connect				= require('gulp-connect'),
+	//	sass			= require('gulp-sass'),
+	sass				= require('gulp-ruby-sass'),
+	sassgraph			= require('gulp-sass-graph'),
+	cmq					= require('gulp-combine-media-queries'),
+	uncss				= require('gulp-uncss'),
+	autoprefixer		= require('gulp-autoprefixer'),
+	jshint				= require('gulp-jshint'),
+	deporder			= require('gulp-deporder'),
+	concat				= require('gulp-concat'),
+	replace				= require('gulp-replace'),
+	uglify				= require('gulp-uglify'),
+	newer				= require('gulp-newer'),
+	imagemin			= require('gulp-imagemin'),
 	tap					= require('gulp-tap'),
-	inject 				= require('gulp-inject'),
+	inject				= require('gulp-inject'),
 	handlebars			= require('gulp-compile-handlebars'),
+	wthreec				= require('gulp-w3cjs'),
 	htmlmin				= require('gulp-htmlmin'),
 	bytediff			= require('gulp-bytediff'),
+	rev					= require('gulp-rev'),
+	manifest			= require('gulp-manifest'),
 
-	flags 				= require('minimist')(process.argv.slice(2)),
+	flags				= require('minimist')(process.argv.slice(2)),
 	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate'}, // , ref: 'wip'
-	cwd 				= process.cwd(),
+	cwd					= process.cwd(),
 	tmpFolder			= '.tmp',
-	lrStarted 			= false,
-	lrDisable 			= flags.nolr || false,
-	isProduction 		= flags.production || flags.prod || false,
-	config;
+	lrStarted			= false,
+	lrDisable			= flags.nolr || false,
+	isProduction		= flags.production || flags.prod || false,
+	config
 ;
 
 // INIT -----------------------------------------------------------------------
@@ -216,6 +221,7 @@ gulp.task('build', function (cb) {
 				'templates',
 				'uncss-main',
 				'uncss-view',
+				'manifest',
 				'server',
 				cb
 			);
@@ -234,10 +240,12 @@ gulp.task('build', function (cb) {
 				'templates',
 				'uncss-main',
 				'uncss-view',
+				'manifest',
 				function () {
 					if(flags.edit) openEditor();
 					console.log(chalk.green('✔ All done!'));
-				}
+				},
+				cb
 			);
 		}
 	});
@@ -284,6 +292,9 @@ gulp.task('clean-tmp', function (cb) {
 
 gulp.task('sass', function (cb) {
 
+	// Continuous watch never ends, so end it manually
+	if(lrStarted) cb(null);
+
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return ( !lrStarted ?
@@ -297,13 +308,11 @@ gulp.task('sass', function (cb) {
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.combineMediaQueries, cmq()))
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
+		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
-		.pipe(gulpif(lrStarted, connect.reload()))
+		.pipe(gulpif(lrStarted, connect.reload()));
 	;
-
-	// Continuous watch never ends, so end it manually
-	if(lrStarted) cb(null);
 });
 
 // SCRIPTS --------------------------------------------------------------------
@@ -345,7 +354,9 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 			], {base: '' + 'assets/js'}
 		)
 		.pipe(plumber())
-		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
+		.pipe(gulpif(isProduction, concat('core-libs.js')))
+		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
+		.pipe(gulpif(isProduction, rename({extname: '.min.js'})))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
@@ -356,7 +367,8 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 
 	return gulp.src('assets/js/view-*.js')
 		.pipe(plumber())
-		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
+		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
+		.pipe(gulpif(isProduction, rename({extname: '.min.js'})))
 		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
@@ -370,9 +382,12 @@ gulp.task('scripts-ie', function (cb) {
 	return gulp.src('assets/js/libs/patches/**/*.js')
 		.pipe(plumber())
 		.pipe(deporder())
-		.pipe(concat('ie.min.js'))
+		.pipe(concat('ie.js'))
+		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
+		.pipe(rename({extname: '.min.js'}))
 		.pipe(uglify())
-		.pipe(gulp.dest(config.export_assets + '/assets/js'));
+		.pipe(gulp.dest(config.export_assets + '/assets/js'))
+	;
 });
 
 // IMAGES ---------------------------------------------------------------------
@@ -385,6 +400,7 @@ gulp.task('images', function (cb) {
 	gulp.src('assets/images/icons/favicon.png')
 		.pipe(plumber())
 		.pipe(rename({extname: '.ico'}))
+		//.pipe(gulpif(config.revisionCaching && isProduction, rev()))
 		.pipe(gulp.dest(config.export_misc))
 	;
 
@@ -397,6 +413,7 @@ gulp.task('images', function (cb) {
 		.pipe(plumber())
 		.pipe(newer(config.export_assets+ '/assets/images'))
 		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true })))
+		//.pipe(gulpif(config.revisionCaching && isProduction, rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
 		.pipe(gulpif(lrStarted, connect.reload()))
 	;
@@ -418,6 +435,7 @@ gulp.task('other', function (cb) {
 			'!_*'
 		])
 		.pipe(plumber())
+		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets'))
 	;
 });
@@ -454,13 +472,13 @@ gulp.task('templates', function (cb) {
 		return;
 	}
 
-	// If assebly is off, export all folders and files
+	// If assembly is off, export all subfolders and their files
 	if (!config.assemble_templates) {
 		gulp.src(['templates/**/*', '!templates/*.*', '!_*'])
 			.pipe(gulp.dest(config.export_templates));
 	}
 
-	// Find number of templates to parse and keep counter
+	// Find number of "root" templates to parse and keep count
 	var numTemplates = globule.find(['templates/*.*', '!_*']).length,
 		count = 0;
 
@@ -473,34 +491,34 @@ gulp.task('templates', function (cb) {
 				// Production will get 1 file only
 				// Development gets raw base files 
 				injectItems = isProduction ?
-					[config.export_assets + '/assets/js/core-libs.min.js']
+					[config.export_assets + '/assets/js/core-libs*.min.js']
 					:
 					[
-						'assets/js/libs/jquery*.js',
-						'assets/js/libs/ender.js',
+						config.export_assets + '/assets/js/libs/jquery*.js',
+						config.export_assets + '/assets/js/libs/ender*.js',
 
-						(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
+						(isProduction ? '!' : '') + config.export_assets + '/assets/js/libs/dev/*.js',
 
-						'assets/js/libs/*.js',
-						'assets/js/core/*.js',
-						'assets/js/*.js',
+						config.export_assets + '/assets/js/libs/*.js',
+						config.export_assets + '/assets/js/core/*.js',
+						config.export_assets + '/assets/js/*.js',
 
-						'!' + 'assets/js/view-*.js',
-						'!**/_*.js'
+						'!' + config.export_assets + '/assets/js/view-*.js',
+						'!' + config.export_assets + '/assets/**/_*.js'
 					],
 				// Extract bits from filename
 				baseName = path.basename(htmlFile.path),
 				nameParts = baseName.split('.'),
 				ext = _.without(nameParts, _.first(nameParts)).join('.'),
 				viewBaseName = _.last(nameParts[0].split('view-')),
-				viewName = 'view-' + viewBaseName + (isProduction ? '.min' : ''),
+				viewName = 'view-' + viewBaseName + (isProduction ? '*.min' : ''),
 				// Make sure Windows paths work down below
 				cwdParts = cwd.replace(/\\/g, '/').split('/')
 			;
 
 			// Add specific js and css files to inject queue
 			injectItems.push(config.export_assets + '/assets/js/' + viewName + '.js');
-			injectItems.push(config.export_assets + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
+			injectItems.push(config.export_assets + '/assets/css/main' + (isProduction ? '*.min' : '') + '.css');
 			injectItems.push(config.export_assets + '/assets/css/' + viewName + '.css');
 
 			// Put items in a stream and order dependencies
@@ -529,6 +547,10 @@ gulp.task('templates', function (cb) {
 					addRootSlash: false,
 					addPrefix: config.template_asset_prefix
 				}))
+				.pipe(gulpif(config.w3c, wthreec({
+					doctype: 'HTML5',
+					charset: 'utf-8'
+				})))
 				.pipe(gulpif(config.minifyHTML, htmlmin({
 					removeComments: true,
 					collapseWhitespace: true,
@@ -630,6 +652,27 @@ gulp.task('uncss-view', function (cb) {
 	;
 });
 
+// MANIFEST -------------------------------------------------------------------
+//
+
+gulp.task('manifest', function (cb) {
+
+	if (!config.revisionCaching || !isProduction) {
+		cb(null);
+		return;
+	}
+
+	gulp.src([
+		config.export_assets + '/assets/js/*',
+		config.export_assets + '/assets/css/*'
+	])
+		.pipe(manifest({
+			filename: 'app.manifest',
+			exclude: 'app.manifest'
+		}))
+		.pipe(gulp.dest(config.export_misc));
+});
+
 // SERVER ---------------------------------------------------------------------
 //
 
@@ -678,7 +721,7 @@ gulp.task('server', function (cb) {
 		console.log(chalk.cyan('Copied url to clipboard!'));
 		copy('http://' + config.host + ':' + config.port);
 		
-		console.log(chalk.green('Ready ... set ... go!'))
+		console.log(chalk.green('Ready ... set ... go!'));
 	});
 
 	// JS specific watches to also detect removing/adding of files
