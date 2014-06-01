@@ -12,7 +12,7 @@ What did you like? What didn't you like? Did you get stuck somewhere? Where the 
 
 This is a one-man project, but it's meant to be used by other people as well, so your feedback is very valuable!
 
-(Mail me anything at all.)[mailto:hello@flovan.me]
+[Mail me anything at all.](mailto:hello@flovan.me)
 
 [website-url]: http://headstart.io
 [npm-url]: https://npmjs.org/package/headstart
