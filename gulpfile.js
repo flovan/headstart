@@ -38,7 +38,7 @@ var
 	tap					= require('gulp-tap'),
 	inject 				= require('gulp-inject'),
 	handlebars			= require('gulp-compile-handlebars'),
-	htmlmin				= require('gulp-htmlmin'),
+	htmlminify			= require('gulp-minify-html'),
 	bytediff			= require('gulp-bytediff'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
@@ -205,7 +205,8 @@ gulp.task('build', function (cb) {
 			sequence(
 				'clean-export',
 				[
-					'sass',
+					'sass-main',
+					'sass-ie',
 					'scripts-view',
 					'scripts-main',
 					'scripts-ie',
@@ -223,7 +224,8 @@ gulp.task('build', function (cb) {
 			sequence(
 				'clean-export',
 				[
-					'sass',
+					'sass-main',
+					'sass-ie',
 					'scripts-view',
 					'scripts-main',
 					'scripts-ie',
@@ -282,14 +284,17 @@ gulp.task('clean-tmp', function (cb) {
 // to that implementation rather than the Ruby one (which is slower).
 // https://github.com/hcatlin/libsass/issues/146
 
-gulp.task('sass', function (cb) {
+gulp.task('sass-main', function (cb) {
 
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return ( !lrStarted ?
-			gulp.src('assets/sass/*.{scss, sass, css}')
+			gulp.src([
+				'assets/sass/*.{scss, sass, css}',
+				'!*ie.{scss, sass, css}'
+			])
 			:
-			watch({ glob: 'assets/sass/**/*.{scss, sass, css}', emitOnGlob: false, name: 'SCSS', silent: true })
+			watch({ glob: 'assets/sass/**/*.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-MAIN', silent: true })
 				.pipe(plumber())
 				.pipe(sassgraph(['assets/sass']))
 		)
@@ -300,6 +305,28 @@ gulp.task('sass', function (cb) {
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 		.pipe(gulpif(lrStarted, connect.reload()))
+	;
+
+	// Continuous watch never ends, so end it manually
+	if(lrStarted) cb(null);
+});
+
+gulp.task('sass-ie', function (cb) {
+
+	// Process the .scss files
+	// While serving, this task opens a continuous watch
+	return ( !lrStarted ?
+			gulp.src([
+				'assets/sass/ie.{scss, sass, css}'
+			])
+			:
+			watch({ glob: 'assets/sass/**/ie.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-IE', silent: true })
+				.pipe(plumber())
+				.pipe(sassgraph(['assets/sass']))
+		)
+		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
+		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
+		.pipe(gulp.dest(config.export_assets + '/assets/css/ie.min.css'))
 	;
 
 	// Continuous watch never ends, so end it manually
@@ -333,12 +360,14 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 	// Files are ordered for dependency sake
 	return gulp.src([
 				'assets/js/libs/jquery*.js',
-				'assets/js/libs/ender.js',
+				'assets/js/libs/ender*.js',
 
 				(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
 
 				'assets/js/libs/*.js',
+				// TODO: remove later
 				'assets/js/core/*.js',
+				//
 				'assets/js/*.js',
 				'!' + 'assets/js/view-*.js',
 				'!**/_*.js'
@@ -367,12 +396,27 @@ gulp.task('scripts-ie', function (cb) {
 
 	// Process .js files
 	// Files are ordered for dependency sake
-	return gulp.src('assets/js/libs/patches/**/*.js')
+	gulp.src([
+		'assets/js/ie/head/**/*.js',
+		'!**/_*.js'
+	])
 		.pipe(plumber())
 		.pipe(deporder())
-		.pipe(concat('ie.min.js'))
+		.pipe(concat('ie.head.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
+
+	gulp.src([
+		'assets/js/ie/body/**/*.js',
+		'!**/_*.js'
+	])
+		.pipe(plumber())
+		.pipe(deporder())
+		.pipe(concat('ie.body.min.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest(config.export_assets + '/assets/js'));
+
+	cb();
 });
 
 // IMAGES ---------------------------------------------------------------------
@@ -529,13 +573,9 @@ gulp.task('templates', function (cb) {
 					addRootSlash: false,
 					addPrefix: config.template_asset_prefix
 				}))
-				.pipe(gulpif(config.minifyHTML, htmlmin({
-					removeComments: true,
-					collapseWhitespace: true,
-					removeAttributeQuotes: true,
-					removeRedundantAttributes: true,
-					removeEmptyAttributes: true,
-					collapseBooleanAttributes: true
+				.pipe(gulpif(config.minifyHTML, htmlminify({
+					conditionals: true,
+					comments: true
 				})))
 				.pipe(gulp.dest(config.export_templates))
 				.pipe(gulpif(lrStarted, connect.reload()))
@@ -669,7 +709,8 @@ gulp.task('server', function (cb) {
 
 		// Sass watch is integrated into task with a switch
 		// based on the flag above
-		gulp.start('sass');
+		gulp.start('sass-main');
+		gulp.start('sass-ie');
 
 		console.log(chalk.cyan('Serving files at'), chalk.magenta('http://' + config.host + ':' + config.port));
 		if(flags.open) openBrowser();
