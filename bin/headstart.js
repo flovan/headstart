@@ -11,6 +11,7 @@ var
 	_ = require('lodash'),
 
 	Liftoff = require('liftoff'),
+	argv = require('minimist')(process.argv.slice(2)),
 	gulp = require('gulp'),
 	gulpFile = require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'))
 ;
@@ -33,12 +34,11 @@ var cli = new Liftoff({
 // Launch CLI -----------------------------------------------------------------
 //
 
-cli.launch(launcher);
+cli.launch({}, launcher);
 
 function launcher (env) {
 
 	var 
-		argv = env.argv,
 		cliPackage = require('../package'),
 		versionFlag = argv.v || argv.version,
 
