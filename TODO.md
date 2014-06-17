@@ -5,12 +5,17 @@
 
 ### A list of things to explore:
 
-  - [ ] Replace livereloading with browser-sync (https://github.com/shakyShane/browser-sync through http://shakyshane.com/gulpjs-sass-browsersync-ftw/)
+  - [ ] Replace serving and livereloading with browser-sync (https://github.com/shakyShane/browser-sync through http://shakyshane.com/gulpjs-sass-browsersync-ftw/)
   - [ ] Think about fixed size columns for eg ads
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all)
   - [ ] Auto-check for updates (http://stackoverflow.com/questions/20686244/install-programmatically-a-npm-package-providing-its-version and http://stackoverflow.com/questions/11949419/nodejs-npm-show-latest-version-of-a-module)
   - [ ] Set a watch for folder like fonts/video
   - [ ] Watch changes on config, and rebuild
+  - [ ] Make favicon generating optional (https://www.npmjs.org/package/favicon-generator/)
+  - [ ] See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)
+  - [ ] See if replacing all minifying modules with gulp-compressor makes things faster (https://www.npmjs.org/package/gulp-compressor/)
+  - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
+  - [ ] Automatically solve crashes with gulp-nodemon (https://www.npmjs.org/package/gulp-nodemon/) or keepup (https://www.npmjs.org/package/keepup/)
 
   ### Done
 
