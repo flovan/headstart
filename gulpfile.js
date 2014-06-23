@@ -111,7 +111,7 @@ function downloadBoilerplateFiles () {
 	}
 
 	// Download the boilerplate files to a temp folder
-	// This is to pervent a ENOEMPTY error
+	// This is to prevent a ENOEMPTY error
 	ghdownload(gitConfig, tmpFolder)
 		.on('error', function (error) {
 			console.log(chalk.red('An error occurred. Aborting.', error));
@@ -498,7 +498,7 @@ gulp.task('templates', function (cb) {
 		return;
 	}
 
-	// If assebly is off, export all folders and files
+	// If assembly is off, export all folders and files
 	if (!config.assemble_templates) {
 		gulp.src(['templates/**/*', '!templates/*.*', '!_*'])
 			.pipe(gulp.dest(config.export_templates));
@@ -582,7 +582,7 @@ gulp.task('templates', function (cb) {
 			;
 
 			// Since above changes are made in a tapped stream
-			// We have to count to make sure everythings is parsed
+			// We have to count to make sure everything is parsed
 			// before continuing the build task
 			count = count + 1;
 			if(count == numTemplates) cb(null);
