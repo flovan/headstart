@@ -3,7 +3,6 @@
 var
 	path 				= require('path'),
 	globule				= require('globule'),
-	http				= require ('http'),
 	fs 					= require('fs'),
 	ncp 				= require('ncp').ncp,
 	chalk 				= require('chalk'),
@@ -12,8 +11,9 @@ var
 	sequence 			= require('run-sequence'),
 	stylish 			= require('jshint-stylish'),
 	open 				= require('open'),
-	copy_paste 			= require('copy-paste').silent(),
+	copy_paste			= require('copy-paste').silent(),
 	ghdownload			= require('github-download'),
+	browserSync			= require('browser-sync'),
 
 	gulp 				= require('gulp'),
 	rimraf 				= require('gulp-rimraf'),
@@ -21,7 +21,6 @@ var
 	plumber 			= require('gulp-plumber'),
 	gulpif 				= require('gulp-if'),
 	rename 				= require('gulp-rename'),
-	connect 			= require('gulp-connect'),
 	//	sass 			= require('gulp-sass'),
 	sass 				= require('gulp-ruby-sass'),
 	sassgraph 			= require('gulp-sass-graph'),
@@ -31,7 +30,7 @@ var
 	jshint 				= require('gulp-jshint'),
 	deporder 			= require('gulp-deporder'),
 	concat 				= require('gulp-concat'),
-	replace 			= require('gulp-replace'),
+	//stripDebug 			= require('gulp-strip-debug'), //<--------------------------------!!!!!!!!!!!!!!!!!!!
 	uglify 				= require('gulp-uglify'),
 	newer 				= require('gulp-newer'),
 	imagemin 			= require('gulp-imagemin'),
@@ -46,7 +45,11 @@ var
 	cwd 				= process.cwd(),
 	tmpFolder			= '.tmp',
 	lrStarted 			= false,
-	lrDisable 			= flags.nolr || false,
+	connection			= {
+							local: 'localhost',
+							external: null,
+							port: null
+						},
 	isProduction 		= flags.production || flags.prod || false,
 	config;
 ;
@@ -280,8 +283,8 @@ gulp.task('clean-tmp', function (cb) {
 // SASS -----------------------------------------------------------------------
 //
 
-// Note: Once libsass fixed the @extend bug, Headstart will switch
-// to that implementation rather than the Ruby one (which is slower).
+// Note: Once libsass fixed the @extend bug (and is stable enough), Headstart 
+// will switch to that implementation rather than the Ruby one (which is slower).
 // https://github.com/hcatlin/libsass/issues/146
 
 gulp.task('sass-main', function (cb) {
@@ -304,7 +307,7 @@ gulp.task('sass-main', function (cb) {
 		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
-		.pipe(gulpif(lrStarted, connect.reload()))
+		.pipe(gulpif(lrStarted, browserSync.reload({stream:true})))
 	;
 
 	// Continuous watch never ends, so end it manually
@@ -375,7 +378,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 		)
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
-		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
+		//.pipe(gulpif(isProduction, stripDebug())) //<--------------------------------!!!!!!!!!!!!!!!!!!!
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
@@ -386,7 +389,7 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 	return gulp.src('assets/js/view-*.js')
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
-		.pipe(gulpif(isProduction, replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
+		//.pipe(gulpif(isProduction, stripDebug())) //<--------------------------------!!!!!!!!!!!!!!!!!!!
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
@@ -442,7 +445,7 @@ gulp.task('images', function (cb) {
 		.pipe(newer(config.export_assets+ '/assets/images'))
 		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true })))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
-		.pipe(gulpif(lrStarted, connect.reload()))
+		.pipe(gulpif(lrStarted, browserSync.reload({stream:true})))
 	;
 });
 
@@ -578,7 +581,7 @@ gulp.task('templates', function (cb) {
 					comments: true
 				})))
 				.pipe(gulp.dest(config.export_templates))
-				.pipe(gulpif(lrStarted, connect.reload()))
+				.pipe(gulpif(lrStarted, browserSync.reload({stream:true})))
 			;
 
 			// Since above changes are made in a tapped stream
@@ -677,50 +680,23 @@ gulp.task('uncss-view', function (cb) {
 function openBrowser () {
 
 	console.log(
-		chalk.cyan('Opening'),
-		chalk.magenta('http://' + config.host + ':' + config.port),
-		chalk.cyan('in'),
+		chalk.cyan('Opening in'),
 		chalk.magenta(config.browser)
 	);
-	open('http://' + config.host + ':' + config.port, config.browser);
+	open('http://' + connection.local + ':' + connection.port, config.browser);
 }
 
 // Open files in editor
 function openEditor () {
 
 	console.log(
-		chalk.cyan('Opening'),
-		chalk.magenta(cwd),
-		chalk.cyan('in'),
+		chalk.cyan('Editing in'),
 		chalk.magenta(config.editor)
 	);
 	open(cwd, config.editor);
 }
 
-gulp.task('server', function (cb) {
-
-	console.log(chalk.grey('Starting server...'));
-
-	// Start the livereload server and connect to it
-	sequence('connect-livereload', function () {
-
-		// Store started state globally
-		lrStarted = true;
-
-		// Sass watch is integrated into task with a switch
-		// based on the flag above
-		gulp.start('sass-main');
-		gulp.start('sass-ie');
-
-		console.log(chalk.cyan('Serving files at'), chalk.magenta('http://' + config.host + ':' + config.port));
-		if(flags.open) openBrowser();
-		if(flags.edit) openEditor();
-
-		console.log(chalk.cyan('Copied url to clipboard!'));
-		copy('http://' + config.host + ':' + config.port);
-		
-		console.log(chalk.green('Ready ... set ... go!'))
-	});
+gulp.task('server', ['browsersync'], function (cb) {
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
@@ -758,13 +734,42 @@ gulp.task('server', function (cb) {
 	});
 });
 
-gulp.task('connect-livereload', function (cb) {
-	connect.server({
-		root: [config.export_templates],
-		host: config.host,
-		port: config.port,
-		livereload: flags.nolr ? false : true,
-		silent: true
+gulp.task('browsersync', function (cb) {
+	
+	// Serve files and connect browsers
+	browserSync.init(null, {
+		server: {
+			baseDir: config.export_templates
+		},
+		logConnections: false,
+		debugInfo: false,
+		browser: 'none'
+	}, function ( err, data) {
+
+		// Store started state globally
+		connection.external = data.options.external;
+		connection.port = data.options.port;
+		lrStarted = true;
+
+		// Sass watch is integrated into task with a switch
+		// based on the flag above
+		gulp.start('sass-main');
+		gulp.start('sass-ie');
+
+		// Show some logs
+		console.log(chalk.cyan('Local access at'), chalk.magenta('http://localhost' + ':' + data.options.port));
+		console.log(chalk.cyan('External access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
+
+		// Copy the local url
+		console.log(chalk.grey('Copied local url to clipboard!'));
+		copy('http://' + connection.external + ':' + connection.port);
+
+		// Process flags
+		if(flags.open) openBrowser();
+		if(flags.edit) openEditor();
+
+		// Let's go!
+		console.log(chalk.green('Ready ... set ... go!'));
 	});
 
 	cb(null);
