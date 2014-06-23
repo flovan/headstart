@@ -5,15 +5,17 @@
 // Error.stackTraceLimit = 9000;
 
 var 
-	path = require('path'),
-	fs = require('fs'),
-	chalk = require('chalk'),
-	_ = require('lodash'),
+	path				= require('path'),
+	fs					= require('fs'),
+	chalk				= require('chalk'),
+	_					= require('lodash'),
 
-	Liftoff = require('liftoff'),
-	argv = require('minimist')(process.argv.slice(2)),
-	gulp = require('gulp'),
-	gulpFile = require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'))
+	Liftoff				= require('liftoff'),
+	updateNotifier		= require('update-notifier'),
+	notifier			= updateNotifier({ packagePath: '../package.json' }),
+	argv				= require('minimist')(process.argv.slice(2)),
+	gulp				= require('gulp'),
+	gulpFile			= require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'))
 ;
 
 // CLI configuration ----------------------------------------------------------
@@ -23,13 +25,26 @@ var cli = new Liftoff({
 	name: 'headstart',
 	// completions: require('../lib/completion') TODO
 }).on('require', function (name, module) {
-	console.log(chalk.grey('Requiring external module: '+name+'...'));
-	if (name === 'coffee-script') {
-		module.register();
-	}
+	console.log(chalk.grey('What is this I don\'t even ...'));
 }).on('requireFail', function (name, err) {
 	console.log(chalk.black.bgRed('Unable to load:', name, err));
 });
+
+// Check for updates ----------------------------------------------------------
+//
+
+if (notifier.update) {
+	console.log(
+		chalk.cyan('\n----------------------------------------\n'),
+		chalk.white('Update available'),
+		chalk.yellow(notifier.update.latest),
+		chalk.grey('(current: ' + notifier.update.current + ')\n'),
+		chalk.white('Please head over to'),
+		chalk.magenta('http://www.headstart.io/upgrading.html'),
+		chalk.white('for instructions\n'),
+		chalk.cyan('----------------------------------------\n')
+	);
+}
 
 // Launch CLI -----------------------------------------------------------------
 //
@@ -144,8 +159,6 @@ function logTasks () {
 		'\tOpen up a browser for you (default Google Chrome)\n',
 		chalk.grey('--edit'),
 		'\tOpen the files in your editor (default Sublime Text)\n',
-		chalk.grey('--nolr'),
-		'\tDisables the livereload snippet\n',
 		chalk.grey('--onlyassets'),
 		'\tOnly build the assets\n'
 	);
