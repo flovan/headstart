@@ -21,7 +21,6 @@
     "copy-paste": "^0.2.2",
     "github-download": "^0.3.0",
     "globule": "^0.2.0",
-    "groundskeeper": "^0.1.9",
     "gulp": "^3.8.1",
     "gulp-autoprefixer": "0.0.7",
     "gulp-bytediff": "^0.2.0",
