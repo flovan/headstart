@@ -304,7 +304,7 @@ gulp.task('sass-main', function (cb) {
 		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulpif(config.combineMediaQueries, cmq()))
-		.pipe(gulpif(config.autoPrefix, autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4')))
+		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 		.pipe(gulpif(lrStarted, browserSync.reload({stream:true})))
@@ -369,12 +369,12 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 
 				(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
 
-				'assets/js/libs/*.js',
+				'assets/js/libs/**/*.js',
 				// TODO: remove later
-				'assets/js/core/*.js',
+				'assets/js/core/**/*.js',
 				//
 				'assets/js/*.js',
-				'!' + 'assets/js/view-*.js',
+				'!assets/js/view-*.js',
 				'!**/_*.js'
 			], {base: '' + 'assets/js'}
 		)
@@ -408,6 +408,7 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(plumber())
 		.pipe(deporder())
 		.pipe(concat('ie.head.min.js'))
+		.pipe(gulpif(isProduction, stripDebug()))
 		.pipe(uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
 
@@ -418,6 +419,7 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(plumber())
 		.pipe(deporder())
 		.pipe(concat('ie.body.min.js'))
+		.pipe(gulpif(isProduction, stripDebug()))
 		.pipe(uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
 
@@ -496,12 +498,6 @@ gulp.task('misc', function (cb) {
 //
  
 gulp.task('templates', function (cb) {
-
-	// Quit this task if only assets need to be built
-	if(flags.onlyassets) {
-		cb(null);
-		return;
-	}
 
 	// If assebly is off, export all folders and files
 	if (!config.assemble_templates) {
@@ -703,7 +699,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
 	watch({
-		glob: ['**/view-*.js'],
+		glob: ['assets/js/**/view-*.js'],
 		emitOnGlob: false,
 		name: 'JS-VIEW',
 		silent: true
