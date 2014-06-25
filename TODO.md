@@ -1,6 +1,6 @@
 ### TODO's:
 
-  - [ ] Fix crashes with added/deleted folders and new/deleted files
+  /
 
 ### A list of things to explore:
 
