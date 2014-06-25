@@ -56,15 +56,16 @@ function launcher (env) {
 	var 
 		cliPackage = require('../package'),
 		versionFlag = argv.v || argv.version,
+		infoFlag = argv.i || argv.info,
 
-		allowedTasks = ['init', 'build', 'i', 'info'],
+		allowedTasks = ['init', 'build'],
 		task = argv._,
 		numTasks = task.length
 	;
 
 	// Check for version flag
 	if (versionFlag) {
-		console.log('Headstart CLI version', cliPackage.version);
+		console.log(chalk.yellow('Headstart CLI version', cliPackage.version));
 		process.exit(0);
 	}
 
@@ -85,7 +86,7 @@ function launcher (env) {
 	task = task[0];
 
 	// Print info if needed
-	if(task === 'i' || task === 'info') {
+	if(infoFlag) {
 		logInfo(cliPackage);
 		process.exit(0);
 	}
@@ -134,9 +135,10 @@ function logInfo (cliPackage) {
 		'MMMMMMMMMMMMMMMNo.   .\'\'\'...   \'lKMMMMMM\n' +
 		'MMMMMMMMMMMMMMMMMMKo,.    .\':xXMMMMMMMMM\n' +
 		'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n',
-		chalk.grey('\nv' + cliPackage.version + '\nA worry-free front-end workflow\n' +
-		'➳  http://headstart.flovan.me\n' +
-		'\n' +
+		chalk.yellow('\nv' + cliPackage.version + '\n'),
+		chalk.white('A worry-free front-end workflow\n'),
+		chalk.cyan('➳  http://headstart.flovan.me\n'),
+		chalk.grey('\n' +
 		'-------\n')
 	));
 	logTasks();
@@ -158,20 +160,16 @@ function logTasks () {
 		chalk.grey('--open'),
 		'\tOpen up a browser for you (default Google Chrome)\n',
 		chalk.grey('--edit'),
-		'\tOpen the files in your editor (default Sublime Text)\n',
-		chalk.grey('--onlyassets'),
-		'\tOnly build the assets\n'
+		'\tOpen the files in your editor (default Sublime Text)\n'
 	);
 	console.log(
-		chalk.magenta('i'),
+		chalk.magenta('headstart'),
 		'or',
-		chalk.magenta('info'),
+		chalk.magenta('headstart --info'),
 		'to print out this message'
 	);
 	console.log(
-		chalk.magenta('-v'),
-		'or',
-		chalk.magenta('--version'),
+		chalk.magenta('headstart --version'),
 		'to print out the version of your Headstart CLI\n'
 	);
 }
