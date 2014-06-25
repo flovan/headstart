@@ -376,10 +376,10 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 				'assets/js/*.js',
 				'!' + 'assets/js/view-*.js',
 				'!**/_*.js'
-			]//, {base: '' + 'assets/js'}
+			], {base: '' + 'assets/js'}
 		)
 		.pipe(plumber())
-		//.pipe(gulpif(isProduction, stripDebug()))
+		.pipe(gulpif(isProduction, stripDebug()))
 		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
@@ -391,7 +391,7 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 	return gulp.src('assets/js/view-*.js')
 		.pipe(plumber())
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
-		//.pipe(gulpif(isProduction, stripDebug()))
+		.pipe(gulpif(isProduction, stripDebug()))
 		.pipe(gulpif(isProduction, uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
