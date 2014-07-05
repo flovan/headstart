@@ -41,7 +41,7 @@ var
 	bytediff			= require('gulp-bytediff'),
 
 	flags 				= require('minimist')(process.argv.slice(2)),
-	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate'}, // , ref: 'wip'
+	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate', ref: '1.0.2'},
 	cwd 				= process.cwd(),
 	tmpFolder			= '.tmp',
 	lrStarted 			= false,
@@ -106,18 +106,46 @@ function downloadBoilerplateFiles () {
 	console.log(chalk.grey('Downloading boilerplate files...'));
 
 	// If a custom repo was passed in, use it
-	if(!!flags.base) {
-		flags.base = flags.base.split('/');
+	if (!!flags.base) {
 
+		// Check if there's a slash
+		if (flags.base.indexOf('/') < 0) {
+			console.log(chalk.red('Please pass in a correct repository, eg. `myname/myrepo` or `myname/myrepo#mybranch. Aborting.\n'));
+			process.exit(0);
+		}
+
+		// Check if there's a reference
+		if (flags.base.indexOf('#') > -1) {
+			flags.base = flags.base.split('#');
+			gitConfig.ref = flags.base[1];
+			flags.base = flags.base[0];
+		} else {
+			gitConfig.ref = null;
+		}
+
+		// Extract username and repo
+		flags.base = flags.base.split('/');
 		gitConfig.user = flags.base[0];
 		gitConfig.repo = flags.base[1];
+
+		// Extra validation
+		if (gitConfig.user.length <= 0) {
+			console.log(chalk.red('The passed in username is invald. Aborting.\n'));
+			process.exit(0);
+		}
+		if (gitConfig.repo.length <= 0) {
+			console.log(chalk.red('The passed in repo is invald. Aborting.\n'));
+			process.exit(0);
+		}
+
+		console.log(gitConfig);
 	}
 
 	// Download the boilerplate files to a temp folder
 	// This is to pervent a ENOEMPTY error
 	ghdownload(gitConfig, tmpFolder)
 		.on('error', function (error) {
-			console.log(chalk.red('An error occurred. Aborting.', error));
+			console.log(chalk.red('An error occurred. Aborting.'), error);
 			process.exit(0);
 		})
 		.on('end', function () {
@@ -294,7 +322,7 @@ gulp.task('sass-main', function (cb) {
 	return ( !lrStarted ?
 			gulp.src([
 				'assets/sass/*.{scss, sass, css}',
-				'!*ie.{scss, sass, css}'
+				'!assets/sass/*ie.{scss, sass, css}'
 			])
 			:
 			watch({ glob: 'assets/sass/**/*.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-MAIN', silent: true })
@@ -755,12 +783,12 @@ gulp.task('browsersync', function (cb) {
 		gulp.start('sass-ie');
 
 		// Show some logs
-		console.log(chalk.cyan('Local access at'), chalk.magenta('http://localhost' + ':' + data.options.port));
+		console.log(chalk.cyan('Local access at'), chalk.magenta('http://localhost:' + data.options.port));
 		console.log(chalk.cyan('External access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
 
 		// Copy the local url
 		console.log(chalk.grey('Copied local url to clipboard!'));
-		copy('http://' + connection.external + ':' + connection.port);
+		copy('http://localhost:' + data.options.port);
 
 		// Process flags
 		if(flags.open) openBrowser();
