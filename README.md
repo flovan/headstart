@@ -19,10 +19,10 @@ This is a one-man project, so some approaches might be personated. Nevertheless,
 
 ## Updates
 
-For all updates, follow [@headstartio on Twitter][twitter-url].
-Changes can be found on [the Changelog page][changelog-url].
+For all updates, follow [@headstartio][twitter-url] on Twitter.
+Changes can be found on [the changelog page][changelog-url].
 
-Want to upgrade? Read [the Upgrading page][ugrading-url] for more details.
+Want to upgrade? Check out [the upgrading page][ugrading-url] for more details.
 
 [website-url]: http://headstart.io
 [getting-started-url]: http://www.headstart.io/getting-started.html
