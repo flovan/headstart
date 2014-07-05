@@ -1,10 +1,13 @@
-# Headstart [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][david-image]][david-url]
+# [Headstart](website-url) [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][david-image]][david-url]
 
 > An easy-to-use automated front-end setup.
 
 ## Documentation
 
-You can find the Getting started, or the html/js/css guide [on the website][website-url].
+  - [Getting started][getting-started-url]
+  - [HTML Guide][html-guide-url]
+  - [CSS Guide][css-guide-url]
+  - [JS Guide][js-guide-url]
 
 ## ♥ Feedback
 
@@ -17,8 +20,17 @@ This is a one-man project, so some approaches might be personated. Nevertheless,
 ## Updates
 
 For all updates, follow [@headstartio on Twitter][twitter-url].
+Changes can be found on [the Changelog page][changelog-url].
+
+Want to upgrade? Read [the Upgrading page][ugrading-url] for more details.
 
 [website-url]: http://headstart.io
+[getting-started-url]: http://www.headstart.io/getting-started.html
+[html-guide-url]: http://www.headstart.io/html-guide.html
+[css-guide-url]: http://www.headstart.io/css-guide.html
+[js-guide-url]: http://www.headstart.io/js-guide.html
+[changelog-url]: http://www.headstart.io/changelog.html
+[ugrading-url]: http://www.headstart.io/upgrading.html
 [twitter-url]: https://twitter.com/headstartio
 [issues-url]: https://github.com/flovan/headstart/issues
 [npm-url]: https://npmjs.org/package/headstart
