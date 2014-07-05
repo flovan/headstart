@@ -5,15 +5,17 @@
 // Error.stackTraceLimit = 9000;
 
 var 
-	path = require('path'),
-	fs = require('fs'),
-	chalk = require('chalk'),
-	_ = require('lodash'),
+	path				= require('path'),
+	fs					= require('fs'),
+	chalk				= require('chalk'),
+	_					= require('lodash'),
 
-	Liftoff = require('liftoff'),
-	argv = require('minimist')(process.argv.slice(2)),
-	gulp = require('gulp'),
-	gulpFile = require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'))
+	Liftoff				= require('liftoff'),
+	updateNotifier		= require('update-notifier'),
+	notifier			= updateNotifier({ packagePath: '../package.json' }),
+	argv				= require('minimist')(process.argv.slice(2)),
+	gulp				= require('gulp'),
+	gulpFile			= require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'))
 ;
 
 // CLI configuration ----------------------------------------------------------
@@ -23,13 +25,26 @@ var cli = new Liftoff({
 	name: 'headstart',
 	// completions: require('../lib/completion') TODO
 }).on('require', function (name, module) {
-	console.log(chalk.grey('Requiring external module: '+name+'...'));
-	if (name === 'coffee-script') {
-		module.register();
-	}
+	console.log(chalk.grey('What is this I don\'t even ...'));
 }).on('requireFail', function (name, err) {
 	console.log(chalk.black.bgRed('Unable to load:', name, err));
 });
+
+// Check for updates ----------------------------------------------------------
+//
+
+if (notifier.update) {
+	console.log(
+		chalk.cyan('\n----------------------------------------\n'),
+		chalk.white('Update available'),
+		chalk.yellow(notifier.update.latest),
+		chalk.grey('(current: ' + notifier.update.current + ')\n'),
+		chalk.white('Please head over to'),
+		chalk.magenta('http://www.headstart.io/upgrading.html'),
+		chalk.white('for instructions\n'),
+		chalk.cyan('----------------------------------------\n')
+	);
+}
 
 // Launch CLI -----------------------------------------------------------------
 //
@@ -41,15 +56,16 @@ function launcher (env) {
 	var 
 		cliPackage = require('../package'),
 		versionFlag = argv.v || argv.version,
+		infoFlag = argv.i || argv.info,
 
-		allowedTasks = ['init', 'build', 'i', 'info'],
+		allowedTasks = ['init', 'build'],
 		task = argv._,
 		numTasks = task.length
 	;
 
 	// Check for version flag
 	if (versionFlag) {
-		console.log('Headstart CLI version', cliPackage.version);
+		console.log(chalk.yellow('Headstart CLI version', cliPackage.version));
 		process.exit(0);
 	}
 
@@ -70,7 +86,7 @@ function launcher (env) {
 	task = task[0];
 
 	// Print info if needed
-	if(task === 'i' || task === 'info') {
+	if(infoFlag) {
 		logInfo(cliPackage);
 		process.exit(0);
 	}
@@ -119,9 +135,10 @@ function logInfo (cliPackage) {
 		'MMMMMMMMMMMMMMMNo.   .\'\'\'...   \'lKMMMMMM\n' +
 		'MMMMMMMMMMMMMMMMMMKo,.    .\':xXMMMMMMMMM\n' +
 		'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n',
-		chalk.grey('\nv' + cliPackage.version + '\nA worry-free front-end workflow\n' +
-		'➳  http://headstart.flovan.me\n' +
-		'\n' +
+		chalk.yellow('\nv' + cliPackage.version + '\n'),
+		chalk.white('A worry-free front-end workflow\n'),
+		chalk.cyan('➳  http://headstart.flovan.me\n'),
+		chalk.grey('\n' +
 		'-------\n')
 	));
 	logTasks();
@@ -131,7 +148,10 @@ function logTasks () {
 	console.log('Please use one of the following tasks:\n');
 	console.log(
 		chalk.magenta('init'),
-		'\t\tAdd the boilerplate files to the current directory'
+		'\t\tAdd the boilerplate files to the current directory\n',
+		chalk.grey('--base'),
+		'\tPass in a custom repo\n',
+		'\t\te.g. myuser/myrepo or myuser/myrepo#mybranch\n'
 	);
 	console.log(
 		chalk.magenta('build'),
@@ -143,22 +163,16 @@ function logTasks () {
 		chalk.grey('--open'),
 		'\tOpen up a browser for you (default Google Chrome)\n',
 		chalk.grey('--edit'),
-		'\tOpen the files in your editor (default Sublime Text)\n',
-		chalk.grey('--nolr'),
-		'\tDisables the livereload snippet\n',
-		chalk.grey('--onlyassets'),
-		'\tOnly build the assets\n'
+		'\tOpen the files in your editor (default Sublime Text)\n'
 	);
 	console.log(
-		chalk.magenta('i'),
+		chalk.magenta('headstart'),
 		'or',
-		chalk.magenta('info'),
+		chalk.magenta('headstart --info'),
 		'to print out this message'
 	);
 	console.log(
-		chalk.magenta('-v'),
-		'or',
-		chalk.magenta('--version'),
+		chalk.magenta('headstart --version'),
 		'to print out the version of your Headstart CLI\n'
 	);
 }
