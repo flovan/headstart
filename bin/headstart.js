@@ -148,7 +148,10 @@ function logTasks () {
 	console.log('Please use one of the following tasks:\n');
 	console.log(
 		chalk.magenta('init'),
-		'\t\tAdd the boilerplate files to the current directory'
+		'\t\tAdd the boilerplate files to the current directory\n',
+		chalk.grey('--base'),
+		'\tPass in a custom repo\n',
+		'\t\te.g. myuser/myrepo or myuser/myrepo#mybranch\n'
 	);
 	console.log(
 		chalk.magenta('build'),
