@@ -59,12 +59,14 @@ var
 
 gulp.task('init', function (cb) {
 
-	// Check if working directory is empty
+	// Get all files in working directory
 	// Exclude . files (such as .DS_Store on OS X)
 	var cwdFiles = _.remove(fs.readdirSync(cwd), function (file) {
+
 		return file.substring(0,1) !== '.';
 	});
 
+	// If there are any files
 	if (cwdFiles.length > 0) {
 
 		// Make sure the user knows what is about to happen
@@ -86,16 +88,19 @@ gulp.task('init', function (cb) {
 				}, function (answer) {
 
 					if (answer.overridconfirm) {
-						// Clean up directory
+						// Clean up directory, then start downloading
 						console.log(chalk.grey('Emptying current directory'));
 						sequence('clean-tmp', 'clean-cwd', downloadBoilerplateFiles);
 					}
+					// User is unsure, quit process
 					else process.exit(0);
 				});
 			}
+			// User is unsure, quit process
 			else process.exit(0);
 		});
 	}
+	// No files, start downloading
 	else downloadBoilerplateFiles();
 
 	cb(null);
@@ -137,22 +142,22 @@ function downloadBoilerplateFiles () {
 			console.log(chalk.red('The passed in repo is invald. Aborting.\n'));
 			process.exit(0);
 		}
-
-		console.log(gitConfig);
 	}
 
 	// Download the boilerplate files to a temp folder
 	// This is to pervent a ENOEMPTY error
 	ghdownload(gitConfig, tmpFolder)
+		// Let the user know when something went wrong
 		.on('error', function (error) {
 			console.log(chalk.red('An error occurred. Aborting.'), error);
 			process.exit(0);
 		})
+		// Download succeeded
 		.on('end', function () {
 			console.log(chalk.green('✔ Download complete!'));
 			console.log(chalk.grey('Cleaning up...'));
 
-			// Move to working directory, clean temp, finish
+			// Move to working directory, clean temp, finish init
 			ncp(tmpFolder, cwd, function (err) {
 
 				if (err) {
@@ -165,13 +170,14 @@ function downloadBoilerplateFiles () {
 				});
 			});
 		})
+		// TODO: Try to catch the error when a ZIP has "NOEND"
 	;
 }
 
 function finishInit () {
 
 	// Ask the user if he wants to continue and
-	// have the files served
+	// have the files served and opened
 	prompt({
 			type: 'confirm',
 			message: 'Would you like to have these files served?',
@@ -217,7 +223,7 @@ gulp.task('build', function (cb) {
 	fs.readFile('config.json', 'utf8', function (err, data) {
 
 		if (err) {
-			console.log(chalk.red('Cannot find config.json. Have you initiated Headstart?'), err);
+			console.log(chalk.red('Cannot find config.json. Have you initiated Headstart through `headstart init?'), err);
 			process.exit(0);
 		}
 
