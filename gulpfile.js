@@ -16,7 +16,6 @@ var
 	sequence			= require('run-sequence'),
 	stylish				= require('jshint-stylish'),
 	open				= require('open'),
-	copy_paste			= require('copy-paste').silent(),
 	ghdownload			= require('github-download'),
 	browserSync			= require('browser-sync'),
 	gulp				= require('gulp'),
@@ -38,6 +37,7 @@ var
 		port: null
 	},
 	isProduction		= flags.production || flags.prod || false,
+	isVerbose			= flags.verbose || false,
 	config
 ;
 
@@ -243,7 +243,11 @@ gulp.task('build', function (cb) {
 				'uncss-view',
 				'manifest',
 				'server',
-				cb
+				function () {
+
+					console.log(chalk.green('✔  Build complete'));
+					cb(null);
+				}
 			);
 		} else {
 			sequence(
@@ -263,14 +267,15 @@ gulp.task('build', function (cb) {
 				'uncss-view',
 				'manifest',
 				function () {
+
 					if(flags.edit) openEditor();
-					console.log(chalk.green('✔ All done!'));
+					console.log(chalk.green('✔  All done!'));
+
+					cb(null);
 				}
 			);
 		}
 	});
-
-	cb(null);
 });
 
 // CLEAN ----------------------------------------------------------------------
@@ -308,6 +313,11 @@ gulp.task('clean-tmp', function (cb) {
 
 gulp.task('sass-main', function (cb) {
 
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "sass-main"'));
+	}
+	
 	// Continuous watch never ends, so end it manually
 	if(lrStarted) cb(null);
 
@@ -319,7 +329,12 @@ gulp.task('sass-main', function (cb) {
 				'!assets/sass/*ie.{scss, sass, css}'
 			])
 			:
-			plugins.watch({ glob: 'assets/sass/**/*.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-MAIN', silent: true })
+			plugins.watch({
+				glob: 'assets/sass/**/*.{scss, sass, css}',
+				emitOnGlob: false,
+				name: 'SCSS-MAIN',
+				silent: true
+			})
 				.pipe(plugins.plumber())
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
@@ -337,6 +352,11 @@ gulp.task('sass-main', function (cb) {
 });
 
 gulp.task('sass-ie', function (cb) {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "sass-ie"'));
+	}
 
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
@@ -345,7 +365,12 @@ gulp.task('sass-ie', function (cb) {
 				'assets/sass/ie.{scss, sass, css}'
 			])
 			:
-			plugins.watch({ glob: 'assets/sass/**/ie.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-IE', silent: true })
+			plugins.watch({
+				glob: 'assets/sass/**/ie.{scss, sass, css}',
+				emitOnGlob: false,
+				name: 'SCSS-IE',
+				silent: true
+			})
 				.pipe(plugins.plumber())
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
@@ -362,9 +387,14 @@ gulp.task('sass-ie', function (cb) {
 
 // JSHint options:	http://www.jshint.com/docs/options/
 gulp.task('hint-scripts', function (cb) {
-
+	
 	if (!config.hint) cb(null);
 	else {
+		// Log taks if mode is verbose
+		if (isVerbose) {
+			console.log(chalk.grey('☞  Running task "hint-scripts"'));
+		}
+
 		// Hint all non-lib js files and exclude _ prefixed files
 		return gulp.src([
 				'assets/js/*.js',
@@ -379,6 +409,11 @@ gulp.task('hint-scripts', function (cb) {
 });
 
 gulp.task('scripts-main', ['hint-scripts'], function () {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "scripts-main"'));
+	}
 
 	// Process .js files
 	// Files are ordered for dependency sake
@@ -407,6 +442,11 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 });
 
 gulp.task('scripts-view', ['hint-scripts'], function (cb) {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "scripts-view"'));
+	}
 
 	return gulp.src('assets/js/view-*.js')
 		.pipe(plugins.plumber())
@@ -419,6 +459,11 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 });
 
 gulp.task('scripts-ie', function (cb) {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "scripts-ie"'));
+	}
 
 	// Process .js files
 	// Files are ordered for dependency sake
@@ -455,6 +500,11 @@ gulp.task('scripts-ie', function (cb) {
 //
 
 gulp.task('images', function (cb) {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "images"'));
+	}
 
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
@@ -467,7 +517,7 @@ gulp.task('images', function (cb) {
 
 	// Grab all image files, filter out the new ones and copy over
 	// In --production mode, optimize them first
-	return gulp.src([
+	gulp.src([
 			'assets/images/**/*',
 			'!_*'
 		])
@@ -478,12 +528,19 @@ gulp.task('images', function (cb) {
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
+
+	cb(null);
 });
 
 // OTHER ----------------------------------------------------------------------
 //
 
 gulp.task('other', function (cb) {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "other"'));
+	}
 
 	// Make sure other files and folders are copied over
 	// eg. fonts, videos, ...
@@ -505,9 +562,14 @@ gulp.task('other', function (cb) {
 //
  
 gulp.task('misc', function (cb) {
-
+	
 	// In --production mode, copy over all the other stuff
 	if (isProduction) {
+		// Log taks if mode is verbose
+		if (isVerbose) {
+			console.log(chalk.grey('☞  Running task "misc"'));
+		}
+
 		// Make a functional version of the htaccess.txt
 		gulp.src('misc/htaccess.txt')
 			.pipe(plugins.rename('.htaccess'))
@@ -526,6 +588,11 @@ gulp.task('misc', function (cb) {
 //
  
 gulp.task('templates', function (cb) {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "templates"'));
+	}
 
 	// If assebly is off, export all folders and files
 	if (!config.assemble_templates) {
@@ -628,13 +695,19 @@ gulp.task('templates', function (cb) {
 // Clean up unused CSS styles
 
 gulp.task('uncss-main', function (cb) {
-
+	
 	// Quit this task if this isn't production mode
 	if(!isProduction || !config.useUncss) {
 		cb(null);
 		return;
 	}
 
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "uncss-main"'));
+	}
+
+	// Log that main stylesheet is being cleaned
 	console.log(chalk.grey('Parsing and cleaning main stylesheet...'));
 
 	// Grab all templates / partials / layout parts / etc
@@ -653,19 +726,31 @@ gulp.task('uncss-main', function (cb) {
 });
 
 gulp.task('uncss-view', function (cb) {
-
+	
 	// Quit this task if this isn't production mode
 	if(!isProduction || !config.useUncss) {
 		cb(null);
 		return;
 	}
 
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "uncss-view"'));
+	}
+
+	// Check for view-*.scss files and log that they are being cleaned
+	// or quit
+
 	var numViews = globule.find(config.export_assets + '/assets/css/view-*.css').length,
 		count = 0;
 
 	if(numViews) console.log(chalk.grey('Parsing and cleaning view stylesheet(s)...'));
+	else {
+		cb(null);
+		return;
+	}
 
-	// Parse the view-*.scss files
+	// Parse the files
 	gulp.src(config.export_assets + '/assets/css/view-*.css')
 		.pipe(plugins.tap(function (file, t) {
 
@@ -707,10 +792,15 @@ gulp.task('uncss-view', function (cb) {
 //
 
 gulp.task('manifest', function (cb) {
-
+	
 	if (!config.revisionCaching || !isProduction) {
 		cb(null);
 		return;
+	}
+
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "manifest"'));
 	}
 
 	gulp.src([
@@ -731,7 +821,7 @@ gulp.task('manifest', function (cb) {
 function openBrowser () {
 
 	console.log(
-		chalk.cyan('Opening in'),
+		chalk.cyan('☞  Opening in'),
 		chalk.magenta(config.browser)
 	);
 	open('http://' + connection.local + ':' + connection.port, config.browser);
@@ -741,7 +831,7 @@ function openBrowser () {
 function openEditor () {
 
 	console.log(
-		chalk.cyan('Editing in'),
+		chalk.cyan('☞  Editing in'),
 		chalk.magenta(config.editor)
 	);
 	open(cwd, config.editor);
@@ -749,6 +839,11 @@ function openEditor () {
 
 
 gulp.task('server', ['browsersync'], function (cb) {
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "server"'));
+	}
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
@@ -784,10 +879,17 @@ gulp.task('server', ['browsersync'], function (cb) {
 	}, function() {
 		sequence('templates');
 	});
+
+	cb(null);
 });
 
 gulp.task('browsersync', function (cb) {
 	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "browsersync"'));
+	}
+
 	// Serve files and connect browsers
 	browserSync.init(null, {
 		server: {
@@ -809,19 +911,12 @@ gulp.task('browsersync', function (cb) {
 		gulp.start('sass-ie');
 
 		// Show some logs
-		console.log(chalk.cyan('Local access at'), chalk.magenta('http://localhost:' + data.options.port));
-		console.log(chalk.cyan('External access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
-
-		// Copy the local url
-		console.log(chalk.grey('Copied local url to clipboard!'));
-		copy('http://localhost:' + data.options.port);
+		console.log(chalk.cyan('☞  Local access at'), chalk.magenta('http://localhost:' + data.options.port));
+		console.log(chalk.cyan('☞  External access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
 
 		// Process flags
 		if(flags.open) openBrowser();
 		if(flags.edit) openEditor();
-
-		// Let's go!
-		console.log(chalk.green('Ready ... set ... go!'));
 	});
 
 	cb(null);
