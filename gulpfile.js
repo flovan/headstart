@@ -18,6 +18,8 @@ var
 	open				= require('open'),
 	ghdownload			= require('github-download'),
 	browserSync			= require('browser-sync'),
+	psi					= require('psi'),
+	ngrok				= require('ngrok'),
 	gulp				= require('gulp'),
 	plugins				= require('gulp-load-plugins')({
 		config: path.join(__dirname, 'package.json')
@@ -36,8 +38,9 @@ var
 		external: null,
 		port: null
 	},
-	isProduction		= flags.production || flags.prod || false,
+	isProduction		= ( flags.production || flags.prod ) || false,
 	isVerbose			= flags.verbose || false,
+	isPSI				= flags.psi || false,
 	config
 ;
 
@@ -95,14 +98,14 @@ gulp.task('init', function (cb) {
 
 function downloadBoilerplateFiles () {
 
-	console.log(chalk.grey('Downloading boilerplate files...'));
+	console.log(chalk.grey('☞  Downloading boilerplate files...'));
 
 	// If a custom repo was passed in, use it
 	if (!!flags.base) {
 
 		// Check if there's a slash
 		if (flags.base.indexOf('/') < 0) {
-			console.log(chalk.red('Please pass in a correct repository, eg. `myname/myrepo` or `myname/myrepo#mybranch. Aborting.\n'));
+			console.log(chalk.red('Please pass in a correct repository, eg. `username/repository` or `username/repository#branch. Aborting.\n'));
 			process.exit(0);
 		}
 
@@ -142,7 +145,7 @@ function downloadBoilerplateFiles () {
 		// Download succeeded
 		.on('end', function () {
 			console.log(chalk.green('✔ Download complete!'));
-			console.log(chalk.grey('Cleaning up...'));
+			console.log(chalk.grey('☞  Cleaning up...'));
 
 			// Move to working directory, clean temp, finish init
 			ncp(tmpFolder, cwd, function (err) {
@@ -206,7 +209,7 @@ function finishInit () {
 gulp.task('build', function (cb) {
 
 	// Load the config.json file
-	console.log(chalk.grey('Loading config.json...'));
+	console.log(chalk.grey('☞  Loading config.json...'));
 	fs.readFile('config.json', 'utf8', function (err, data) {
 
 		if (err) {
@@ -224,7 +227,7 @@ gulp.task('build', function (cb) {
 
 		// Run build tasks
 		// Serve files if Headstart was run with the --serve flag
-		console.log(chalk.grey('Building ' + (flags.production ? 'production' : 'dev') + ' version...'));
+		console.log(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'dev') + ' version...'));
 		if (flags.serve) {
 			sequence(
 				'clean-export',
@@ -319,7 +322,9 @@ gulp.task('sass-main', function (cb) {
 	}
 	
 	// Continuous watch never ends, so end it manually
-	if(lrStarted) cb(null);
+	if (lrStarted) {
+		cb(null);
+	}
 
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
@@ -346,9 +351,6 @@ gulp.task('sass-main', function (cb) {
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
-
-	// Continuous watch never ends, so end it manually
-	if(lrStarted) cb(null);
 });
 
 gulp.task('sass-ie', function (cb) {
@@ -356,6 +358,11 @@ gulp.task('sass-ie', function (cb) {
 	// Log taks if mode is verbose
 	if (isVerbose) {
 		console.log(chalk.grey('☞  Running task "sass-ie"'));
+	}
+	
+	// Continuous watch never ends, so end it manually
+	if (lrStarted) {
+		cb(null);
 	}
 
 	// Process the .scss files
@@ -377,9 +384,6 @@ gulp.task('sass-ie', function (cb) {
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulp.dest(config.export_assets + '/assets/css/ie.min.css'))
 	;
-
-	// Continuous watch never ends, so end it manually
-	if(lrStarted) cb(null);
 });
 
 // SCRIPTS --------------------------------------------------------------------
@@ -388,24 +392,27 @@ gulp.task('sass-ie', function (cb) {
 // JSHint options:	http://www.jshint.com/docs/options/
 gulp.task('hint-scripts', function (cb) {
 	
-	if (!config.hint) cb(null);
-	else {
-		// Log taks if mode is verbose
-		if (isVerbose) {
-			console.log(chalk.grey('☞  Running task "hint-scripts"'));
-		}
-
-		// Hint all non-lib js files and exclude _ prefixed files
-		return gulp.src([
-				'assets/js/*.js',
-				'assets/js/core/*.js',
-				'!_*.js'
-			])
-			.pipe(plugins.plumber())
-			.pipe(plugins.jshint('.jshintrc'))
-			.pipe(plugins.jshint.reporter(stylish))
-		;
+	// Quit this task if hinting isn't turned on
+	if (!config.hint) {
+		cb(null);
+		return;
 	}
+	
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "hint-scripts"'));
+	}
+
+	// Hint all non-lib js files and exclude _ prefixed files
+	return gulp.src([
+			'assets/js/*.js',
+			'assets/js/core/*.js',
+			'!_*.js'
+		])
+		.pipe(plugins.plumber())
+		.pipe(plugins.jshint('.jshintrc'))
+		.pipe(plugins.jshint.reporter(stylish))
+	;
 });
 
 gulp.task('scripts-main', ['hint-scripts'], function () {
@@ -493,7 +500,7 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(plugins.uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
 
-	cb();
+	cb(null);
 });
 
 // IMAGES ---------------------------------------------------------------------
@@ -522,14 +529,22 @@ gulp.task('images', function (cb) {
 			'!_*'
 		])
 		.pipe(plugins.plumber())
-		.pipe(plugins.newer(config.export_assets+ '/assets/images'))
-		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true })))
+		.pipe(plugins.newer(config.export_assets + '/assets/images'))
+		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true }).on('end', function () {
+
+			console.log('No more images to process');
+			cb(null);
+		})))
 		//.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
 
-	cb(null);
+	// When making a dev build, call the end of this task
+	// manually
+	if (!isProduction) {
+		cb(null);
+	}
 });
 
 // OTHER ----------------------------------------------------------------------
@@ -606,8 +621,8 @@ gulp.task('templates', function (cb) {
 
 	// Go over all root template files
 	gulp.src(['templates/*.*', '!_*'])
-		.pipe(plugins.tap(function (htmlFile)
-		{
+		.pipe(plugins.tap(function (htmlFile) {
+
 			var
 				// Select JS files
 				// Production will get 1 file only
@@ -793,6 +808,7 @@ gulp.task('uncss-view', function (cb) {
 
 gulp.task('manifest', function (cb) {
 	
+	// Quit this task if the revisions aren't turned on
 	if (!config.revisionCaching || !isProduction) {
 		cb(null);
 		return;
@@ -911,15 +927,65 @@ gulp.task('browsersync', function (cb) {
 		gulp.start('sass-ie');
 
 		// Show some logs
-		console.log(chalk.cyan('☞  Local access at'), chalk.magenta('http://localhost:' + data.options.port));
-		console.log(chalk.cyan('☞  External access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
+		console.log(chalk.cyan('🌐  Local access at'), chalk.magenta('http://localhost:' + connection.port));
+		console.log(chalk.cyan('🌐  Network access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
 
 		// Process flags
 		if(flags.open) openBrowser();
 		if(flags.edit) openEditor();
+		if(isPSI) gulp.start('psi');
 	});
 
 	cb(null);
+});
+
+// PageSpeed Insights ---------------------------------------------------------
+//
+
+gulp.task('psi', function (cb) {
+
+	// Quit this task if no flag was set
+	if(!isPSI) {
+		cb(null);
+		return;
+	}
+
+	// Log taks if mode is verbose
+	if (isVerbose) {
+		console.log(chalk.grey('☞  Running task "psi"'));
+	}
+
+	console.log(chalk.grey('☞  Tunneling local server to web...'));
+
+	// Expose local server to web through tunnel
+	// with Ngrok
+	ngrok.connect(connection.port, function (err, url) {
+
+		// If there was an error, log it and exit
+		if (err !== null) {
+			console.log(chalk.red(err));
+			process.exit(0);
+		}
+
+		// Define PSI options with or without a key
+		// (passed with the -k flag)
+		var opts = { url: url };
+		if (_.isString(flags.psi)) {
+			opts.key = flags.k;
+		}
+
+		console.log(chalk.grey('☞  Running PageSpeed Insights...'));
+
+		// Run PSI
+		psi(opts, function (err, res) {
+
+			// If there was an error, log it and exit
+			if (err !== null) {
+				console.log(chalk.red(err));
+				process.exit(0);
+			}
+		});
+	});
 });
 
 // DEFAULT --------------------------------------------------------------------
