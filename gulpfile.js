@@ -2,6 +2,8 @@
 
 'use strict';
 
+// Require needed modules
+
 var
 	path				= require('path'),
 	globule				= require('globule'),
@@ -19,50 +21,55 @@ var
 	browserSync			= require('browser-sync'),
 
 	gulp				= require('gulp'),
-	/*plugins				= require('gulp-load-plugins')({
-							config: './package.json',
-							scope: ['dependencies']
-						}),	*/
-	rimraf				= require('gulp-rimraf'),
-	watch				= require('gulp-watch'),
-	plumber				= require('gulp-plumber'),
-	gulpif				= require('gulp-if'),
-	rename				= require('gulp-rename'),
-	sass				= require('gulp-ruby-sass'),
-	sassgraph			= require('gulp-sass-graph'),
-	combineMediaQueries	= require('gulp-combine-media-queries'),
-	uncss				= require('gulp-uncss'),
-	autoprefixer		= require('gulp-autoprefixer'),
-	jshint				= require('gulp-jshint'),
-	deporder			= require('gulp-deporder'),
-	concat				= require('gulp-concat'),
-	stripDebug			= require('gulp-strip-debug'),
-	uglify				= require('gulp-uglify'),
-	newer				= require('gulp-newer'),
-	imagemin			= require('gulp-imagemin'),
-	tap					= require('gulp-tap'),
-	inject				= require('gulp-inject'),
-	compileHandlebars	= require('gulp-compile-handlebars'),
-	w3cjs				= require('gulp-w3cjs'),
-	minifyHtml			= require('gulp-minify-html'),
-	bytediff			= require('gulp-bytediff'),
-	rev					= require('gulp-rev'),
-	manifest			= require('gulp-manifest'),
+	plugins				= require('gulp-load-plugins')({
+							config: path.join(__dirname, 'package.json')
+						})
+	/*plugins				= {
+		rimraf:					require('gulp-rimraf'),
+		watch:					require('gulp-watch'),
+		plumber:				require('gulp-plumber'),
+		if:						require('gulp-if'),
+		rename:					require('gulp-rename'),
+		rubySass:				require('gulp-ruby-sass'),
+		sassGraph:				require('gulp-sass-graph'),
+		combineMediaQueries:	require('gulp-combine-media-queries'),
+		uncss:					require('gulp-uncss'),
+		autoprefixer:			require('gulp-autoprefixer'),
+		jshint:					require('gulp-jshint'),
+		deporder:				require('gulp-deporder'),
+		concat:					require('gulp-concat'),
+		stripDebug:				require('gulp-strip-debug'),
+		uglify:					require('gulp-uglify'),
+		newer:					require('gulp-newer'),
+		imagemin:				require('gulp-imagemin'),
+		tap:					require('gulp-tap'),
+		inject:					require('gulp-inject'),
+		compileHandlebars:		require('gulp-compile-handlebars'),
+		w3cjs:					require('gulp-w3cjs'),
+		minifyHtml:				require('gulp-minify-html'),
+		bytediff:				require('gulp-bytediff'),
+		rev:					require('gulp-rev'),
+		manifest:				require('gulp-manifest')
+	},*/
+;
 
+// Other variables
+
+var
 	flags				= require('minimist')(process.argv.slice(2)),
 	gitConfig			= {
-							user: 'flovan',
-							repo: 'headstart-boilerplate',
-							ref: '1.0.2'
-						},
+		user: 'flovan',
+		repo: 'headstart-boilerplate',
+		ref: '1.0.2'
+	},
 	cwd					= process.cwd(),
 	tmpFolder			= '.tmp',
 	lrStarted			= false,
 	connection			= {
-							local: 'localhost',
-							external: null,
-							port: null
-						},
+		local: 'localhost',
+		external: null,
+		port: null
+	},
 	isProduction		= flags.production || flags.prod || false,
 	config
 ;
@@ -291,8 +298,7 @@ gulp.task('build', function (cb) {
 				function () {
 					if(flags.edit) openEditor();
 					console.log(chalk.green('✔ All done!'));
-				},
-				cb
+				}
 			);
 		}
 	});
@@ -310,15 +316,15 @@ gulp.task('clean-export', function (cb) {
 			config.export_templates,
 			config.export_assets + '/assets'
 		], {read: false})
-		.pipe(rimraf({force: true}))
+		.pipe(plugins.rimraf({force: true}))
 	;
 });
 
 gulp.task('clean-cwd', function (cb) {
 
 	// Remove cwd files
-	return gulp.src(cwd + '/**/*', {read: false})
-		.pipe(rimraf({force: true}))
+	return gulp.src(cwd + '/*', {read: false})
+		.pipe(plugins.rimraf({force: true}))
 	;
 });
 
@@ -326,7 +332,7 @@ gulp.task('clean-tmp', function (cb) {
 
 	// Remove temp folder
 	return gulp.src(tmpFolder, {read: false})
-		.pipe(rimraf({force: true}))
+		.pipe(plugins.rimraf({force: true}))
 	;
 });
 
@@ -346,17 +352,17 @@ gulp.task('sass-main', function (cb) {
 				'!assets/sass/*ie.{scss, sass, css}'
 			])
 			:
-			watch({ glob: 'assets/sass/**/*.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-MAIN', silent: true })
-				.pipe(plumber())
-				.pipe(sassgraph(['assets/sass']))
+			plugins.watch({ glob: 'assets/sass/**/*.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-MAIN', silent: true })
+				.pipe(plugins.plumber())
+				.pipe(plugins.sassGraph(['assets/sass']))
 		)
-		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
-		.pipe(gulpif(config.combineMediaQueries, combineMediaQueries()))
-		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
-		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
+		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
+		.pipe(plugins.if(config.combineMediaQueries, plugins.combineMediaQueries()))
+		.pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
-		.pipe(gulpif(lrStarted, browserSync.reload({stream:true})))
+		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
 
 	// Continuous watch never ends, so end it manually
@@ -372,11 +378,11 @@ gulp.task('sass-ie', function (cb) {
 				'assets/sass/ie.{scss, sass, css}'
 			])
 			:
-			watch({ glob: 'assets/sass/**/ie.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-IE', silent: true })
-				.pipe(plumber())
-				.pipe(sassgraph(['assets/sass']))
+			plugins.watch({ glob: 'assets/sass/**/ie.{scss, sass, css}', emitOnGlob: false, name: 'SCSS-IE', silent: true })
+				.pipe(plugins.plumber())
+				.pipe(plugins.sassGraph(['assets/sass']))
 		)
-		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
+		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulp.dest(config.export_assets + '/assets/css/ie.min.css'))
 	;
 
@@ -398,9 +404,9 @@ gulp.task('hint-scripts', function (cb) {
 				'assets/js/core/*.js',
 				'!_*.js'
 			])
-			.pipe(plumber())
-			.pipe(jshint('.jshintrc'))
-			.pipe(jshint.reporter(stylish))
+			.pipe(plugins.plumber())
+			.pipe(plugins.jshint('.jshintrc'))
+			.pipe(plugins.jshint.reporter(stylish))
 		;
 	}
 });
@@ -424,11 +430,11 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 				'!**/_*.js'
 			], {base: '' + 'assets/js'}
 		)
-		.pipe(plumber())
-		.pipe(gulpif(isProduction, stripDebug()))
-		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
-		.pipe(gulpif(isProduction, concat('core-libs.min.js')))
-		.pipe(gulpif(isProduction, uglify()))
+		.pipe(plugins.plumber())
+		.pipe(plugins.if(isProduction, plugins.stripDebug()))
+		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.if(isProduction, plugins.concat('core-libs.min.js')))
+		.pipe(plugins.if(isProduction, plugins.uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
 });
@@ -436,11 +442,11 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 
 	return gulp.src('assets/js/view-*.js')
-		.pipe(plumber())
-		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
-		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
-		.pipe(gulpif(isProduction, stripDebug()))
-		.pipe(gulpif(isProduction, uglify()))
+		.pipe(plugins.plumber())
+		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
+		.pipe(plugins.if(isProduction, plugins.stripDebug()))
+		.pipe(plugins.if(isProduction, plugins.uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
 });
@@ -453,26 +459,26 @@ gulp.task('scripts-ie', function (cb) {
 		'assets/js/ie/head/**/*.js',
 		'!**/_*.js'
 	])
-		.pipe(plumber())
-		.pipe(deporder())
-		.pipe(concat('ie-head.js'))
-		.pipe(gulpif(isProduction, stripDebug()))
-		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
-		.pipe(rename({extname: '.min.js'}))
-		.pipe(uglify())
+		.pipe(plugins.plumber())
+		.pipe(plugins.deporder())
+		.pipe(plugins.concat('ie-head.js'))
+		.pipe(plugins.if(isProduction, plugins.stripDebug()))
+		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.rename({extname: '.min.js'}))
+		.pipe(plugins.uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
 
 	gulp.src([
 		'assets/js/ie/body/**/*.js',
 		'!**/_*.js'
 	])
-		.pipe(plumber())
-		.pipe(deporder())
-		.pipe(concat('ie-body.js'))
-		.pipe(gulpif(isProduction, stripDebug()))
-		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
-		.pipe(rename({extname: '.min.js'}))
-		.pipe(uglify())
+		.pipe(plugins.plumber())
+		.pipe(plugins.deporder())
+		.pipe(plugins.concat('ie-body.js'))
+		.pipe(plugins.if(isProduction, plugins.stripDebug()))
+		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.rename({extname: '.min.js'}))
+		.pipe(plugins.uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
 
 	cb();
@@ -486,9 +492,9 @@ gulp.task('images', function (cb) {
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
 	gulp.src('assets/images/icons/favicon.png')
-		.pipe(plumber())
-		.pipe(rename({extname: '.ico'}))
-		//.pipe(gulpif(config.revisionCaching && isProduction, rev()))
+		.pipe(plugins.plumber())
+		.pipe(plugins.rename({extname: '.ico'}))
+		//.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
 		.pipe(gulp.dest(config.export_misc))
 	;
 
@@ -498,12 +504,12 @@ gulp.task('images', function (cb) {
 			'assets/images/**/*',
 			'!_*'
 		])
-		.pipe(plumber())
-		.pipe(newer(config.export_assets+ '/assets/images'))
-		.pipe(gulpif(isProduction, imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true })))
-		//.pipe(gulpif(config.revisionCaching && isProduction, rev()))
+		.pipe(plugins.plumber())
+		.pipe(plugins.newer(config.export_assets+ '/assets/images'))
+		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true })))
+		//.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
-		.pipe(gulpif(lrStarted, browserSync.reload({stream:true})))
+		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
 });
 
@@ -522,8 +528,8 @@ gulp.task('other', function (cb) {
 			'!assets/images/**/*',
 			'!_*'
 		])
-		.pipe(plumber())
-		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
+		.pipe(plugins.plumber())
+		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets'))
 	;
 });
@@ -537,7 +543,7 @@ gulp.task('misc', function (cb) {
 	if (isProduction) {
 		// Make a functional version of the htaccess.txt
 		gulp.src('misc/htaccess.txt')
-			.pipe(rename('.htaccess'))
+			.pipe(plugins.rename('.htaccess'))
 			.pipe(gulp.dest(config.export_misc))
 		;
 
@@ -566,7 +572,7 @@ gulp.task('templates', function (cb) {
 
 	// Go over all root template files
 	gulp.src(['templates/*.*', '!_*'])
-		.pipe(tap(function (htmlFile)
+		.pipe(plugins.tap(function (htmlFile)
 		{
 			var
 				// Select JS files
@@ -605,14 +611,14 @@ gulp.task('templates', function (cb) {
 
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
-				.pipe(deporder(baseName));
+				.pipe(plugins.deporder(baseName));
 
 			// On the current template
 			gulp.src('templates/' + baseName)
-				.pipe(plumber())
-				// Piping newer() blocks refreshes on partials and layout parts :(
-				//.pipe(newer(config.export_templates + '/' + baseName))
-				.pipe(gulpif(config.assemble_templates, compileHandlebars({
+				.pipe(plugins.plumber())
+				// Piping plugins.newer() blocks refreshes on partials and layout parts :(
+				//.pipe(plugins.newer(config.export_templates + '/' + baseName))
+				.pipe(plugins.if(config.assemble_templates, plugins.compileHandlebars({
 						templateName: baseName
 					}, {
 						batch: ['templates/layout', 'templates/partials'],
@@ -622,23 +628,23 @@ gulp.task('templates', function (cb) {
 							}
 						}
 				})))
-				.pipe(inject(injectItems, {
+				.pipe(plugins.inject(injectItems, {
 					ignorePath: [
 						_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
 					].concat(config.export_assets.split('/')),
 					addRootSlash: false,
 					addPrefix: config.template_asset_prefix
 				}))
-				.pipe(gulpif(config.w3c, w3cjs({
+				.pipe(plugins.if(config.w3c, plugins.w3cjs({
 					doctype: 'HTML5',
 					charset: 'utf-8'
 				})))
-				.pipe(gulpif(config.minifyHTML, minifyHtml({
+				.pipe(plugins.if(config.minifyHTML, plugins.minifyHtml({
 					conditionals: true,
 					comments: true
 				})))
 				.pipe(gulp.dest(config.export_templates))
-				.pipe(gulpif(lrStarted, browserSync.reload({stream:true})))
+				.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 			;
 
 			// Since above changes are made in a tapped stream
@@ -669,12 +675,12 @@ gulp.task('uncss-main', function (cb) {
 
 	// Parse the main.scss file
 	return gulp.src(config.export_assets + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
-		.pipe(bytediff.start())
-		.pipe(uncss({
+		.pipe(plugins.bytediff.start())
+		.pipe(plugins.uncss({
 			html: templates || [],
 			ignore: config.uncssIgnore || []
 		}))
-		.pipe(bytediff.stop())
+		.pipe(plugins.bytediff.stop())
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 	;
 });
@@ -694,7 +700,7 @@ gulp.task('uncss-view', function (cb) {
 
 	// Parse the view-*.scss files
 	gulp.src(config.export_assets + '/assets/css/view-*.css')
-		.pipe(tap(function (file, t) {
+		.pipe(plugins.tap(function (file, t) {
 
 			var baseName = path.basename(file.path),
 				nameParts = baseName.split('.'),
@@ -711,14 +717,14 @@ gulp.task('uncss-view', function (cb) {
 			;
 
 			gulp.src(config.export_assets + '/assets/css/' + baseName)
-				.pipe(bytediff.start())
-				.pipe(uncss({
+				.pipe(plugins.bytediff.start())
+				.pipe(plugins.uncss({
 					html: templates || [],
 					ignore: config.uncssIgnore || []
 				}))
-				.pipe(bytediff.stop())
+				.pipe(plugins.bytediff.stop())
 				.pipe(gulp.dest(config.export_assets + '/assets/css'))
-				.pipe(tap(function (file) {
+				.pipe(plugins.tap(function (file) {
 
 					// If this was the last file, end the task
 					if(count === numViews) cb(null);
@@ -744,7 +750,7 @@ gulp.task('manifest', function (cb) {
 		config.export_assets + '/assets/js/*',
 		config.export_assets + '/assets/css/*'
 	])
-		.pipe(manifest({
+		.pipe(plugins.manifest({
 			filename: 'app.manifest',
 			exclude: 'app.manifest'
 		}))
@@ -779,7 +785,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
-	watch({
+	plugins.watch({
 		glob: ['assets/js/**/view-*.js'],
 		emitOnGlob: false,
 		name: 'JS-VIEW',
@@ -788,7 +794,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 		sequence('scripts-view', 'templates');
 	});
 
-	watch({
+	plugins.watch({
 		glob: ['assets/js/**/*.js', '!**/view-*.js'],
 		emitOnGlob: false,
 		name: 'JS-MAIN',
@@ -803,7 +809,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 	});
 
 	// Watch templates and call its task
-	watch({
+	plugins.watch({
 		glob: ['templates/**/*'],
 		emitOnGlob: false,
 		name: 'TEMPLATE',
