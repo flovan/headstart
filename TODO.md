@@ -8,11 +8,16 @@
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all)
   - [ ] Set a watch for folder like fonts/video
   - [ ] Watch changes on config, and rebuild
-  - [ ] Make favicon generating optional (https://www.npmjs.org/package/favicon-generator/)
+  - [ ] Make favicon generating optional (https://www.npmjs.org/package/favicons)
   - [ ] See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)
   - [ ] See if replacing all minifying modules with gulp-compressor makes things faster (https://www.npmjs.org/package/gulp-compressor/)
   - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
   - [ ] Automatically solve crashes with gulp-nodemon (https://www.npmjs.org/package/gulp-nodemon/) or keepup (https://www.npmjs.org/package/keepup/)
+  - [ ] See if scripts tasks can be made faster with gulp-remeber (https://github.com/ahaurw01/gulp-remember)
+  - [ ] Maybe do something with icon fonts from SVG files (https://www.npmjs.org/package/gulp-fontcustom/ or https://github.com/nfroidure/gulp-iconfont or https://github.com/nfroidure/gulp-svgicons2svgfont)
+  - [ ] Make it possible to use LESS (https://www.npmjs.org/package/gulp-less/)
+  - [ ] Make it possible to use Stylus (https://www.npmjs.org/package/gulp-stylus/)
+  - [ ] Maybe replace some CSS processing modules with gulp-pleeease (https://www.npmjs.org/package/gulp-pleeease/) 
 
   ### Done
 
