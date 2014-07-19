@@ -19,43 +19,10 @@ var
 	copy_paste			= require('copy-paste').silent(),
 	ghdownload			= require('github-download'),
 	browserSync			= require('browser-sync'),
-
 	gulp				= require('gulp'),
 	plugins				= require('gulp-load-plugins')({
-							config: path.join(__dirname, 'package.json')
-						})
-	/*plugins				= {
-		rimraf:					require('gulp-rimraf'),
-		watch:					require('gulp-watch'),
-		plumber:				require('gulp-plumber'),
-		if:						require('gulp-if'),
-		rename:					require('gulp-rename'),
-		rubySass:				require('gulp-ruby-sass'),
-		sassGraph:				require('gulp-sass-graph'),
-		combineMediaQueries:	require('gulp-combine-media-queries'),
-		uncss:					require('gulp-uncss'),
-		autoprefixer:			require('gulp-autoprefixer'),
-		jshint:					require('gulp-jshint'),
-		deporder:				require('gulp-deporder'),
-		concat:					require('gulp-concat'),
-		stripDebug:				require('gulp-strip-debug'),
-		uglify:					require('gulp-uglify'),
-		newer:					require('gulp-newer'),
-		imagemin:				require('gulp-imagemin'),
-		tap:					require('gulp-tap'),
-		inject:					require('gulp-inject'),
-		compileHandlebars:		require('gulp-compile-handlebars'),
-		w3cjs:					require('gulp-w3cjs'),
-		minifyHtml:				require('gulp-minify-html'),
-		bytediff:				require('gulp-bytediff'),
-		rev:					require('gulp-rev'),
-		manifest:				require('gulp-manifest')
-	},*/
-;
-
-// Other variables
-
-var
+		config: path.join(__dirname, 'package.json')
+	}),
 	flags				= require('minimist')(process.argv.slice(2)),
 	gitConfig			= {
 		user: 'flovan',
