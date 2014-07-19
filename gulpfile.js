@@ -18,45 +18,52 @@ var
 	ghdownload			= require('github-download'),
 	browserSync			= require('browser-sync'),
 
-	gulp 				= require('gulp'),
-	rimraf 				= require('gulp-rimraf'),
-	watch 				= require('gulp-watch'),
-	plumber 			= require('gulp-plumber'),
-	gulpif 				= require('gulp-if'),
-	rename 				= require('gulp-rename'),
-	//	sass 			= require('gulp-sass'),
-	sass 				= require('gulp-ruby-sass'),
-	sassgraph 			= require('gulp-sass-graph'),
-	cmq 				= require('gulp-combine-media-queries'),
-	uncss 				= require('gulp-uncss'),
-	autoprefixer 		= require('gulp-autoprefixer'),
-	jshint 				= require('gulp-jshint'),
-	deporder 			= require('gulp-deporder'),
-	concat 				= require('gulp-concat'),
-	stripDebug 			= require('gulp-strip-debug'),
-	uglify 				= require('gulp-uglify'),
-	newer 				= require('gulp-newer'),
-	imagemin 			= require('gulp-imagemin'),
+	gulp				= require('gulp'),
+	/*plugins				= require('gulp-load-plugins')({
+							config: './package.json',
+							scope: ['dependencies']
+						}),	*/
+	rimraf				= require('gulp-rimraf'),
+	watch				= require('gulp-watch'),
+	plumber				= require('gulp-plumber'),
+	gulpif				= require('gulp-if'),
+	rename				= require('gulp-rename'),
+	sass				= require('gulp-ruby-sass'),
+	sassgraph			= require('gulp-sass-graph'),
+	combineMediaQueries	= require('gulp-combine-media-queries'),
+	uncss				= require('gulp-uncss'),
+	autoprefixer		= require('gulp-autoprefixer'),
+	jshint				= require('gulp-jshint'),
+	deporder			= require('gulp-deporder'),
+	concat				= require('gulp-concat'),
+	stripDebug			= require('gulp-strip-debug'),
+	uglify				= require('gulp-uglify'),
+	newer				= require('gulp-newer'),
+	imagemin			= require('gulp-imagemin'),
 	tap					= require('gulp-tap'),
 	inject				= require('gulp-inject'),
-	handlebars			= require('gulp-compile-handlebars'),
-	wthreec				= require('gulp-w3cjs'),
-	htmlminify			= require('gulp-minify-html'),
+	compileHandlebars	= require('gulp-compile-handlebars'),
+	w3cjs				= require('gulp-w3cjs'),
+	minifyHtml			= require('gulp-minify-html'),
 	bytediff			= require('gulp-bytediff'),
 	rev					= require('gulp-rev'),
 	manifest			= require('gulp-manifest'),
 
-	flags 				= require('minimist')(process.argv.slice(2)),
-	gitConfig			= {user: 'flovan', repo: 'headstart-boilerplate', ref: '1.0.2'},
-	cwd 				= process.cwd(),
+	flags				= require('minimist')(process.argv.slice(2)),
+	gitConfig			= {
+							user: 'flovan',
+							repo: 'headstart-boilerplate',
+							ref: '1.0.2'
+						},
+	cwd					= process.cwd(),
 	tmpFolder			= '.tmp',
-	lrStarted 			= false,
+	lrStarted			= false,
 	connection			= {
 							local: 'localhost',
 							external: null,
 							port: null
 						},
-	isProduction 		= flags.production || flags.prod || false,
+	isProduction		= flags.production || flags.prod || false,
 	config
 ;
 
@@ -326,10 +333,6 @@ gulp.task('clean-tmp', function (cb) {
 // SASS -----------------------------------------------------------------------
 //
 
-// Note: Once libsass fixed the @extend bug (and is stable enough), Headstart 
-// will switch to that implementation rather than the Ruby one (which is slower).
-// https://github.com/hcatlin/libsass/issues/146
-
 gulp.task('sass-main', function (cb) {
 
 	// Continuous watch never ends, so end it manually
@@ -347,9 +350,8 @@ gulp.task('sass-main', function (cb) {
 				.pipe(plumber())
 				.pipe(sassgraph(['assets/sass']))
 		)
-		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
-		.pipe(gulpif(config.combineMediaQueries, cmq()))
+		.pipe(gulpif(config.combineMediaQueries, combineMediaQueries()))
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulpif(config.revisionCaching && isProduction, rev()))
 		.pipe(gulpif(isProduction, rename({suffix: '.min'})))
@@ -374,10 +376,12 @@ gulp.task('sass-ie', function (cb) {
 				.pipe(plumber())
 				.pipe(sassgraph(['assets/sass']))
 		)
-		//.pipe(sass({ outputStyle: (isProduction ? 'compressed' : 'nested'), errLogToConsole: true }))
 		.pipe(sass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulp.dest(config.export_assets + '/assets/css/ie.min.css'))
 	;
+
+	// Continuous watch never ends, so end it manually
+	if(lrStarted) cb(null);
 });
 
 // SCRIPTS --------------------------------------------------------------------
@@ -608,7 +612,7 @@ gulp.task('templates', function (cb) {
 				.pipe(plumber())
 				// Piping newer() blocks refreshes on partials and layout parts :(
 				//.pipe(newer(config.export_templates + '/' + baseName))
-				.pipe(gulpif(config.assemble_templates, handlebars({
+				.pipe(gulpif(config.assemble_templates, compileHandlebars({
 						templateName: baseName
 					}, {
 						batch: ['templates/layout', 'templates/partials'],
@@ -625,11 +629,11 @@ gulp.task('templates', function (cb) {
 					addRootSlash: false,
 					addPrefix: config.template_asset_prefix
 				}))
-				.pipe(gulpif(config.w3c, wthreec({
+				.pipe(gulpif(config.w3c, w3cjs({
 					doctype: 'HTML5',
 					charset: 'utf-8'
 				})))
-				.pipe(gulpif(config.minifyHTML, htmlminify({
+				.pipe(gulpif(config.minifyHTML, minifyHtml({
 					conditionals: true,
 					comments: true
 				})))
