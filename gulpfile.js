@@ -60,7 +60,7 @@ gulp.task('init', function (cb) {
 	if (cwdFiles.length > 0) {
 
 		// Make sure the user knows what is about to happen
-		console.log(chalk.yellow('The current directory is not empty!'));
+		console.log(chalk.yellow.inverse('\nThe current directory is not empty!'));
 		prompt({
 			type: 'confirm',
 			message: 'Initializing will empty the current directory. Continue?',
@@ -98,7 +98,7 @@ gulp.task('init', function (cb) {
 
 function downloadBoilerplateFiles () {
 
-	console.log(chalk.grey('☞  Downloading boilerplate files...'));
+	console.log(chalk.grey('\n☞  Downloading boilerplate files...'));
 
 	// If a custom repo was passed in, use it
 	if (!!flags.base) {
@@ -129,7 +129,7 @@ function downloadBoilerplateFiles () {
 			process.exit(0);
 		}
 		if (gitConfig.repo.length <= 0) {
-			console.log(chalk.red('The passed in repo is invald. Aborting.\n'));
+			console.log(chalk.red('The passed in repository is invald. Aborting.\n'));
 			process.exit(0);
 		}
 	}
@@ -144,8 +144,11 @@ function downloadBoilerplateFiles () {
 		})
 		// Download succeeded
 		.on('end', function () {
-			console.log(chalk.green('✔ Download complete!'));
-			console.log(chalk.grey('☞  Cleaning up...'));
+
+			console.log(
+				chalk.green('✔ Download complete!\n') +
+				chalk.grey('☞  Cleaning up...')
+			);
 
 			// Move to working directory, clean temp, finish init
 			ncp(tmpFolder, cwd, function (err) {
@@ -209,7 +212,8 @@ function finishInit () {
 gulp.task('build', function (cb) {
 
 	// Load the config.json file
-	console.log(chalk.grey('☞  Loading config.json...'));
+	console.log(chalk.grey('\n☞  Loading config.json...'));
+
 	fs.readFile('config.json', 'utf8', function (err, data) {
 
 		if (err) {
@@ -532,7 +536,6 @@ gulp.task('images', function (cb) {
 		.pipe(plugins.newer(config.export_assets + '/assets/images'))
 		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true }).on('end', function () {
 
-			console.log('No more images to process');
 			cb(null);
 		})))
 		//.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
@@ -963,27 +966,45 @@ gulp.task('psi', function (cb) {
 
 		// If there was an error, log it and exit
 		if (err !== null) {
-			console.log(chalk.red(err));
+			console.log(
+				chalk.red('Tunneling failed, please try again. Aborting.\n') +
+				chalk.red(err)
+			);
 			process.exit(0);
-		}
-
-		// Define PSI options with or without a key
-		// (passed with the -k flag)
-		var opts = { url: url };
-		if (_.isString(flags.psi)) {
-			opts.key = flags.k;
 		}
 
 		console.log(chalk.grey('☞  Running PageSpeed Insights...'));
 
+		// Define PSI options
+		var opts = {
+			url: url,
+			strategy: flags.strategy || "desktop"
+		};
+
+		// Set the key if one was passed in
+		if (!!flags.key && _.isString(flags.key)) {
+			console.log(chalk.yellow.inverse('Using a key is not yet supported as it just crashes the process. For now, continue without a key.'));
+			// TODO: Fix key
+			//opts.key = flags.key;
+		}
+
 		// Run PSI
-		psi(opts, function (err, res) {
+		psi(opts, function (err, data) {
 
 			// If there was an error, log it and exit
 			if (err !== null) {
-				console.log(chalk.red(err));
+				console.log(
+					chalk.red('Calling PSI failed... If you provided a key, please make sure it is correct, or just try again. Aborting.\n') +
+					chalk.red(err)
+				);
 				process.exit(0);
 			}
+		});
+
+		// Since psi throw's the threshold error,
+		// we have to listen for it process-wide (bad!) — ONCE
+		process.once('uncaughtException', function (err) {
+			console.log(chalk.red(err));
 		});
 	});
 });
