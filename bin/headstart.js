@@ -10,9 +10,9 @@ var
 	chalk				= require('chalk'),
 	_					= require('lodash'),
 
+	pkg					= require('../package.json'),
 	Liftoff				= require('liftoff'),
 	updateNotifier		= require('update-notifier'),
-	notifier			= updateNotifier({ packagePath: '../package.json' }),
 	argv				= require('minimist')(process.argv.slice(2)),
 	gulp				= require('gulp'),
 	gulpFile			= require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'))
@@ -33,16 +33,23 @@ var cli = new Liftoff({
 // Check for updates ----------------------------------------------------------
 //
 
+var notifier = updateNotifier({
+	packageName: pkg.name,
+	packageVersion: pkg.version
+});
+
 if (notifier.update) {
 	console.log(
-		chalk.cyan('\n----------------------------------------\n'),
-		chalk.white('Update available'),
-		chalk.yellow(notifier.update.latest),
-		chalk.grey('(current: ' + notifier.update.current + ')\n'),
-		chalk.white('Please head over to'),
-		chalk.magenta('http://www.headstart.io/upgrading.html'),
-		chalk.white('for instructions\n'),
-		chalk.cyan('----------------------------------------\n')
+		chalk.yellow('\n\n┌──────────────────────────────────────────┐\n|') +
+		chalk.white(' Update available: ') +
+		chalk.green(notifier.update.latest) +
+		chalk.grey(' (current: ' + notifier.update.current + ') ') +
+		chalk.yellow('|\n|') +
+		chalk.white(' Instructions can be found on:            ') +
+		chalk.yellow('|\n|') +
+		chalk.magenta(' http://www.headstart.io/upgrading.html   ') +
+		chalk.yellow('|\n') +
+		chalk.yellow('└──────────────────────────────────────────┘\n')
 	);
 }
 
@@ -54,7 +61,6 @@ cli.launch({}, launcher);
 function launcher (env) {
 
 	var 
-		cliPackage = require('../package'),
 		versionFlag = argv.v || argv.version,
 		infoFlag = argv.i || argv.info,
 
@@ -65,13 +71,13 @@ function launcher (env) {
 
 	// Check for version flag
 	if (versionFlag) {
-		console.log(chalk.yellow('Headstart CLI version', cliPackage.version));
+		console.log(chalk.yellow('Headstart CLI version', pkg.version));
 		process.exit(0);
 	}
 
 	// Log info if no tasks are passed in
 	if (!numTasks) {
-		logInfo(cliPackage);
+		logInfo(pkg);
 		process.exit(0);
 	}
 
@@ -87,7 +93,7 @@ function launcher (env) {
 
 	// Print info if needed
 	if(infoFlag) {
-		logInfo(cliPackage);
+		logInfo(pkg);
 		process.exit(0);
 	}
 
@@ -113,57 +119,42 @@ function launcher (env) {
 // Helper logging functions ---------------------------------------------------
 //
 
-function logInfo (cliPackage) {
-	console.log(chalk.cyan(
-		'\n' +
-		'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n' +
-		'MMMMMMMMMMMMMMMMKo;\'..         .\':d0WMMM\n' +
-		'MMMMMMMMMMMMMNo.  ..\',,;;:::;;,\'.   .:0M\n' +
-		'MMMMMMMMMMMMx  .dKWMMMMMMMMMMMMMMWXx,  o\n' +
-		'MMMMMMMMMMMl  oWMMNl  WMMMMMMMMMMMMMM;  \n' +
-		'MMMMMMMMMMk  lMMMMWd:dWMMMMMMMMMMMMMK. ,\n' +
-		'MMMMMMMMMM; .NMMMMMMMMMMMMMMMMMMMMNl  ,X\n' +
-		'MMMMMMMMMX. .oc;cNMMMMMMMMMMMMMMMO. .kMM\n' +
-		'MMNxo:,..    .\';oWMMMMMMMMMMMMMMW. .NMMM\n' +
-		'MM0\'\';codk\' .NNKOKMMMMMMMMMMMMMMK  cMMMM\n' +
-		'MMMMWNKOdl.      .KMMMMMMMMMMMMMN. ;MMMM\n' +
-		'd:,.     .\'  .k0XWMMMMMMMMMMMMMMM, .NMMM\n' +
-		'l:coxOKNWWN,  cc;\',OMMMMMMMMMMMMMo  OMMM\n' +
-		'MMMMMMN:.      .:lxNMMMMMMMMMMMMMo  OMMM\n' +
-		'MMMMMMWkdxOKK\' .xWMMMMMMMMMMMMMMO. ,WMMM\n' +
-		'MMMMMMMMMMMMMWo  .o0WMMMMMMMN0o\'  :NMMMM\n' +
-		'MMMMMMMMMMMMMMMNo.   .\'\'\'...   \'lKMMMMMM\n' +
-		'MMMMMMMMMMMMMMMMMMKo,.    .\':xXMMMMMMMMM\n' +
-		'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM\n',
-		chalk.yellow('\nv' + cliPackage.version + '\n'),
-		chalk.white('A worry-free front-end workflow\n'),
-		chalk.cyan('➳  http://headstart.flovan.me\n'),
-		chalk.grey('\n' +
-		'-------\n')
-	));
+function logInfo (pkg) {
+	console.log(
+		chalk.cyan(
+			'\n' +
+			'|                  |     |              |\n' +
+			'|---.,---.,---.,---|,---.|--- ,---.,---.|---\n' +
+			'|   ||---\',---||   |`---.|    ,---||    |\n' +
+			'`   \'`---\'`---^`---\'`---\'`---\'`---^`    `---\'\n\n'
+		) +
+		chalk.cyan('➳  ' + chalk.underline('http://headstart.io')) +
+		'                 ' + chalk.yellow.inverse('v' + pkg.version) + '\n\n' +
+		chalk.grey('-------\n')
+	);
 	logTasks();
 }
 
 function logTasks () {
-	console.log('Please use one of the following tasks:\n');
+	console.log('Type out `headstart` followed by any of these tasks & flags:\n');
 	console.log(
-		chalk.magenta('init'),
-		'\t\tAdd the boilerplate files to the current directory\n',
-		chalk.grey('--base'),
-		'\tPass in a custom repo\n',
+		chalk.magenta('init') +
+		'\t\tAdd the boilerplate files to the current directory\n' +
+		chalk.grey('--base') +
+		'\t\tPass in a custom repo\n' +
 		'\t\te.g. myuser/myrepo or myuser/myrepo#mybranch\n'
 	);
 	console.log(
-		chalk.magenta('build'),
-		'\t\tBuild the project\n',
-		chalk.grey('--production'),
-		'\tMake a production ready build\n',
-		chalk.grey('--serve'),
-		'\tServe the files on a static address\n',
-		chalk.grey('--open'),
-		'\tOpen up a browser for you (default Google Chrome)\n',
-		chalk.grey('--edit'),
-		'\tOpen the files in your editor (default Sublime Text)\n'
+		chalk.magenta('build') +
+		'\t\tBuild the project\n' +
+		chalk.grey('--production') +
+		'\tMake a production ready build\n' +
+		chalk.grey('--serve') +
+		'\t\tServe the files on a static address\n' +
+		chalk.grey('--open') +
+		'\t\tOpen up a browser for you (default Google Chrome)\n' +
+		chalk.grey('--edit') +
+		'\t\tOpen the files in your editor (default Sublime Text)\n'
 	);
 	console.log(
 		chalk.magenta('headstart'),
