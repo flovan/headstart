@@ -71,7 +71,8 @@ function launcher (env) {
 
 	// Check for version flag
 	if (versionFlag) {
-		console.log(chalk.yellow('Headstart CLI version', pkg.version));
+		//console.log('\n' + chalk.yellow.inverse('Headstart CLI version', pkg.version) + '\n');
+		logHeader(pkg);
 		process.exit(0);
 	}
 
@@ -120,6 +121,11 @@ function launcher (env) {
 //
 
 function logInfo (pkg) {
+	logHeader(pkg);
+	logTasks();
+}
+
+function logHeader (pkg) {
 	console.log(
 		chalk.cyan(
 			'\n' +
@@ -129,41 +135,51 @@ function logInfo (pkg) {
 			'`   \'`---\'`---^`---\'`---\'`---\'`---^`    `---\'\n\n'
 		) +
 		chalk.cyan('➳  ' + chalk.underline('http://headstart.io')) +
-		'                 ' + chalk.yellow.inverse('v' + pkg.version) + '\n\n' +
-		chalk.grey('-------\n')
+		'                 ' + chalk.yellow.inverse('v' + pkg.version) + '\n'
 	);
-	logTasks();
 }
 
 function logTasks () {
-	console.log('Type out `headstart` followed by any of these tasks & flags:\n');
+	console.log(chalk.grey('-------\n'));
 	console.log(
-		chalk.magenta('init') +
-		'\t\tAdd the boilerplate files to the current directory\n' +
-		chalk.grey('--base') +
-		'\t\tPass in a custom repo\n' +
-		'\t\te.g. myuser/myrepo or myuser/myrepo#mybranch\n'
+		chalk.magenta('headstart init') +
+		chalk.grey(' ~ Download boilerplate files\n\n')+
+		chalk.white('--base=<username/repository#branch>') +
+		chalk.grey(' ~ Use a custom boilerplate repo\n')
+	);
+	console.log(chalk.grey('-------\n'));
+	console.log(
+		chalk.magenta('headstart build') +
+		chalk.grey(' ~ Build the project\n\n') +
+		chalk.white('--production') +
+		chalk.grey(' ~ Make a production ready build\n') +
+		chalk.white('--serve') +
+		chalk.grey(' ~ Serve the files on a static address\n') +
+		chalk.white('--open') +
+		chalk.grey(' ~ Open up a browser for you (default Google Chrome)\n') +
+		chalk.white('--edit') +
+		chalk.grey(' ~ Open the files in your editor (default Sublime Text)\n\n') +
+		chalk.white('--psi') +
+		chalk.grey(' ~ Run PageSpeed Insights after building (requires --serve)\n') +
+		chalk.white('--key=<key>') +
+		chalk.grey(' ~ Optional, an API key for PSI\n') +
+		chalk.white('--strategy=<desktop|mobile>') +
+		chalk.grey(' ~ PSI strategy to use, defaults to desktop\n\n') +
+		chalk.white('--verbose') +
+		chalk.grey(' ~ Output extra information while building\n')
+	);
+	console.log(chalk.grey('-------\n'));
+	console.log(
+		chalk.magenta('headstart') +
+		chalk.grey(' or ') +
+		chalk.magenta('headstart --info') +
+		chalk.grey(' ~ Print out this message')
 	);
 	console.log(
-		chalk.magenta('build') +
-		'\t\tBuild the project\n' +
-		chalk.grey('--production') +
-		'\tMake a production ready build\n' +
-		chalk.grey('--serve') +
-		'\t\tServe the files on a static address\n' +
-		chalk.grey('--open') +
-		'\t\tOpen up a browser for you (default Google Chrome)\n' +
-		chalk.grey('--edit') +
-		'\t\tOpen the files in your editor (default Sublime Text)\n'
+		chalk.magenta('headstart --version') +
+		chalk.grey(' or ') +
+		chalk.magenta('headstart --v') +
+		chalk.grey(' ~ Print out version\n')
 	);
-	console.log(
-		chalk.magenta('headstart'),
-		'or',
-		chalk.magenta('headstart --info'),
-		'to print out this message'
-	);
-	console.log(
-		chalk.magenta('headstart --version'),
-		'to print out the version of your Headstart CLI\n'
-	);
+	console.log(chalk.grey('-------\n'));
 }
