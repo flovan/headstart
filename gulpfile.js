@@ -348,7 +348,7 @@ gulp.task('sass-main', function (cb) {
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(plugins.if(config.combineMediaQueries, plugins.combineMediaQueries()))
 		.pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
@@ -443,8 +443,9 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 		)
 		.pipe(plugins.plumber())
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
-		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
-		.pipe(plugins.if(isProduction, plugins.concat('core-libs.min.js')))
+		.pipe(plugins.if(isProduction, plugins.concat('core-libs.js')))
+		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
+		.pipe(plugins.rename({extname: '.min.js'}))
 		.pipe(plugins.if(isProduction, plugins.uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
@@ -459,7 +460,7 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 
 	return gulp.src('assets/js/view-*.js')
 		.pipe(plugins.plumber())
-		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
 		.pipe(plugins.if(isProduction, plugins.uglify()))
@@ -484,7 +485,6 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(plugins.deporder())
 		.pipe(plugins.concat('ie-head.js'))
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
-		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
 		.pipe(plugins.rename({extname: '.min.js'}))
 		.pipe(plugins.uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
@@ -497,7 +497,6 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(plugins.deporder())
 		.pipe(plugins.concat('ie-body.js'))
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
-		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
 		.pipe(plugins.rename({extname: '.min.js'}))
 		.pipe(plugins.uglify())
 		.pipe(gulp.dest(config.export_assets + '/assets/js'));
@@ -520,7 +519,7 @@ gulp.task('images', function (cb) {
 	gulp.src('assets/images/icons/favicon.png')
 		.pipe(plugins.plumber())
 		.pipe(plugins.rename({extname: '.ico'}))
-		//.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(gulp.dest(config.export_misc))
 	;
 
@@ -536,7 +535,7 @@ gulp.task('images', function (cb) {
 
 			cb(null);
 		})))
-		//.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
@@ -569,7 +568,7 @@ gulp.task('other', function (cb) {
 			'!_*'
 		])
 		.pipe(plugins.plumber())
-		.pipe(plugins.if(config.revisionCaching && isProduction, plugins.rev()))
+		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets'))
 	;
 });
@@ -642,7 +641,8 @@ gulp.task('templates', function (cb) {
 						config.export_assets + '/assets/js/*.js',
 
 						'!' + config.export_assets + '/assets/js/view-*.js',
-						'!' + config.export_assets + '/assets/**/_*.js'
+						'!' + config.export_assets + '/assets/**/_*.js',
+						'!' + config.export_assets + '/assets/js/ie-*.js'
 					],
 				// Extract bits from filename
 				baseName = path.basename(htmlFile.path),
@@ -656,8 +656,8 @@ gulp.task('templates', function (cb) {
 
 			// Add specific js and css files to inject queue
 			injectItems.push(config.export_assets + '/assets/js/' + viewName + '.js');
-			injectItems.push(config.export_assets + '/assets/css/main' + (isProduction ? '*.min' : '') + '.css');
-			injectItems.push(config.export_assets + '/assets/css/' + viewName + '.css');
+			injectItems.push(config.export_assets + '/assets/css/main' + (isProduction ? '*.min' : '*') + '.css');
+			injectItems.push(config.export_assets + '/assets/css/' + viewName + '*.css');
 
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
@@ -810,7 +810,7 @@ gulp.task('uncss-view', function (cb) {
 gulp.task('manifest', function (cb) {
 	
 	// Quit this task if the revisions aren't turned on
-	if (!config.revisionCaching || !isProduction) {
+	if (!config.revisionCaching) {
 		cb(null);
 		return;
 	}
@@ -820,7 +820,7 @@ gulp.task('manifest', function (cb) {
 		console.log(chalk.grey('☞  Running task "manifest"'));
 	}
 
-	gulp.src([
+	return gulp.src([
 		config.export_assets + '/assets/js/*',
 		config.export_assets + '/assets/css/*'
 	])
