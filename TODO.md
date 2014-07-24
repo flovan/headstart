@@ -21,7 +21,7 @@
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] Try having critical css inlined (http://css-tricks.com/authoring-critical-fold-css/ & https://github.com/pocketjoso/penthouse/#as-a-node-module OR https://github.com/filamentgroup/criticalcss)
   - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
-  - [ ] Use inherative box-sizing (http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice)
+  - [ ] Make box-sizing work through inherit (http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice)
 
   ### Done
 

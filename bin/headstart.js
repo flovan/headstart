@@ -39,6 +39,7 @@ var notifier = updateNotifier({
 });
 
 if (notifier.update) {
+	// Inlined from the update-notifier source for more control
 	console.log(
 		chalk.yellow('\n\n┌──────────────────────────────────────────┐\n|') +
 		chalk.white(' Update available: ') +
@@ -62,7 +63,7 @@ function launcher (env) {
 
 	var 
 		versionFlag = argv.v || argv.version,
-		infoFlag = argv.i || argv.info,
+		infoFlag = argv.i || argv.info || argv.h || argv.help,
 
 		allowedTasks = ['init', 'build'],
 		task = argv._,
@@ -117,7 +118,7 @@ function launcher (env) {
 	});
 }
 
-// Helper logging functions ---------------------------------------------------
+// Helper functions -----------------------------------------------------------
 //
 
 function logInfo (pkg) {
@@ -134,52 +135,53 @@ function logHeader (pkg) {
 			'|   ||---\',---||   |`---.|    ,---||    |\n' +
 			'`   \'`---\'`---^`---\'`---\'`---\'`---^`    `---\'\n\n'
 		) +
-		chalk.cyan('➳  ' + chalk.underline('http://headstart.io')) +
-		'                 ' + chalk.yellow.inverse('v' + pkg.version) + '\n'
+		chalk.cyan.inverse('➳  http://headstart.io') +
+		'                 ' +
+		chalk.yellow.inverse('v' + pkg.version) + '\n'
 	);
 }
 
 function logTasks () {
-	console.log(chalk.grey('-------\n'));
+	//console.log(chalk.grey('-------\n'));
 	console.log(
-		chalk.magenta('headstart init') +
-		chalk.grey(' ~ Download boilerplate files\n\n')+
-		chalk.white('--base=<username/repository#branch>') +
-		chalk.grey(' ~ Use a custom boilerplate repo\n')
+		chalk.grey.underline('To start a new project, run:\n\n') +
+		chalk.magenta('headstart init [flags]\n\n') +
+		chalk.grey('Flags:\n\n') +
+		chalk.white('--base <source>') +
+		chalk.grey('\t\tUse a custom boilerplate repo, eg. user/repo#branch\n')
 	);
-	console.log(chalk.grey('-------\n'));
+	//console.log(chalk.grey('-------\n'));
 	console.log(
-		chalk.magenta('headstart build') +
-		chalk.grey(' ~ Build the project\n\n') +
-		chalk.white('--production') +
-		chalk.grey(' ~ Make a production ready build\n') +
-		chalk.white('--serve') +
-		chalk.grey(' ~ Serve the files on a static address\n') +
-		chalk.white('--open') +
-		chalk.grey(' ~ Open up a browser for you (default Google Chrome)\n') +
-		chalk.white('--edit') +
-		chalk.grey(' ~ Open the files in your editor (default Sublime Text)\n\n') +
+		chalk.grey.underline('To build the project, run:\n\n') +
+		chalk.magenta('headstart build [flags]\n\n') +
+		chalk.grey('Flags:\n\n') +
+		chalk.white('--p, --production') +
+		chalk.grey('\tMake a production ready build\n') +
+		chalk.white('--s, --serve') +
+		chalk.grey('\t\tServe the files on a static address\n') +
+		chalk.white('--o, --open') +
+		chalk.grey('\t\tOpen up a browser for you (default Google Chrome)\n') +
+		chalk.white('--e, --edit') +
+		chalk.grey('\t\tOpen the files in your editor (default Sublime Text)\n') +
 		chalk.white('--psi') +
-		chalk.grey(' ~ Run PageSpeed Insights after building (requires --serve)\n') +
-		chalk.white('--key=<key>') +
-		chalk.grey(' ~ Optional, an API key for PSI\n') +
-		chalk.white('--strategy=<desktop|mobile>') +
-		chalk.grey(' ~ PSI strategy to use, defaults to desktop\n\n') +
+		chalk.grey('\t\t\tRun PageSpeed Insights after building (requires --serve)\n') +
+		//chalk.white('--key <key>') +
+		//chalk.grey('\t\tOptional, an API key for PSI\n') +
+		chalk.white('--strategy <type>') +
+		chalk.grey('\tPSI strategy to use, defaults to desktop\n') +
+		chalk.grey('\t\t\tType is either "desktop" or "mobile"\n') +
 		chalk.white('--verbose') +
-		chalk.grey(' ~ Output extra information while building\n')
+		chalk.grey('\t\tOutput extra information while building\n')
 	);
-	console.log(chalk.grey('-------\n'));
+	//console.log(chalk.grey('-------\n'));
 	console.log(
-		chalk.magenta('headstart') +
-		chalk.grey(' or ') +
-		chalk.magenta('headstart --info') +
-		chalk.grey(' ~ Print out this message')
-	);
-	console.log(
-		chalk.magenta('headstart --version') +
-		chalk.grey(' or ') +
-		chalk.magenta('headstart --v') +
-		chalk.grey(' ~ Print out version\n')
+		chalk.grey.underline('For information, run:\n\n') +
+		chalk.magenta('headstart [flags]\n\n') +
+		chalk.grey('Flags:\n\n') +
+		chalk.white('--i, --info,\n--h, --help') +
+		chalk.grey('\t\tPrint out this message\n') +
+		chalk.white('--v, --version') +
+		chalk.grey('\t\tPrint out version\n')
 	);
 	console.log(chalk.grey('-------\n'));
 }
