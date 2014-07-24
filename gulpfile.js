@@ -2,7 +2,7 @@
 
 'use strict';
 
-// Require needed modules
+// REQUIRES -------------------------------------------------------------------
 
 var
 	path				= require('path'),
@@ -24,11 +24,16 @@ var
 	plugins				= require('gulp-load-plugins')({
 		config: path.join(__dirname, 'package.json')
 	}),
-	flags				= require('minimist')(process.argv.slice(2)),
+	flags				= require('minimist')(process.argv.slice(2))
+;
+
+// VARS -----------------------------------------------------------------------
+
+var
 	gitConfig			= {
 		user: 'flovan',
 		repo: 'headstart-boilerplate',
-		ref: '1.0.2'
+		ref: '1.0.2' // 1.1.0 <-------------------------!!!!!!!!!!!!!!----!!!!!
 	},
 	cwd					= process.cwd(),
 	tmpFolder			= '.tmp',
@@ -38,7 +43,10 @@ var
 		external: null,
 		port: null
 	},
-	isProduction		= ( flags.production || flags.prod ) || false,
+	isProduction		= ( flags.production || flags.p ) || false,
+	isServe				= ( flags.serve || flags.s ) || false,
+	isOpen				= ( flags.o || flags.open ) || false,
+	isEdit				= ( flags.e || flags.edit ) || false,
 	isVerbose			= flags.verbose || false,
 	isPSI				= flags.psi || false,
 	config
@@ -96,114 +104,7 @@ gulp.task('init', function (cb) {
 	cb(null);
 });
 
-function downloadBoilerplateFiles () {
 
-	console.log(chalk.grey('\n☞  Downloading boilerplate files...'));
-
-	// If a custom repo was passed in, use it
-	if (!!flags.base) {
-
-		// Check if there's a slash
-		if (flags.base.indexOf('/') < 0) {
-			console.log(chalk.red('Please pass in a correct repository, eg. `username/repository` or `username/repository#branch. Aborting.\n'));
-			process.exit(0);
-		}
-
-		// Check if there's a reference
-		if (flags.base.indexOf('#') > -1) {
-			flags.base = flags.base.split('#');
-			gitConfig.ref = flags.base[1];
-			flags.base = flags.base[0];
-		} else {
-			gitConfig.ref = null;
-		}
-
-		// Extract username and repo
-		flags.base = flags.base.split('/');
-		gitConfig.user = flags.base[0];
-		gitConfig.repo = flags.base[1];
-
-		// Extra validation
-		if (gitConfig.user.length <= 0) {
-			console.log(chalk.red('The passed in username is invald. Aborting.\n'));
-			process.exit(0);
-		}
-		if (gitConfig.repo.length <= 0) {
-			console.log(chalk.red('The passed in repository is invald. Aborting.\n'));
-			process.exit(0);
-		}
-	}
-
-	// Download the boilerplate files to a temp folder
-	// This is to prevent a ENOEMPTY error
-	ghdownload(gitConfig, tmpFolder)
-		// Let the user know when something went wrong
-		.on('error', function (error) {
-			console.log(chalk.red('An error occurred. Aborting.'), error);
-			process.exit(0);
-		})
-		// Download succeeded
-		.on('end', function () {
-			console.log(
-				chalk.green('✔ Download complete!\n') +
-				chalk.grey('☞  Cleaning up...')
-			);
-
-			// Move to working directory, clean temp, finish init
-			ncp(tmpFolder, cwd, function (err) {
-
-				if (err) {
-					console.log(chalk.red('Something went wrong. Please try again'), err);
-					process.exit(0);
-				}
-
-				sequence('clean-tmp', function () {
-					finishInit();
-				});
-			});
-		})
-		// TODO: Try to catch the error when a ZIP has "NOEND"
-	;
-}
-
-function finishInit () {
-
-	// Ask the user if he wants to continue and
-	// have the files served and opened
-	prompt({
-			type: 'confirm',
-			message: 'Would you like to have these files served?',
-			name: 'build',
-			default: true
-	}, function (buildAnswer) {
-
-		if (buildAnswer.build) {
-			flags.serve = true;
-			prompt({
-					type: 'confirm',
-					message: 'Should they be opened in the browser?',
-					name: 'open',
-					default: true
-
-			}, function (openAnswer) {
-
-				if (openAnswer.open) flags.open = true;
-				prompt({
-					type: 'confirm',
-					message: 'Should they be opened in an editor?',
-					name: 'edit',
-					default: true
-
-				}, function (editAnswer) {
-
-					if (editAnswer.edit) flags.edit = true;
-					gulp.start('build');
-				});
-			});
-		}
-		else process.exit(0);
-	});
-}
 
 // BUILD ----------------------------------------------------------------------
 //
@@ -230,7 +131,7 @@ gulp.task('build', function (cb) {
 		// Run build tasks
 		// Serve files if Headstart was run with the --serve flag
 		console.log(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'dev') + ' version...'));
-		if (flags.serve) {
+		if (isServe) {
 			sequence(
 				'clean-export',
 				[
@@ -273,7 +174,7 @@ gulp.task('build', function (cb) {
 				'manifest',
 				function () {
 
-					if(flags.edit) openEditor();
+					if(isEdit) openEditor();
 					console.log(chalk.green('✔  All done!'));
 
 					cb(null);
@@ -313,21 +214,31 @@ gulp.task('clean-tmp', function (cb) {
 	;
 });
 
+gulp.task('clean-rev', function (cb) {
+
+	verbose(chalk.grey('☞  Running task "clean-rev"'));
+
+	// Remove temp folder
+	return gulp.src(config.export_assets + '/**/*.*', {read: false})
+		.pipe(plugins.revOutdated(1))
+		.pipe(plugins.rimraf({force: true}))
+	;
+});
+
+
 // SASS -----------------------------------------------------------------------
 //
 
 gulp.task('sass-main', function (cb) {
 
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "sass-main"'));
-	}
+	verbose(chalk.grey('☞  Running task "sass-main"'));
 	
 	// Continuous watch never ends, so end it manually
 	if (lrStarted) {
 		cb(null);
 	}
 
+	var debug = require('gulp-debug');
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return ( !lrStarted ?
@@ -341,7 +252,13 @@ gulp.task('sass-main', function (cb) {
 				emitOnGlob: false,
 				name: 'SCSS-MAIN',
 				silent: true
-			})
+			}/*, function (files) {
+				gulp.start('clean-rev');
+				return files;
+			}*/)
+				// TODO:
+				// Figure out how to get revisioned stylesheets to reload
+				.pipe(debug())
 				.pipe(plugins.plumber())
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
@@ -355,12 +272,9 @@ gulp.task('sass-main', function (cb) {
 	;
 });
 
-gulp.task('sass-ie', function (cb) {
+gulp.task('sass-ie', ['clean-rev'], function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "sass-ie"'));
-	}
+	verbose(chalk.grey('☞  Running task "sass-ie"'));
 	
 	// Continuous watch never ends, so end it manually
 	if (lrStarted) {
@@ -400,10 +314,7 @@ gulp.task('hint-scripts', function (cb) {
 		return;
 	}
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "hint-scripts"'));
-	}
+	verbose(chalk.grey('☞  Running task "hint-scripts"'));
 
 	// Hint all non-lib js files and exclude _ prefixed files
 	return gulp.src([
@@ -419,10 +330,7 @@ gulp.task('hint-scripts', function (cb) {
 
 gulp.task('scripts-main', ['hint-scripts'], function () {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "scripts-main"'));
-	}
+	verbose(chalk.grey('☞  Running task "scripts-main"'));
 
 	// Process .js files
 	// Files are ordered for dependency sake
@@ -445,7 +353,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
 		.pipe(plugins.if(isProduction, plugins.concat('core-libs.js')))
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
-		.pipe(plugins.rename({extname: '.min.js'}))
+		.pipe(plugins.if(isProduction, plugins.rename({extname: '.min.js'})))
 		.pipe(plugins.if(isProduction, plugins.uglify()))
 		.pipe(gulp.dest(config.export_assets + '/assets/js'))
 	;
@@ -453,10 +361,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 
 gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "scripts-view"'));
-	}
+	verbose(chalk.grey('☞  Running task "scripts-view"'));
 
 	return gulp.src('assets/js/view-*.js')
 		.pipe(plugins.plumber())
@@ -470,10 +375,7 @@ gulp.task('scripts-view', ['hint-scripts'], function (cb) {
 
 gulp.task('scripts-ie', function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "scripts-ie"'));
-	}
+	verbose(chalk.grey('☞  Running task "scripts-ie"'));
 
 	// Process .js files
 	// Files are ordered for dependency sake
@@ -509,10 +411,7 @@ gulp.task('scripts-ie', function (cb) {
 
 gulp.task('images', function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "images"'));
-	}
+	verbose(chalk.grey('☞  Running task "images"'));
 
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
@@ -552,10 +451,7 @@ gulp.task('images', function (cb) {
 
 gulp.task('other', function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "other"'));
-	}
+	verbose(chalk.grey('☞  Running task "other"'));
 
 	// Make sure other files and folders are copied over
 	// eg. fonts, videos, ...
@@ -580,10 +476,7 @@ gulp.task('misc', function (cb) {
 	
 	// In --production mode, copy over all the other stuff
 	if (isProduction) {
-		// Log taks if mode is verbose
-		if (isVerbose) {
-			console.log(chalk.grey('☞  Running task "misc"'));
-		}
+		verbose(chalk.grey('☞  Running task "misc"'));
 
 		// Make a functional version of the htaccess.txt
 		gulp.src('misc/htaccess.txt')
@@ -599,15 +492,12 @@ gulp.task('misc', function (cb) {
 	cb(null);
 });
 
-// HTML -----------------------------------------------------------------------
+// TEMPLATES ------------------------------------------------------------------
 //
  
-gulp.task('templates', function (cb) {
+gulp.task('templates', ['clean-rev'], function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "templates"'));
-	}
+	verbose(chalk.grey('☞  Running task "templates"'));
 
 	// If assebly is off, export all folders and files
 	if (!config.assemble_templates) {
@@ -718,10 +608,7 @@ gulp.task('uncss-main', function (cb) {
 		return;
 	}
 
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "uncss-main"'));
-	}
+	verbose(chalk.grey('☞  Running task "uncss-main"'));
 
 	// Log that main stylesheet is being cleaned
 	console.log(chalk.grey('Parsing and cleaning main stylesheet...'));
@@ -749,10 +636,7 @@ gulp.task('uncss-view', function (cb) {
 		return;
 	}
 
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "uncss-view"'));
-	}
+	verbose(chalk.grey('☞  Running task "uncss-view"'));
 
 	// Check for view-*.scss files and log that they are being cleaned
 	// or quit
@@ -815,10 +699,7 @@ gulp.task('manifest', function (cb) {
 		return;
 	}
 
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "manifest"'));
-	}
+	verbose(chalk.grey('☞  Running task "manifest"'));
 
 	return gulp.src([
 		config.export_assets + '/assets/js/*',
@@ -834,33 +715,9 @@ gulp.task('manifest', function (cb) {
 // SERVER ---------------------------------------------------------------------
 //
 
-// Open served files in browser
-function openBrowser () {
-
-	console.log(
-		chalk.cyan('☞  Opening in'),
-		chalk.magenta(config.browser)
-	);
-	open('http://' + connection.local + ':' + connection.port, config.browser);
-}
-
-// Open files in editor
-function openEditor () {
-
-	console.log(
-		chalk.cyan('☞  Editing in'),
-		chalk.magenta(config.editor)
-	);
-	open(cwd, config.editor);
-}
-
-
 gulp.task('server', ['browsersync'], function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "server"'));
-	}
+	verbose(chalk.grey('☞  Running task "server"'));
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
@@ -902,10 +759,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 
 gulp.task('browsersync', function (cb) {
 	
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "browsersync"'));
-	}
+	verbose(chalk.grey('☞  Running task "browsersync"'));
 
 	// Serve files and connect browsers
 	browserSync.init(null, {
@@ -932,8 +786,8 @@ gulp.task('browsersync', function (cb) {
 		console.log(chalk.cyan('🌐  Network access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
 
 		// Process flags
-		if(flags.open) openBrowser();
-		if(flags.edit) openEditor();
+		if(isOpen) openBrowser();
+		if(isEdit) openEditor();
 		if(isPSI) gulp.start('psi');
 	});
 
@@ -951,10 +805,7 @@ gulp.task('psi', function (cb) {
 		return;
 	}
 
-	// Log taks if mode is verbose
-	if (isVerbose) {
-		console.log(chalk.grey('☞  Running task "psi"'));
-	}
+	verbose(chalk.grey('☞  Running task "psi"'));
 
 	console.log(chalk.grey('☞  Tunneling local server to web...'));
 
@@ -1007,9 +858,143 @@ gulp.task('psi', function (cb) {
 	});
 });
 
-// DEFAULT --------------------------------------------------------------------
+// HELPER FUNCTIONS -----------------------------------------------------------
 //
 
-gulp.task('default', function () {
-	gulp.start('build');
-});
+// Download the boilerplate files
+function downloadBoilerplateFiles () {
+
+	console.log(chalk.grey('\n☞  Downloading boilerplate files...'));
+
+	// If a custom repo was passed in, use it
+	if (!!flags.base) {
+
+		// Check if there's a slash
+		if (flags.base.indexOf('/') < 0) {
+			console.log(chalk.red('Please pass in a correct repository, eg. `username/repository` or `user/repo#branch. Aborting.\n'));
+			process.exit(0);
+		}
+
+		// Check if there's a reference
+		if (flags.base.indexOf('#') > -1) {
+			flags.base = flags.base.split('#');
+			gitConfig.ref = flags.base[1];
+			flags.base = flags.base[0];
+		} else {
+			gitConfig.ref = null;
+		}
+
+		// Extract username and repo
+		flags.base = flags.base.split('/');
+		gitConfig.user = flags.base[0];
+		gitConfig.repo = flags.base[1];
+
+		// Extra validation
+		if (gitConfig.user.length <= 0) {
+			console.log(chalk.red('The passed in username is invald. Aborting.\n'));
+			process.exit(0);
+		}
+		if (gitConfig.repo.length <= 0) {
+			console.log(chalk.red('The passed in repository is invald. Aborting.\n'));
+			process.exit(0);
+		}
+	}
+
+	// Download the boilerplate files to a temp folder
+	// This is to prevent a ENOEMPTY error
+	ghdownload(gitConfig, tmpFolder)
+		// Let the user know when something went wrong
+		.on('error', function (error) {
+			console.log(chalk.red('An error occurred. Aborting.'), error);
+			process.exit(0);
+		})
+		// Download succeeded
+		.on('end', function () {
+			console.log(
+				chalk.green('✔ Download complete!\n') +
+				chalk.grey('☞  Cleaning up...')
+			);
+
+			// Move to working directory, clean temp, finish init
+			ncp(tmpFolder, cwd, function (err) {
+
+				if (err) {
+					console.log(chalk.red('Something went wrong. Please try again'), err);
+					process.exit(0);
+				}
+
+				sequence('clean-tmp', function () {
+					finishInit();
+				});
+			});
+		})
+		// TODO: Try to catch the error when a ZIP has "NOEND"
+	;
+}
+
+// Wrap up after running init and
+// downloading the boilerplate files
+function finishInit () {
+
+	// Ask the user if he wants to continue and
+	// have the files served and opened
+	prompt({
+			type: 'confirm',
+			message: 'Would you like to have these files served?',
+			name: 'build',
+			default: true
+	}, function (buildAnswer) {
+
+		if (buildAnswer.build) {
+			isServe = true;
+			prompt({
+					type: 'confirm',
+					message: 'Should they be opened in the browser?',
+					name: 'open',
+					default: true
+
+			}, function (openAnswer) {
+
+				if (openAnswer.open) isOpen = true;
+				prompt({
+					type: 'confirm',
+					message: 'Should they be opened in an editor?',
+					name: 'edit',
+					default: true
+
+				}, function (editAnswer) {
+
+					if (editAnswer.edit) isEdit = true;
+					gulp.start('build');
+				});
+			});
+		}
+		else process.exit(0);
+	});
+}
+
+// Open served files in browser
+function openBrowser () {
+
+	console.log(
+		chalk.cyan('☞  Opening in'),
+		chalk.magenta(config.browser)
+	);
+	open('http://' + connection.local + ':' + connection.port, config.browser);
+}
+
+// Open files in editor
+function openEditor () {
+
+	console.log(
+		chalk.cyan('☞  Editing in'),
+		chalk.magenta(config.editor)
+	);
+	open(cwd, config.editor);
+}
+
+// Make extra logs in verbose mode
+function verbose (msg) {
+
+	if(isVerbose) console.log(msg);
+}
