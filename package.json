@@ -68,6 +68,7 @@
     "node": ">=0.8.0"
   },
   "bin": {
-    "headstart": "./bin/headstart.js"
+    "headstart": "./bin/headstart.js",
+    "hs": "./bin/headstart.js"
   }
 }
