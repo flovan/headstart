@@ -68,7 +68,7 @@ gulp.task('init', function (cb) {
 	if (cwdFiles.length > 0) {
 
 		// Make sure the user knows what is about to happen
-		console.log(chalk.yellow.inverse('The current directory is not empty!'));
+		console.log(chalk.yellow.inverse('\nThe current directory is not empty!'));
 		prompt({
 			type: 'confirm',
 			message: 'Initializing will empty the current directory. Continue?',
@@ -136,7 +136,6 @@ gulp.task('build', function (cb) {
 				'clean-export',
 				[
 					'sass-main',
-					'sass-ie',
 					'scripts-view',
 					'scripts-main',
 					'scripts-ie',
@@ -160,7 +159,6 @@ gulp.task('build', function (cb) {
 				'clean-export',
 				[
 					'sass-main',
-					'sass-ie',
 					'scripts-view',
 					'scripts-main',
 					'scripts-ie',
@@ -229,7 +227,7 @@ gulp.task('clean-rev', function (cb) {
 // SASS -----------------------------------------------------------------------
 //
 
-gulp.task('sass-main', function (cb) {
+gulp.task('sass-main', ['sass-ie'], function (cb) {
 
 	verbose(chalk.grey('☞  Running task "sass-main"'));
 	
@@ -267,10 +265,17 @@ gulp.task('sass-main', function (cb) {
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
+		.on('data', function (cb) {
+
+			if(lrStarted) {
+				gulp.start('templates');
+			}
+			this.resume();
+		})
 	;
 });
 
-gulp.task('sass-ie', ['clean-rev'], function (cb) {
+gulp.task('sass-ie', function (cb) {
 	
 	verbose(chalk.grey('☞  Running task "sass-ie"'));
 	
