@@ -4,6 +4,11 @@
 // To see an extended Error Stack Trace, uncomment
 // Error.stackTraceLimit = 9000;
 
+// REQUIRES -------------------------------------------------------------------
+//
+// Note: Gulp related requires are made further down to speed up the rest
+// of this script
+
 var 
 	path				= require('path'),
 	fs					= require('fs'),
@@ -14,8 +19,8 @@ var
 	Liftoff				= require('liftoff'),
 	updateNotifier		= require('update-notifier'),
 	argv				= require('minimist')(process.argv.slice(2)),
-	gulp				= require('gulp'),
-	gulpFile			= require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'))
+	gulp,
+	gulpFile
 ;
 
 // CLI configuration ----------------------------------------------------------
@@ -112,6 +117,12 @@ function launcher (env) {
 		console.log(chalk.cyan('Working directory changed to', chalk.magenta(env.cwd)));
 	}
 
+	// Require gulp assets
+	console.log(chalk.grey('\n☞  Preparing build (might take a while)...'));
+
+	gulp = require('gulp');
+	gulpFile = require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'));
+
 	// Start the task through Gulp
 	process.nextTick(function() {
 		gulp.start.apply(gulp, [task]);
@@ -159,21 +170,21 @@ function logTasks () {
 		chalk.grey(' or ') +
 		chalk.magenta('hs build [flags]\n\n') +
 		chalk.grey('Flags:\n\n') +
-		chalk.white('--p, --production') +
-		chalk.grey('\tMake a production ready build\n') +
 		chalk.white('--s, --serve') +
 		chalk.grey('\t\tServe the files on a static address\n') +
 		chalk.white('--o, --open') +
 		chalk.grey('\t\tOpen up a browser for you (default Google Chrome)\n') +
 		chalk.white('--e, --edit') +
 		chalk.grey('\t\tOpen the files in your editor (default Sublime Text)\n') +
+		chalk.white('--p, --production') +
+		chalk.grey('\tMake a production ready build\n') +
 		chalk.white('--psi') +
 		chalk.grey('\t\t\tRun PageSpeed Insights after building (requires --serve)\n') +
 		//chalk.white('--key <key>') +
 		//chalk.grey('\t\tOptional, an API key for PSI\n') +
 		chalk.white('--strategy <type>') +
 		chalk.grey('\tPSI strategy to use, defaults to desktop\n') +
-		chalk.grey('\t\t\tType is either "desktop" or "mobile"\n') +
+		chalk.grey('\t\t\tType is either "desktop" or "mobile"\n\n') +
 		chalk.white('--verbose') +
 		chalk.grey('\t\tOutput extra information while building\n')
 	);
@@ -187,5 +198,4 @@ function logTasks () {
 		chalk.white('--v, --version') +
 		chalk.grey('\t\tPrint out version\n')
 	);
-	console.log(chalk.grey('-------\n'));
 }
