@@ -38,7 +38,7 @@
     "gulp-plumber": "^0.6.4",
     "gulp-rename": "^1.2.0",
     "gulp-rev": "^0.4.2",
-    "gulp-rev-outdated": "0.0.4",
+    "gulp-rev-outdated": "^0.0.6",
     "gulp-rimraf": "^0.1.0",
     "gulp-ruby-sass": "^0.5.0",
     "gulp-sass-graph": "git://github.com/lox/gulp-sass-graph#828d8efbf1925a09ff9dd3157603f58506c8ae67",

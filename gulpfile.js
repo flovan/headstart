@@ -1,4 +1,4 @@
-/*global require, process, copy*/
+/*global require, process*/
 
 'use strict';
 
@@ -218,8 +218,8 @@ gulp.task('clean-rev', function (cb) {
 
 	verbose(chalk.grey('☞  Running task "clean-rev"'));
 
-	// Remove temp folder
-	return gulp.src(config.export_assets + '/**/*.*', {read: false})
+	// Clean all revision files but the latest ones
+	return gulp.src(config.export_assets + '/assets/**/*.*', {read: false})
 		.pipe(plugins.revOutdated(1))
 		.pipe(plugins.rimraf({force: true}))
 	;
