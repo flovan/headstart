@@ -238,7 +238,6 @@ gulp.task('sass-main', function (cb) {
 		cb(null);
 	}
 
-	var debug = require('gulp-debug');
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return ( !lrStarted ?
@@ -258,7 +257,6 @@ gulp.task('sass-main', function (cb) {
 			}*/)
 				// TODO:
 				// Figure out how to get revisioned stylesheets to reload
-				.pipe(debug())
 				.pipe(plugins.plumber())
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
@@ -430,7 +428,7 @@ gulp.task('images', function (cb) {
 		])
 		.pipe(plugins.plumber())
 		.pipe(plugins.newer(config.export_assets + '/assets/images'))
-		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true, silent: true }).on('end', function () {
+		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }).on('end', function () {
 
 			cb(null);
 		})))

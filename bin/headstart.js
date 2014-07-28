@@ -145,7 +145,9 @@ function logTasks () {
 	//console.log(chalk.grey('-------\n'));
 	console.log(
 		chalk.grey.underline('To start a new project, run:\n\n') +
-		chalk.magenta('headstart init [flags]\n\n') +
+		chalk.magenta('headstart init [flags]') +
+		chalk.grey(' or ') +
+		chalk.magenta('hs init [flags]\n\n') +
 		chalk.grey('Flags:\n\n') +
 		chalk.white('--base <source>') +
 		chalk.grey('\t\tUse a custom boilerplate repo, eg. user/repo#branch\n')
@@ -153,7 +155,9 @@ function logTasks () {
 	//console.log(chalk.grey('-------\n'));
 	console.log(
 		chalk.grey.underline('To build the project, run:\n\n') +
-		chalk.magenta('headstart build [flags]\n\n') +
+		chalk.magenta('headstart build [flags]') +
+		chalk.grey(' or ') +
+		chalk.magenta('hs build [flags]\n\n') +
 		chalk.grey('Flags:\n\n') +
 		chalk.white('--p, --production') +
 		chalk.grey('\tMake a production ready build\n') +
