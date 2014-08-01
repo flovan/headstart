@@ -27,12 +27,7 @@ var
 //
 
 var cli = new Liftoff({
-	name: 'headstart',
-	// completions: require('../lib/completion') TODO
-}).on('require', function (name, module) {
-	console.log(chalk.grey('What is this I don\'t even ...'));
-}).on('requireFail', function (name, err) {
-	console.log(chalk.black.bgRed('Unable to load:', name, err));
+	name: 'headstart'
 });
 
 // Check for updates ----------------------------------------------------------
@@ -77,7 +72,6 @@ function launcher (env) {
 
 	// Check for version flag
 	if (versionFlag) {
-		//console.log('\n' + chalk.yellow.inverse('Headstart CLI version', pkg.version) + '\n');
 		logHeader(pkg);
 		process.exit(0);
 	}
@@ -116,10 +110,8 @@ function launcher (env) {
 		process.chdir(env.cwd);
 		console.log(chalk.cyan('Working directory changed to', chalk.magenta(env.cwd)));
 	}
-
+	
 	// Require gulp assets
-	console.log(chalk.grey('\n☞  Preparing build (might take a while)...'));
-
 	gulp = require('gulp');
 	gulpFile = require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'));
 
@@ -153,7 +145,6 @@ function logHeader (pkg) {
 }
 
 function logTasks () {
-	//console.log(chalk.grey('-------\n'));
 	console.log(
 		chalk.grey.underline('To start a new project, run:\n\n') +
 		chalk.magenta('headstart init [flags]') +
@@ -163,7 +154,6 @@ function logTasks () {
 		chalk.white('--base <source>') +
 		chalk.grey('\t\tUse a custom boilerplate repo, eg. user/repo#branch\n')
 	);
-	//console.log(chalk.grey('-------\n'));
 	console.log(
 		chalk.grey.underline('To build the project, run:\n\n') +
 		chalk.magenta('headstart build [flags]') +
@@ -188,7 +178,6 @@ function logTasks () {
 		chalk.white('--verbose') +
 		chalk.grey('\t\tOutput extra information while building\n')
 	);
-	//console.log(chalk.grey('-------\n'));
 	console.log(
 		chalk.grey.underline('For information, run:\n\n') +
 		chalk.magenta('headstart [flags]\n\n') +
