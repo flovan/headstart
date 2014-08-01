@@ -1,13 +1,16 @@
 ### TODO's:
 
-  /
+  - [ ] Put Liftoff logo on website (https://www.npmjs.org/package/liftoff)
+  - [ ] Make box-sizing work through inherit (http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice)
+  - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
+  - [ ] Make favicon generating optional (https://www.npmjs.org/package/favicons)
+  - [ ] Find a less crude way of muting module output through gulp-util
 
 ### A list of things to explore:
 
   - [ ] Think about fixed size columns for eg ads
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all)
   - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
-  - [ ] Make favicon generating optional (https://www.npmjs.org/package/favicons)
   - [ ] See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)
   - [ ] See if replacing all minifying modules with gulp-compressor makes things faster (https://www.npmjs.org/package/gulp-compressor/)
   - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
@@ -16,10 +19,8 @@
   - [ ] Make it possible to use LESS (https://www.npmjs.org/package/gulp-less/)
   - [ ] Make it possible to use Stylus (https://www.npmjs.org/package/gulp-stylus/)
   - [ ] Maybe replace some CSS processing modules with gulp-pleeease (https://www.npmjs.org/package/gulp-pleeease/)
-  - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] Try having critical css inlined (http://css-tricks.com/authoring-critical-fold-css/ & https://github.com/pocketjoso/penthouse/#as-a-node-module OR https://github.com/filamentgroup/criticalcss)
   - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
-  - [ ] Make box-sizing work through inherit (http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice)
   - [ ] Split up gulpfile into task files (https://github.com/whitneyit/gulp-taskify)
 
   ### Done

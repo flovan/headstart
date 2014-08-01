@@ -1,4 +1,4 @@
-/*global require, process*/
+/*global require, process, __dirname*/
 
 'use strict';
 
@@ -103,8 +103,6 @@ gulp.task('init', function (cb) {
 
 	cb(null);
 });
-
-
 
 // BUILD ----------------------------------------------------------------------
 //
@@ -419,7 +417,6 @@ gulp.task('images', function (cb) {
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
 	gulp.src('assets/images/icons/favicon.png')
-		.pipe(plugins.plumber())
 		.pipe(plugins.rename({extname: '.ico'}))
 		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(gulp.dest(config.export_misc))
@@ -431,7 +428,6 @@ gulp.task('images', function (cb) {
 			'assets/images/**/*',
 			'!_*'
 		])
-		.pipe(plugins.plumber())
 		.pipe(plugins.newer(config.export_assets + '/assets/images'))
 		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }).on('end', function () {
 
@@ -1001,3 +997,15 @@ function verbose (msg) {
 
 	if(isVerbose) console.log(msg);
 }
+
+// Shhhhh gulp-utils, only dreams now
+var cl = console.log;
+console.log = function () {
+    var args = Array.prototype.slice.call(arguments);
+    if (args.length && !isVerbose) {
+        if (/^\[.*\]$/.test(args[0])){
+            return;
+        }
+    }
+    return cl.apply(console, args);
+};
