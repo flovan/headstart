@@ -1,9 +1,7 @@
 ### TODO's:
 
   - [ ] Put Liftoff logo on website (https://www.npmjs.org/package/liftoff)
-  - [ ] Make box-sizing work through inherit (http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice)
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
-  - [ ] Make favicon generating optional (https://www.npmjs.org/package/favicons)
   - [ ] Find a less crude way of muting module output through gulp-util
 
 ### A list of things to explore:
@@ -36,3 +34,4 @@
   - [x] Replace livereloading with browser-sync (https://github.com/shakyShane/browser-sync through http://shakyshane.com/gulpjs-sass-browsersync-ftw/)
   - [x] ^ Fix logging by gulp-connect (~~muting https://www.npmjs.org/package/mute-stream~~)
   - [x] Auto-check for updates (~~http://stackoverflow.com/questions/20686244/install-programmatically-a-npm-package-providing-its-version and http://stackoverflow.com/questions/11949419/nodejs-npm-show-latest-version-of-a-module~~ https://github.com/yeoman/update-notifier)
+  - [x] Make box-sizing work through inherit (http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice)
