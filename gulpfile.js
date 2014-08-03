@@ -438,8 +438,7 @@ gulp.task('images', function (cb) {
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
 
-	// When making a dev build, call the end of this task
-	// manually
+	// When making a dev build, call the end of this task manually
 	if (!isProduction) {
 		cb(null);
 	}
@@ -793,7 +792,7 @@ gulp.task('browsersync', function (cb) {
 	cb(null);
 });
 
-// PageSpeed Insights ---------------------------------------------------------
+// PAGESPEED INSIGHTS ---------------------------------------------------------
 //
 
 gulp.task('psi', function (cb) {

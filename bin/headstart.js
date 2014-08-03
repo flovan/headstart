@@ -6,8 +6,8 @@
 
 // REQUIRES -------------------------------------------------------------------
 //
-// Note: Gulp related requires are made further down to speed up the rest
-// of this script
+// Note: Gulp related requires are made further down to speed up the first
+// part of this script
 
 var 
 	path				= require('path'),
@@ -23,14 +23,14 @@ var
 	gulpFile
 ;
 
-// CLI configuration ----------------------------------------------------------
+// CLI CONFIGURATION ----------------------------------------------------------
 //
 
 var cli = new Liftoff({
 	name: 'headstart'
 });
 
-// Check for updates ----------------------------------------------------------
+// CHECK FOR UPDATES ----------------------------------------------------------
 //
 
 var notifier = updateNotifier({
@@ -54,7 +54,7 @@ if (notifier.update) {
 	);
 }
 
-// Launch CLI -----------------------------------------------------------------
+// LAUNCH CLI -----------------------------------------------------------------
 //
 
 cli.launch({}, launcher);
@@ -121,7 +121,7 @@ function launcher (env) {
 	});
 }
 
-// Helper functions -----------------------------------------------------------
+// HELPER FUNCTIONS -----------------------------------------------------------
 //
 
 function logInfo (pkg) {
@@ -173,14 +173,15 @@ function logTasks () {
 		//chalk.white('--key <key>') +
 		//chalk.grey('\t\tOptional, an API key for PSI\n') +
 		chalk.white('--strategy <type>') +
-		chalk.grey('\tPSI strategy to use, defaults to desktop\n') +
-		chalk.grey('\t\t\tType is either "desktop" or "mobile"\n\n') +
+		chalk.grey('\tRun PSI in either "desktop" (default) or "mobile" mode\n\n') +
 		chalk.white('--verbose') +
 		chalk.grey('\t\tOutput extra information while building\n')
 	);
 	console.log(
 		chalk.grey.underline('For information, run:\n\n') +
-		chalk.magenta('headstart [flags]\n\n') +
+		chalk.magenta('headstart [flags]') +
+		chalk.grey(' or ') +
+		chalk.magenta('hs [flags]\n\n') +
 		chalk.grey('Flags:\n\n') +
 		chalk.white('--i, --info,\n--h, --help') +
 		chalk.grey('\t\tPrint out this message\n') +
