@@ -33,7 +33,7 @@ var
 	gitConfig			= {
 		user: 'flovan',
 		repo: 'headstart-boilerplate',
-		ref: '1.0.2' // 1.1.0 <-------------------------!!!!!!!!!!!!!!----!!!!!
+		ref: '1.1.0'
 	},
 	cwd					= process.cwd(),
 	tmpFolder			= '.tmp',
@@ -45,9 +45,11 @@ var
 	},
 	isProduction		= ( flags.production || flags.p ) || false,
 	isServe				= ( flags.serve || flags.s ) || false,
-	isOpen				= ( flags.o || flags.open ) || false,
-	isEdit				= ( flags.e || flags.edit ) || false,
+	isOpen				= ( flags.open || flags.o ) || false,
+	isEdit				= ( flags.edit || flags.e ) || false,
 	isVerbose			= flags.verbose || false,
+	isTunnel			= ( flags.tunnel || flags.t ) || false,
+	tunnelUrl			= null,
 	isPSI				= flags.psi || false,
 	config
 ;
@@ -134,7 +136,6 @@ gulp.task('build', function (cb) {
 				'clean-export',
 				[
 					'sass-main',
-					'scripts-view',
 					'scripts-main',
 					'scripts-ie',
 					'images',
@@ -157,7 +158,6 @@ gulp.task('build', function (cb) {
 				'clean-export',
 				[
 					'sass-main',
-					'scripts-view',
 					'scripts-main',
 					'scripts-ie',
 					'images',
@@ -329,7 +329,7 @@ gulp.task('hint-scripts', function (cb) {
 	;
 });
 
-gulp.task('scripts-main', ['hint-scripts'], function () {
+gulp.task('scripts-main', ['hint-scripts', 'scripts-view'], function () {
 	
 	verbose(chalk.grey('☞  Running task "scripts-main"'));
 
@@ -360,7 +360,7 @@ gulp.task('scripts-main', ['hint-scripts'], function () {
 	;
 });
 
-gulp.task('scripts-view', ['hint-scripts'], function (cb) {
+gulp.task('scripts-view', function (cb) {
 	
 	verbose(chalk.grey('☞  Running task "scripts-view"'));
 
@@ -512,7 +512,15 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 		.pipe(plugins.tap(function (htmlFile) {
 
 			var
-				// Select JS files
+				// Extract bits from filename
+				baseName = path.basename(htmlFile.path),
+				nameParts = baseName.split('.'),
+				ext = _.without(nameParts, _.first(nameParts)).join('.'),
+				viewBaseName = _.last(nameParts[0].split('view-')),
+				// Make sure Windows paths work down below
+				cwdParts = cwd.replace(/\\/g, '/').split('/'),
+
+				// Make a collection of file globs
 				// Production will get 1 file only
 				// Development gets raw base files 
 				injectItems = isProduction ?
@@ -526,29 +534,30 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 
 						config.export_assets + '/assets/js/libs/*.js',
 						config.export_assets + '/assets/js/core/*.js',
-						config.export_assets + '/assets/js/*.js',
+						config.export_assets + '/assets/js/**/*.js',
 
-						'!' + config.export_assets + '/assets/js/view-*.js',
+						//'!' + config.export_assets + '/assets/js/view-*.js',
 						'!' + config.export_assets + '/assets/**/_*.js',
-						'!' + config.export_assets + '/assets/js/ie-*.js'
-					],
-				// Extract bits from filename
-				baseName = path.basename(htmlFile.path),
-				nameParts = baseName.split('.'),
-				ext = _.without(nameParts, _.first(nameParts)).join('.'),
-				viewBaseName = _.last(nameParts[0].split('view-')),
-				viewName = 'view-' + viewBaseName + (isProduction ? '*.min' : ''),
-				// Make sure Windows paths work down below
-				cwdParts = cwd.replace(/\\/g, '/').split('/')
+						'!' + config.export_assets + '/assets/js/ie*.js',
+
+						//config.export_assets + '/assets/js/view-' + viewBaseName + '*.js',
+						config.export_assets + '/assets/css/main*.css',
+						config.export_assets + '/assets/css/view-' + viewBaseName + '*.css'
+					]
 			;
-
-			// Add specific js and css files to inject queue
-			injectItems.push(config.export_assets + '/assets/js/' + viewName + '.js');
-			injectItems.push(config.export_assets + '/assets/css/main' + (isProduction ? '*.min' : '*') + '.css');
-			injectItems.push(config.export_assets + '/assets/css/' + viewName + '*.css');
-
+			
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
+				.pipe(plugins.ignore.include(function (file) {
+
+					// Exclude filenames with "view-" not matching the current view
+					if (file.path.indexOf('view-') > -1 && file.path.indexOf('.js') > -1 && file.path.indexOf(viewBaseName) < 0) {
+						return false;
+					}
+
+					// Pass through all the other files
+					return true;
+				}))
 				.pipe(plugins.deporder(baseName));
 
 			// On the current template
@@ -571,7 +580,7 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 						_.without(cwdParts, cwdParts.splice(-1)[0]).join('/')
 					].concat(config.export_assets.split('/')),
 					addRootSlash: false,
-					addPrefix: config.template_asset_prefix
+					addPrefix: config.template_asset_prefix || ''
 				}))
 				.pipe(plugins.if(config.w3c, plugins.w3cjs({
 					doctype: 'HTML5',
@@ -784,28 +793,31 @@ gulp.task('browsersync', function (cb) {
 		console.log(chalk.cyan('🌐  Network access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
 
 		// Process flags
-		if(isOpen) openBrowser();
-		if(isEdit) openEditor();
-		if(isPSI) gulp.start('psi');
+		if (isOpen) openBrowser();
+		if (isEdit) openEditor();
+		if (isTunnel) gulp.start('tunnel');
+		if (isPSI) {
+			isTunnel = true;
+			gulp.start('psi');
+		}
 	});
 
 	cb(null);
 });
 
-// PAGESPEED INSIGHTS ---------------------------------------------------------
+// NGROK ----------------------------------------------------------------------
 //
+// https://ngrok.com
 
-gulp.task('psi', function (cb) {
+gulp.task('tunnel', function (cb) {
 
 	// Quit this task if no flag was set
-	if(!isPSI) {
+	if(!isTunnel) {
 		cb(null);
 		return;
 	}
 
-	verbose(chalk.grey('☞  Running task "psi"'));
-
-	console.log(chalk.grey('☞  Tunneling local server to web...'));
+	verbose(chalk.grey('☞  Running task "tunnel"'));
 
 	// Expose local server to web through tunnel
 	// with Ngrok
@@ -820,39 +832,66 @@ gulp.task('psi', function (cb) {
 			process.exit(0);
 		}
 
-		console.log(chalk.grey('☞  Running PageSpeed Insights...'));
+		tunnelUrl = url;
+		console.log(chalk.cyan('🌐  Public access at'), chalk.magenta(tunnelUrl));
 
-		// Define PSI options
-		var opts = {
-			url: url,
-			strategy: flags.strategy || "desktop"
-		};
+		cb(null);
+	});
+});
 
-		// Set the key if one was passed in
-		if (!!flags.key && _.isString(flags.key)) {
-			console.log(chalk.yellow.inverse('Using a key is not yet supported as it just crashes the process. For now, continue without a key.'));
-			// TODO: Fix key
-			//opts.key = flags.key;
+// PAGESPEED INSIGHTS ---------------------------------------------------------
+//
+
+gulp.task('psi', ['tunnel'], function (cb) {
+
+	// Quit this task if no flag was set
+	if(!isPSI) {
+		cb(null);
+		return;
+	}
+
+	// Quit this task if ngrok somehow didn't run correctly
+	if(tunnelUrl === null) {
+		console.log(chalk.red('Running PSI cancelled because Ngrok didn\'t initiate correctly...'));
+		cb(null);
+		return;
+	}
+
+	verbose(chalk.grey('☞  Running task "psi"'));
+	console.log(chalk.grey('☞  Running PageSpeed Insights...'));
+
+	// Define PSI options
+	var opts = {
+		url: tunnelUrl,
+		strategy: flags.strategy || "desktop"
+	};
+
+	// Set the key if one was passed in
+	if (!!flags.key && _.isString(flags.key)) {
+		console.log(chalk.yellow.inverse('Using a key is not yet supported as it just crashes the process. For now, continue without a key.'));
+		// TODO: Fix key
+		//opts.key = flags.key;
+	}
+
+	// Run PSI
+	psi(opts, function (err, data) {
+
+		// If there was an error, log it and exit
+		if (err !== null) {
+			console.log(
+				chalk.red('Calling PSI failed... Aborting.\n') +
+				chalk.red(err)
+			);
+			process.exit(0);
 		}
 
-		// Run PSI
-		psi(opts, function (err, data) {
+		cb(null);
+	});
 
-			// If there was an error, log it and exit
-			if (err !== null) {
-				console.log(
-					chalk.red('Calling PSI failed... Aborting.\n') +
-					chalk.red(err)
-				);
-				process.exit(0);
-			}
-		});
-
-		// Since psi throw's the threshold error,
-		// we have to listen for it process-wide (bad!) — ONCE
-		process.once('uncaughtException', function (err) {
-			console.log(chalk.red(err));
-		});
+	// Since psi throw's the threshold error,
+	// we have to listen for it process-wide (bad!) — ONCE
+	process.once('uncaughtException', function (err) {
+		console.log(chalk.red(err));
 	});
 });
 
