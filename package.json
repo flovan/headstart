@@ -28,6 +28,7 @@
     "gulp-concat": "^2.3.4",
     "gulp-deporder": "^1.0.0",
     "gulp-if": "^1.2.4",
+    "gulp-ignore": "^1.2.0",
     "gulp-imagemin": "^0.6.2",
     "gulp-inject": "^1.0.1",
     "gulp-jshint": "^1.8.2",

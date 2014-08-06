@@ -150,7 +150,6 @@ function logTasks () {
 		chalk.magenta('headstart init [flags]') +
 		chalk.grey(' or ') +
 		chalk.magenta('hs init [flags]\n\n') +
-		chalk.grey('Flags:\n\n') +
 		chalk.white('--base <source>') +
 		chalk.grey('\t\tUse a custom boilerplate repo, eg. user/repo#branch\n')
 	);
@@ -159,7 +158,6 @@ function logTasks () {
 		chalk.magenta('headstart build [flags]') +
 		chalk.grey(' or ') +
 		chalk.magenta('hs build [flags]\n\n') +
-		chalk.grey('Flags:\n\n') +
 		chalk.white('--s, --serve') +
 		chalk.grey('\t\tServe the files on a static address\n') +
 		chalk.white('--o, --open') +
@@ -168,6 +166,8 @@ function logTasks () {
 		chalk.grey('\t\tOpen the files in your editor (default Sublime Text)\n') +
 		chalk.white('--p, --production') +
 		chalk.grey('\tMake a production ready build\n') +
+		chalk.white('--t, --tunnel') +
+		chalk.grey('\t\tTunnel your served files to the web (requires --serve)\n') +
 		chalk.white('--psi') +
 		chalk.grey('\t\t\tRun PageSpeed Insights after building (requires --serve)\n') +
 		//chalk.white('--key <key>') +
@@ -182,7 +182,6 @@ function logTasks () {
 		chalk.magenta('headstart [flags]') +
 		chalk.grey(' or ') +
 		chalk.magenta('hs [flags]\n\n') +
-		chalk.grey('Flags:\n\n') +
 		chalk.white('--i, --info,\n--h, --help') +
 		chalk.grey('\t\tPrint out this message\n') +
 		chalk.white('--v, --version') +
