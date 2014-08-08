@@ -519,7 +519,9 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 				// Production will get 1 file only
 				// Development gets raw base files 
 				injectItems = isProduction ?
-					[config.export_assets + '/assets/js/core-libs*.min.js']
+					[
+						config.export_assets + '/assets/js/core-libs*.min.js'
+					]
 					:
 					[
 						config.export_assets + '/assets/js/libs/jquery*.js',
@@ -531,18 +533,19 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 						config.export_assets + '/assets/js/core/*.js',
 						config.export_assets + '/assets/js/**/*.js',
 
-						//'!' + config.export_assets + '/assets/js/view-*.js',
 						'!' + config.export_assets + '/assets/**/_*.js',
-						'!' + config.export_assets + '/assets/js/ie*.js',
-
-						//config.export_assets + '/assets/js/view-' + viewBaseName + '*.js',
-						config.export_assets + '/assets/css/main*.css',
-						config.export_assets + '/assets/css/view-' + viewBaseName + '*.css'
+						'!' + config.export_assets + '/assets/js/ie*.js'
 					]
 			;
-			
+
+			// Include the css
+			injectItems.push(config.export_assets + '/assets/css/main*.css');
+			injectItems.push(config.export_assets + '/assets/css/view-' + viewBaseName + '*.css');
+
+			var debug = require('gulp-debug');
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
+				.pipe(plugins.if(viewBaseName === 'index', debug()))
 				.pipe(plugins.ignore.include(function (file) {
 
 					// Exclude filenames with "view-" not matching the current view
