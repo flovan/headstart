@@ -24,6 +24,14 @@ Changes can be found on [the changelog page][changelog-url].
 
 Want to upgrade? Check out [the upgrading page][ugrading-url] for more details.
 
+## In need of feedback
+
+What did you like? What didn't you like? Did you get stuck somewhere? Where the docs easy to follow, or did you give up at a certain point?
+
+This is a one-man project, but it's meant to be used by other people as well, so your feedback is very valuable!
+
+[Mail me anything at all.](mailto:hello@flovan.me)
+
 [website-url]: http://headstart.io
 [getting-started-url]: http://www.headstart.io/getting-started.html
 [html-guide-url]: http://www.headstart.io/html-guide.html
