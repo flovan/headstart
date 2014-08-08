@@ -116,7 +116,7 @@ gulp.task('build', function (cb) {
 	fs.readFile('config.json', 'utf8', function (err, data) {
 
 		if (err) {
-			console.log(chalk.red('Cannot find config.json. Have you initiated Headstart through `headstart init?'), err);
+			console.log(chalk.red('✘  Cannot find config.json. Have you initiated Headstart through `headstart init?'), err);
 			process.exit(0);
 		}
 
@@ -124,7 +124,7 @@ gulp.task('build', function (cb) {
 		try {
 			config = JSON.parse(data);
 		} catch (err) {
-			console.log(chalk.red('The config.json file is not valid json. Aborting.'), err);
+			console.log(chalk.red('✘  The config.json file is not valid json. Aborting.'), err);
 			process.exit(0);
 		}
 
@@ -247,12 +247,7 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 				emitOnGlob: false,
 				name: 'SCSS-MAIN',
 				silent: true
-			}/*, function (files) {
-				gulp.start('clean-rev');
-				return files;
-			}*/)
-				// TODO:
-				// Figure out how to get revisioned stylesheets to reload
+			})
 				.pipe(plugins.plumber())
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
@@ -262,14 +257,14 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
-		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 		.on('data', function (cb) {
 
-			if(lrStarted) {
+			if (lrStarted && config.revisionCaching) {
 				gulp.start('templates');
 			}
 			this.resume();
 		})
+		.pipe(plugins.if(lrStarted && !config.revisionCaching, browserSync.reload({stream:true})))
 	;
 });
 
@@ -778,6 +773,14 @@ gulp.task('browsersync', function (cb) {
 		browser: 'none'
 	}, function ( err, data) {
 
+		if (err !== null) {
+			console.log(
+				chalk.red('✘  Setting up a local server failed... Please try again. Aborting.\n') +
+				chalk.red(err)
+			);
+			process.exit(0);
+		}
+
 		// Store started state globally
 		connection.external = data.options.external;
 		connection.port = data.options.port;
@@ -811,12 +814,14 @@ gulp.task('browsersync', function (cb) {
 
 gulp.task('tunnel', function (cb) {
 
-	// Quit this task if no flag was set
-	if(!isTunnel) {
+	// Quit this task if no flag was set or if the url is already set to
+	// prevent a "task completion callback called too many times" error
+	if(!isTunnel || tunnelUrl !== null) {
 		cb(null);
 		return;
 	}
 
+	console.log(chalk.grey('☞  Tunneling local server to the web...'));
 	verbose(chalk.grey('☞  Running task "tunnel"'));
 
 	// Expose local server to web through tunnel
@@ -826,7 +831,7 @@ gulp.task('tunnel', function (cb) {
 		// If there was an error, log it and exit
 		if (err !== null) {
 			console.log(
-				chalk.red('Tunneling failed, please try again. Aborting.\n') +
+				chalk.red('✘  Tunneling failed, please try again. Aborting.\n') +
 				chalk.red(err)
 			);
 			process.exit(0);
@@ -852,7 +857,7 @@ gulp.task('psi', ['tunnel'], function (cb) {
 
 	// Quit this task if ngrok somehow didn't run correctly
 	if(tunnelUrl === null) {
-		console.log(chalk.red('Running PSI cancelled because Ngrok didn\'t initiate correctly...'));
+		console.log(chalk.red('✘  Running PSI cancelled because Ngrok didn\'t initiate correctly...'));
 		cb(null);
 		return;
 	}
@@ -863,12 +868,13 @@ gulp.task('psi', ['tunnel'], function (cb) {
 	// Define PSI options
 	var opts = {
 		url: tunnelUrl,
-		strategy: flags.strategy || "desktop"
+		strategy: flags.strategy || "desktop",
+		threshold: 80
 	};
 
 	// Set the key if one was passed in
 	if (!!flags.key && _.isString(flags.key)) {
-		console.log(chalk.yellow.inverse('Using a key is not yet supported as it just crashes the process. For now, continue without a key.'));
+		console.log(chalk.yellow.inverse('Using a key is not yet supported as it just crashes the process. For now, continue using `--psi` without a key.'));
 		// TODO: Fix key
 		//opts.key = flags.key;
 	}
@@ -878,11 +884,9 @@ gulp.task('psi', ['tunnel'], function (cb) {
 
 		// If there was an error, log it and exit
 		if (err !== null) {
-			console.log(
-				chalk.red('Calling PSI failed... Aborting.\n') +
-				chalk.red(err)
-			);
-			process.exit(0);
+			console.log(chalk.red('✘  Threshold of ' + opts.threshold + ' not met with score of ' + data.score));
+		} else {
+			console.log(chalk.green('✔  Threshold of ' + opts.threshold + ' exceeded with score of ' + data.score));
 		}
 
 		cb(null);
@@ -908,7 +912,7 @@ function downloadBoilerplateFiles () {
 
 		// Check if there's a slash
 		if (flags.base.indexOf('/') < 0) {
-			console.log(chalk.red('Please pass in a correct repository, eg. `username/repository` or `user/repo#branch. Aborting.\n'));
+			console.log(chalk.red('✘  Please pass in a correct repository, eg. `username/repository` or `user/repo#branch. Aborting.\n'));
 			process.exit(0);
 		}
 
@@ -928,11 +932,11 @@ function downloadBoilerplateFiles () {
 
 		// Extra validation
 		if (gitConfig.user.length <= 0) {
-			console.log(chalk.red('The passed in username is invald. Aborting.\n'));
+			console.log(chalk.red('✘  The passed in username is invald. Aborting.\n'));
 			process.exit(0);
 		}
 		if (gitConfig.repo.length <= 0) {
-			console.log(chalk.red('The passed in repository is invald. Aborting.\n'));
+			console.log(chalk.red('✘  The passed in repository is invald. Aborting.\n'));
 			process.exit(0);
 		}
 	}
@@ -942,7 +946,7 @@ function downloadBoilerplateFiles () {
 	ghdownload(gitConfig, tmpFolder)
 		// Let the user know when something went wrong
 		.on('error', function (error) {
-			console.log(chalk.red('An error occurred. Aborting.'), error);
+			console.log(chalk.red('✘  An error occurred. Aborting.'), error);
 			process.exit(0);
 		})
 		// Download succeeded
@@ -956,7 +960,7 @@ function downloadBoilerplateFiles () {
 			ncp(tmpFolder, cwd, function (err) {
 
 				if (err) {
-					console.log(chalk.red('Something went wrong. Please try again'), err);
+					console.log(chalk.red('✘  Something went wrong. Please try again'), err);
 					process.exit(0);
 				}
 
