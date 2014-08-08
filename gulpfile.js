@@ -542,10 +542,8 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 			injectItems.push(config.export_assets + '/assets/css/main*.css');
 			injectItems.push(config.export_assets + '/assets/css/view-' + viewBaseName + '*.css');
 
-			var debug = require('gulp-debug');
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
-				.pipe(plugins.if(viewBaseName === 'index', debug()))
 				.pipe(plugins.ignore.include(function (file) {
 
 					// Exclude filenames with "view-" not matching the current view
