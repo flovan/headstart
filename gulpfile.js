@@ -520,7 +520,8 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 				// Development gets raw base files 
 				injectItems = isProduction ?
 					[
-						config.export_assets + '/assets/js/core-libs*.min.js'
+						config.export_assets + '/assets/js/core-libs*.min.js',
+						config.export_assets + '/assets/js/view-' + viewBaseName + '*.min.js'
 					]
 					:
 					[
@@ -546,8 +547,10 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 			injectItems = gulp.src(injectItems)
 				.pipe(plugins.ignore.include(function (file) {
 
+					var fileBase = path.basename(file.path);
+
 					// Exclude filenames with "view-" not matching the current view
-					if (file.path.indexOf('view-') > -1 && file.path.indexOf('.js') > -1 && file.path.indexOf(viewBaseName) < 0) {
+					if (fileBase.indexOf('view-') > -1 && fileBase.indexOf('.js') > -1 && fileBase.indexOf(viewBaseName) < 0) {
 						return false;
 					}
 
