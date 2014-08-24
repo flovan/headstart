@@ -5,7 +5,7 @@
   "author": {
     "name": "Florian Vanthuyne",
     "email": "hello@flovan.me",
-    "url": "http://flovan.me"
+    "url": "http://headstart.io"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "browser-sync": "^1.3.3",
+    "browser-sync": "^1.3.6",
     "chalk": "^0.5.1",
     "github-download": "^0.3.0",
     "globule": "^0.2.0",
@@ -29,7 +29,7 @@
     "gulp-deporder": "^1.0.0",
     "gulp-if": "^1.2.4",
     "gulp-ignore": "^1.2.0",
-    "gulp-imagemin": "^0.6.2",
+    "gulp-imagemin": "^1.0.1",
     "gulp-inject": "^1.0.1",
     "gulp-jshint": "^1.8.4",
     "gulp-load-plugins": "^0.5.3",
@@ -38,7 +38,7 @@
     "gulp-newer": "^0.3.0",
     "gulp-plumber": "^0.6.4",
     "gulp-rename": "^1.2.0",
-    "gulp-rev": "^1.0.0",
+    "gulp-rev": "^1.1.0",
     "gulp-rev-outdated": "^0.0.6",
     "gulp-rimraf": "^0.1.0",
     "gulp-ruby-sass": "^0.5.0",
@@ -47,17 +47,19 @@
     "gulp-tap": "^0.1.1",
     "gulp-uglify": "^0.3.1",
     "gulp-uncss": "^0.4.5",
+    "gulp-util": "^3.0.0",
     "gulp-w3cjs": "^0.2.0",
     "gulp-watch": "^0.6.9",
     "inquirer": "^0.6.0",
     "jshint-stylish": "^0.4.0",
     "liftoff": "^0.12.0",
     "lodash": "^2.4.1",
-    "minimist": "0.2.0",
+    "minimist": "1.1.0",
     "ncp": "^0.6.0",
     "ngrok": "^0.1.97",
+    "node-progress": "git://github.com/visionmedia/node-progress#6b9524c0d07df9555d20ae95c65918020c50e3e2",
     "open": "0.0.5",
-    "psi": "git://github.com/addyosmani/psi#ec0d6f3e7630b8a51075e7e9bfceb52b12a023e8",
+    "psi": "^0.1.2",
     "run-sequence": "^0.3.6",
     "update-notifier": "^0.2.0"
   },

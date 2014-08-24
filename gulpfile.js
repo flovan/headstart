@@ -248,10 +248,14 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 				name: 'SCSS-MAIN',
 				silent: true
 			})
-				.pipe(plugins.plumber())
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
+		.pipe(plugins.plumber(function (err) {
+			// Do nothing, just adding plumber will make
+			// gulp-ruby-sass output the error 
+		}))
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
+		//.on('error', function (err) { console.log('an error', err); })
 		.pipe(plugins.if(config.combineMediaQueries, plugins.combineMediaQueries()))
 		.pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
@@ -895,12 +899,6 @@ gulp.task('psi', ['tunnel'], function (cb) {
 
 		cb(null);
 	});
-
-	// Since psi throw's the threshold error,
-	// we have to listen for it process-wide (bad!) — ONCE
-	process.once('uncaughtException', function (err) {
-		console.log(chalk.red(err));
-	});
 });
 
 // HELPER FUNCTIONS -----------------------------------------------------------
@@ -1044,14 +1042,26 @@ function verbose (msg) {
 	if(isVerbose) console.log(msg);
 }
 
-// Shhhhh gulp-utils, only dreams now
+// Mute all console logs outside of --verbose (gulp-util)
+// except for manually approved ones
 var cl = console.log;
 console.log = function () {
-    var args = Array.prototype.slice.call(arguments);
-    if (args.length && !isVerbose) {
-        if (/^\[.*\]$/.test(args[0])){
-            return;
-        }
-    }
-    return cl.apply(console, args);
+	var args = Array.prototype.slice.call(arguments);
+	if (args.length && !isVerbose) {
+		// Match the gulp-util logging pattern
+		// but allow gulp-ruby-sass
+		if (/^\[.*\]$/.test(args[0]) && !/^\[gulp-ruby-sass\]$/.test(args[1])) {
+			return;
+		}
+	}
+	return cl.apply(console, args);
 };
+
+// Same, but for console warns (gulp-sass-graph)
+var cw = console.warn;
+console.warn = function () {
+	if(!isVerbose) {
+		return;
+	}
+	return cw.apply(console, args);
+}
