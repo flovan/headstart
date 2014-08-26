@@ -47,7 +47,6 @@
     "gulp-tap": "^0.1.1",
     "gulp-uglify": "^0.3.1",
     "gulp-uncss": "^0.4.5",
-    "gulp-util": "^3.0.0",
     "gulp-w3cjs": "^0.2.0",
     "gulp-watch": "^0.6.9",
     "inquirer": "^0.6.0",
@@ -57,8 +56,8 @@
     "minimist": "1.1.0",
     "ncp": "^0.6.0",
     "ngrok": "^0.1.97",
-    "node-progress": "git://github.com/visionmedia/node-progress#6b9524c0d07df9555d20ae95c65918020c50e3e2",
     "open": "0.0.5",
+    "progress": "^1.1.8",
     "psi": "^0.1.2",
     "run-sequence": "^0.3.6",
     "update-notifier": "^0.2.0"
