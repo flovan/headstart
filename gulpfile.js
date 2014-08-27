@@ -169,8 +169,8 @@ gulp.task('build', function (cb) {
 				'other'
 			],
 			'templates',
-			'uncss-main',
 			'manifest',
+			'uncss',
 			function () {
 				console.log((isVerbose ? '' : '\n') + chalk.green('✔  Build complete'));
 				if(isServe) {
@@ -303,6 +303,38 @@ gulp.task('sass-ie', function (cb) {
 		)
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(gulp.dest(config.export_assets + '/assets/css/ie.min.css'))
+	;
+});
+
+// UNCSS ----------------------------------------------------------------------
+// 
+// Clean up unused CSS styles
+
+gulp.task('uncss', function (cb) {
+	
+	// Quit this task if not configured through config
+	if (!config.useUncss) {
+		updateBar();
+		cb(null);
+		return;
+	}
+
+	verbose(chalk.grey('☞  Running task "uncss-main"'));
+
+	// Grab all templates / partials / layout parts / etc
+	var templates = globule.find([config.export_templates + '/**/*.*']);
+
+	// Grab all css files and run them through Uncss, then overwrite
+	// the originals with the new ones
+	return gulp.src(config.export_assets + '/assets/css/*.css')
+		.pipe(plugins.bytediff.start())
+		.pipe(plugins.uncss({
+			html:   templates || [],
+			ignore: config.uncssIgnore || []
+		}))
+		.on('end', updateBar)
+		.pipe(plugins.bytediff.stop())
+		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 	;
 });
 
@@ -608,101 +640,6 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 				updateBar();
 				cb(null);
 			}
-		}))
-	;
-});
-
-// UNCSS ----------------------------------------------------------------------
-// 
-// Clean up unused CSS styles
-
-gulp.task('uncss-main', ['uncss-view'], function (cb) {
-	
-	// Quit this task if this isn't production mode
-	if(!isProduction || !config.useUncss) {
-		updateBar();
-		cb(null);
-		return;
-	}
-
-	verbose(chalk.grey('☞  Running task "uncss-main"'));
-
-	// Log that main stylesheet is being cleaned
-	console.log(chalk.grey('Parsing and cleaning main stylesheet...'));
-
-	// Grab all templates / partials / layout parts / etc
-	var templates = globule.find(['templates/**/*.*', '!_*']);
-
-	// Parse the main.scss file
-	return gulp.src(config.export_assets + '/assets/css/main' + (isProduction ? '.min' : '') + '.css')
-		.pipe(plugins.bytediff.start())
-		.pipe(plugins.uncss({
-			html:   templates || [],
-			ignore: config.uncssIgnore || []
-		}))
-		.pipe(plugins.bytediff.stop())
-		.pipe(gulp.dest(config.export_assets + '/assets/css'))
-		.on('end', updateBar)
-	;
-});
-
-gulp.task('uncss-view', function (cb) {
-	
-	// Quit this task if this isn't production mode
-	if(!isProduction || !config.useUncss) {
-		cb(null);
-		return;
-	}
-
-	verbose(chalk.grey('☞  Running task "uncss-view"'));
-
-	// Check for view-*.scss files and log that they are being cleaned
-	// or quit
-
-	var numViews = globule.find(config.export_assets + '/assets/css/view-*.css').length,
-		count = 0;
-
-	if(numViews) console.log(chalk.grey('Parsing and cleaning view stylesheet(s)...'));
-	else {
-		cb(null);
-		return;
-	}
-
-	// Parse the files
-	gulp.src(config.export_assets + '/assets/css/view-*.css')
-		.pipe(plugins.tap(function (file, t) {
-
-			var 
-				baseName =     path.basename(file.path),
-				nameParts =    baseName.split('.'),
-				viewBaseName = _.last(nameParts[0].split('view-')),
-
-				// Grab all templates that aren't root files
-				// aka views
-				templates =    globule.find([
-					'templates/**/*.*',
-					'!templates/*.*',
-					'templates/' + viewBaseName + '.*',
-					'!_*'
-				])
-			;
-
-			gulp.src(config.export_assets + '/assets/css/' + baseName)
-				.pipe(plugins.bytediff.start())
-				.pipe(plugins.uncss({
-					html: templates || [],
-					ignore: config.uncssIgnore || []
-				}))
-				.pipe(plugins.bytediff.stop())
-				.pipe(gulp.dest(config.export_assets + '/assets/css'))
-				.pipe(plugins.tap(function (file) {
-
-					// If this was the last file, end the task
-					if(count === numViews) cb(null);
-				}))
-			;
-
-			count = count + 1;
 		}))
 	;
 });
@@ -1069,19 +1006,24 @@ var cl = console.log;
 console.log = function () {
 	var args = Array.prototype.slice.call(arguments);
 	if (args.length && !isVerbose) {
-		if (/^\[.*\]$/.test(args[0]) && !/^\[gulp-ruby-sass\]$/.test(args[1])) {
-			return;
+		if (/^\[.*\]$/.test(args[0])) {
+			if (args.length > 1 && (!/^\[gulp-ruby-sass\]$/.test(args[1]) && args[1].indexOf('gulp') >= 0)) {
+				return;
+			}
 		}
 		
+		return cl.apply(console, args);
+	} else if (isVerbose) {
 		return cl.apply(console, args);
 	}
 };
 
 // Same, but for console warns (gulp-sass-graph)
-var cw = console.warn;
+/*var cw = console.warn;
 console.warn = function () {
 	if(!isVerbose) {
 		return;
 	}
 	return cw.apply(console, args);
 }
+*/
