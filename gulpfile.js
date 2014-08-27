@@ -44,6 +44,17 @@ var
 		external: null,
 		port:     null
 	},
+	htmlminOptions		= {
+		removeComments:                true,
+		collapseWhitespace:            true,
+		collapseBooleanAttributes:     true,
+		removeAttributeQuotes:         true,
+		useShortDoctype:               true,
+		removeScriptTypeAttributes:    true,
+		removeStyleLinkTypeAttributes: true,
+		minifyJS:                      true,
+		minifyCSS:                     true
+	},
 	isProduction        = ( flags.production || flags.p ) || false,
 	isServe             = ( flags.serve || flags.s ) || false,
 	isOpen              = ( flags.open || flags.o ) || false,
@@ -129,6 +140,11 @@ gulp.task('build', function (cb) {
 			process.exit(0);
 		}
 
+		// Allow customization of gulp-htmlmin through `config.json`
+		if (!_.isNull(config.htmlminOptions)) {
+			htmlminOptions = _.assign({}, htmlminOptions, config.htmlminOptions);
+		}
+
 		// Instantiate a progressbar when not in verbose mode
 		if (!isVerbose) {
 			bar = new ProgressBar(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'dev') + ' version [:bar] :percent done'), {
@@ -156,9 +172,10 @@ gulp.task('build', function (cb) {
 			'uncss-main',
 			'manifest',
 			function () {
-
-				console.log(chalk.green('✔  Build complete'));
-				gulp.start('server');
+				console.log((isVerbose ? '' : '\n') + chalk.green('✔  Build complete'));
+				if(isServe) {
+					gulp.start('server');
+				}
 				cb(null);
 			}
 		);
@@ -578,10 +595,7 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 					doctype: 'HTML5',
 					charset: 'utf-8'
 				})))
-				.pipe(plugins.if(config.minifyHTML, plugins.minifyHtml({
-					conditionals: true,
-					comments:     true
-				})))
+				.pipe(plugins.if(config.minifyHTML, plugins.htmlmin(htmlminOptions)))
 				.pipe(gulp.dest(config.export_templates))
 				.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 			;
@@ -1049,18 +1063,18 @@ function verbose (msg) {
 }
 
 // Mute all console logs outside of --verbose (gulp-util)
-// except for manually approved ones
+// except for manually approved ones being;
+// gulp-ruby-sass
 var cl = console.log;
 console.log = function () {
 	var args = Array.prototype.slice.call(arguments);
 	if (args.length && !isVerbose) {
-		// Match the gulp-util logging pattern
-		// but allow gulp-ruby-sass
 		if (/^\[.*\]$/.test(args[0]) && !/^\[gulp-ruby-sass\]$/.test(args[1])) {
 			return;
 		}
+		
+		return cl.apply(console, args);
 	}
-	return cl.apply(console, args);
 };
 
 // Same, but for console warns (gulp-sass-graph)
