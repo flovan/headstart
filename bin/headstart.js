@@ -10,15 +10,15 @@
 // part of this script
 
 var 
-	path				= require('path'),
-	fs					= require('fs'),
-	chalk				= require('chalk'),
-	_					= require('lodash'),
+	path                = require('path'),
+	fs                  = require('fs'),
+	chalk               = require('chalk'),
+	_                   = require('lodash'),
 
-	pkg					= require('../package.json'),
-	Liftoff				= require('liftoff'),
-	updateNotifier		= require('update-notifier'),
-	argv				= require('minimist')(process.argv.slice(2)),
+	pkg                 = require('../package.json'),
+	Liftoff             = require('liftoff'),
+	updateNotifier      = require('update-notifier'),
+	argv                = require('minimist')(process.argv.slice(2)),
 	gulp,
 	gulpFile
 ;
@@ -34,7 +34,7 @@ var cli = new Liftoff({
 //
 
 var notifier = updateNotifier({
-	packageName: pkg.name,
+	packageName:    pkg.name,
 	packageVersion: pkg.version
 });
 
@@ -62,12 +62,12 @@ cli.launch({}, launcher);
 function launcher (env) {
 
 	var 
-		versionFlag = argv.v || argv.version,
-		infoFlag = argv.i || argv.info || argv.h || argv.help,
+		versionFlag  = argv.v || argv.version,
+		infoFlag     = argv.i || argv.info || argv.h || argv.help,
 
 		allowedTasks = ['init', 'build'],
-		task = argv._,
-		numTasks = task.length
+		task         = argv._,
+		numTasks     = task.length
 	;
 
 	// Check for version flag
@@ -112,11 +112,11 @@ function launcher (env) {
 	}
 	
 	// Require gulp assets
-	gulp = require('gulp');
+	gulp     = require('gulp');
 	gulpFile = require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'));
 
 	// Start the task through Gulp
-	process.nextTick(function() {
+	process.nextTick(function () {
 		gulp.start.apply(gulp, [task]);
 	});
 }
