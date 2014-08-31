@@ -44,7 +44,7 @@ var
 		external: null,
 		port:     null
 	},
-	htmlminOptions		= {
+	htmlminOptions      = {
 		removeComments:                true,
 		collapseWhitespace:            true,
 		collapseBooleanAttributes:     true,
@@ -63,7 +63,8 @@ var
 	isTunnel            = ( flags.tunnel || flags.t ) || false,
 	tunnelUrl           = null,
 	isPSI               = flags.psi || false,
-	config, bar
+	config              = null,
+	bar                 = null
 ;
 
 // INIT -----------------------------------------------------------------------
@@ -147,9 +148,9 @@ gulp.task('build', function (cb) {
 
 		// Instantiate a progressbar when not in verbose mode
 		if (!isVerbose) {
-			bar = new ProgressBar(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'dev') + ' version [:bar] :percent done'), {
-				complete:   '=',
-				incomplete: '',
+			bar = new ProgressBar(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'development') + ' version [:bar] :percent done'), {
+				complete:   '#',
+				incomplete: '-',
 				//width:      44,
 				total:      8
 			});
@@ -258,17 +259,21 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 			// gulp-ruby-sass output the error 
 		}))
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
-		//.on('error', function (err) { console.log('an error', err); })
 		.pipe(plugins.if(config.combineMediaQueries, plugins.combineMediaQueries()))
 		.pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
+		.pipe(plugins.if(isProduction, plugins.minifyCss()))
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 		.on('data', function (cb) {
 
+			// If revisioning is on, run templates again so the refresh contains
+			// the newer stylesheet
 			if (lrStarted && config.revisionCaching) {
 				gulp.start('templates');
 			}
+
+			// Continue the stream
 			this.resume();
 		})
 		.on('end', updateBar)
@@ -324,6 +329,8 @@ gulp.task('uncss', function (cb) {
 	// Grab all templates / partials / layout parts / etc
 	var templates = globule.find([config.export_templates + '/**/*.*']);
 
+	console.log(templates);
+
 	// Grab all css files and run them through Uncss, then overwrite
 	// the originals with the new ones
 	return gulp.src(config.export_assets + '/assets/css/*.css')
@@ -332,8 +339,14 @@ gulp.task('uncss', function (cb) {
 			html:   templates || [],
 			ignore: config.uncssIgnore || []
 		}))
-		.on('end', updateBar)
-		.pipe(plugins.bytediff.stop())
+		.pipe(plugins.bytediff.stop(function (data) {
+			updateBar();
+
+			data.percent = Math.round(data.percent*100);
+			data.savings = Math.round(data.savings/1024);
+
+			return chalk.grey('☞  ' + data.fileName + ' is now ') + chalk.green(data.percent + '% ' + (data.savings > 0 ? 'smaller' : 'larger')) + chalk.grey(' (saved ' + data.savings + 'KB)');
+		}))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 	;
 });
@@ -1000,30 +1013,62 @@ function verbose (msg) {
 }
 
 // Mute all console logs outside of --verbose (gulp-util)
-// except for manually approved ones being;
-// gulp-ruby-sass
+// except for some
 var cl = console.log;
-console.log = function () {
-	var args = Array.prototype.slice.call(arguments);
-	if (args.length && !isVerbose) {
-		if (/^\[.*\]$/.test(args[0])) {
-			if (args.length > 1 && (!/^\[gulp-ruby-sass\]$/.test(args[1]) && args[1].indexOf('gulp') >= 0)) {
-				return;
+console.log = (function () {
+
+	var queue = [];
+
+	return function () {
+
+		var args = Array.prototype.slice.call(arguments);
+
+		if (args.length && !isVerbose) {
+			// If there is a queue and the bar is complete, output it
+			// and reset queue
+			if (!_.isNull(bar) && queue.length && bar.complete) {
+				_.each(queue, function (queueItem, key) {
+					cl.apply(console, [queueItem]);
+				});
+				queue = [];
 			}
+
+			// If the first argument matches [...] (gulp-util)
+			if (/^\[.*\]$/.test(args[0])) {
+				// Make sure there is a second argument before continuing
+				if (args.length > 1) {
+					// If not gulp-ruby sass and
+					// no customized output (gulp-bytediff),
+					// block it
+					if (!/^\[gulp-ruby-sass\]$/.test(args[1]) && args[1].indexOf('☞') < 0) {
+						return;
+					} else {
+						// Else, push and linebreak and the arg into queue
+						// This could be done more elegantly, but there is only
+						// one case where this would go through (gulp-uncss) and
+						// that module will be removed in v2.0
+						queue.push('\n');
+						queue.push(args[1]);
+						queue.push(chalk.yellow.inverse('Note: Uncss doesn\'t play well with Sass @extend and usually breaks a lot of things. This feature will be deprecated in the next major release (v2.0).'))
+						return;
+					}
+				} else {
+					return;
+				}
+			}
+			
+			return cl.apply(console, args);
+		} else if (isVerbose) {
+			return cl.apply(console, args);
 		}
-		
-		return cl.apply(console, args);
-	} else if (isVerbose) {
-		return cl.apply(console, args);
 	}
-};
+})();
 
 // Same, but for console warns (gulp-sass-graph)
-/*var cw = console.warn;
+var cw = console.warn;
 console.warn = function () {
 	if(!isVerbose) {
 		return;
 	}
 	return cw.apply(console, args);
 }
-*/

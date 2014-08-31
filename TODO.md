@@ -1,7 +1,6 @@
 ### TODO's:
 
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
-  - [ ] Properly test Uncss
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Dry out modules
 
@@ -11,7 +10,6 @@
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all, maybe https://www.npmjs.org/package/gulp-hash/ + https://www.npmjs.org/package/gulp-hash-references/)
   - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
   - [ ] See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)
-  - [ ] See if replacing all minifying modules with gulp-compressor makes things faster (https://www.npmjs.org/package/gulp-compressor/)
   - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
   - [ ] See if scripts tasks can be made faster with gulp-remember (https://github.com/ahaurw01/gulp-remember)
   - [ ] Maybe do something with icon fonts from SVG files (https://www.npmjs.org/package/gulp-fontcustom/ or https://github.com/nfroidure/gulp-iconfont or https://github.com/nfroidure/gulp-svgicons2svgfont)
@@ -21,8 +19,6 @@
   - [ ] Try having critical css inlined (http://css-tricks.com/authoring-critical-fold-css/ & https://github.com/pocketjoso/penthouse/#as-a-node-module OR https://github.com/filamentgroup/criticalcss)
   - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
   - [ ] Split up gulpfile into task files (https://github.com/whitneyit/gulp-taskify or https://www.npmjs.org/package/gulp-hub/)
-  - [ ] Use a different minifier (https://www.npmjs.org/package/gulp-compressor/ or https://www.npmjs.org/package/gulp-minifier/)
-  - [ ] Check out csscss (https://www.npmjs.org/package/gulp-csscss/)
   - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
 
 
@@ -49,3 +45,6 @@
   - [x] Put Liftoff logo on website (https://www.npmjs.org/package/liftoff)
   - [x] Make HTML minifier options configurable through `config.json`
   - [x] Properly test gulp-combine-media-queries (Result: saves a few KB's, enabling by default in boilerplate v1.1.1)
+  - [ ] ~~Use a different minifier (https://www.npmjs.org/package/gulp-compressor/ or https://www.npmjs.org/package/gulp-minifier/)~~
+  - [ ] ~~Check out csscss (https://www.npmjs.org/package/gulp-csscss/)~~
+  - [x] Properly test Uncss
