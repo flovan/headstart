@@ -7,9 +7,8 @@
 ## Documentation
 
   - [Getting started][getting-started-url]
-  - [HTML Guide][html-guide-url]
-  - [CSS Guide][css-guide-url]
-  - [JS Guide][js-guide-url]
+  - [Base Setup][base-setup-url]
+  - [Upgrading][ugrading-url]
 
 ## ♥ Feedback
 
@@ -21,18 +20,14 @@ This is a one-man project, so some approaches might be personated. Nevertheless,
 
 ## Updates
 
-For all updates, follow [@headstartio][twitter-url] on Twitter.
+For all updates, follow [@headstartio][twitter-url] on Twitter.  
 Changes can be found on [the changelog page][changelog-url].
 
-Want to upgrade? Check out [the upgrading page][ugrading-url] for more details.
-
 [website-url]: http://headstart.io
-[getting-started-url]: http://www.headstart.io/getting-started.html
-[html-guide-url]: http://www.headstart.io/html-guide.html
-[css-guide-url]: http://www.headstart.io/css-guide.html
-[js-guide-url]: http://www.headstart.io/js-guide.html
-[changelog-url]: http://www.headstart.io/changelog.html
-[ugrading-url]: http://www.headstart.io/upgrading.html
+[getting-started-url]: http://headstart.io/installation
+[base-setup-url]: http://headstart.io/base-setup
+[changelog-url]: http://www.headstart.io/changelog
+[ugrading-url]: http://headstart.io/upgrading-guide
 [twitter-url]: https://twitter.com/headstartio
 [issues-url]: https://github.com/flovan/headstart/issues
 [npm-url]: https://npmjs.org/package/headstart
