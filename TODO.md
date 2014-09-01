@@ -3,6 +3,8 @@
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Dry out modules
+  - [ ] Remove ender and underscore map from underscore.js
+  - [ ] Pass gulp-ruby-sass errors instead of uncss notification
 
 ### A list of things to explore:
 
