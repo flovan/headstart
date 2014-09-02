@@ -329,8 +329,6 @@ gulp.task('uncss', function (cb) {
 	// Grab all templates / partials / layout parts / etc
 	var templates = globule.find([config.export_templates + '/**/*.*']);
 
-	console.log(templates);
-
 	// Grab all css files and run them through Uncss, then overwrite
 	// the originals with the new ones
 	return gulp.src(config.export_assets + '/assets/css/*.css')
@@ -1043,14 +1041,31 @@ console.log = (function () {
 					if (!/^\[gulp-ruby-sass\]$/.test(args[1]) && args[1].indexOf('☞') < 0) {
 						return;
 					} else {
-						// Else, push and linebreak and the arg into queue
+						// If not gulp-ruby-sass, push some stuff to que queue
 						// This could be done more elegantly, but there is only
 						// one case where this would go through (gulp-uncss) and
 						// that module will be removed in v2.0
-						queue.push('\n');
-						queue.push(args[1]);
-						queue.push(chalk.yellow.inverse('Note: Uncss doesn\'t play well with Sass @extend and usually breaks a lot of things. This feature will be deprecated in the next major release (v2.0).'))
-						return;
+						if (!/^\[gulp-ruby-sass\]$/.test(args[1])) {
+							queue.push(
+								'\n',
+								chalk.yellow.inverse('Note: Uncss doesn\'t play well with Sass @extend and usually breaks a lot of things. This feature will be deprecated in the next major release (v2.0).') + '\n',
+								args[1]
+							);
+
+							return;
+						} else {
+							// Color the gulp-ruby-sass error red
+							args[2] = chalk.red(args[2]);
+
+							// If the bar hasn't completed yet, push into the queue
+							// This will only happen when starting Headstart while
+							// an error is already present
+							if (_.isUndefined(bar.complete) || !bar.complete) {
+								args.unshift('\n');
+								queue = queue.concat(args);
+								return;
+							}
+						}
 					}
 				} else {
 					return;
