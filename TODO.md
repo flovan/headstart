@@ -5,6 +5,8 @@
   - [ ] Dry out modules
   - [ ] Remove ender and underscore map from underscore.js
   - [ ] Pass gulp-ruby-sass errors instead of uncss notification
+  - [ ] Turn aliasing into state, and extend to doc/button/form module
+  - [ ] Fix url in update notice
 
 ### A list of things to explore:
 
