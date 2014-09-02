@@ -3,9 +3,6 @@
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Dry out modules
-  - [ ] Remove ender and underscore map from underscore.js
-  - [ ] Turn aliasing into state, and extend to doc/button/form module
-  - [ ] Fix url in update notice
 
 ### A list of things to explore:
 
@@ -53,3 +50,7 @@
   - [ ] ~~Check out csscss (https://www.npmjs.org/package/gulp-csscss/)~~
   - [x] Properly test Uncss
   - [x] Pass gulp-ruby-sass errors instead of uncss notification
+  - [x] Remove ender and underscore map from underscore.js
+  - [x] Turn aliasing into state, and extend to doc/button/form module
+  - [x] Fix url in update notice
+  
