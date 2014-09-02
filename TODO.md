@@ -24,6 +24,7 @@
   - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
   - [ ] Split up gulpfile into task files (https://github.com/whitneyit/gulp-taskify or https://www.npmjs.org/package/gulp-hub/)
   - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
+  - [ ] Drop `open` in favour of opening the browser through `browsersync`
 
 
   ### Take a look at these plugins also
