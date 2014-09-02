@@ -48,7 +48,7 @@ if (notifier.update) {
 		chalk.yellow('|\n|') +
 		chalk.white(' Instructions can be found on:            ') +
 		chalk.yellow('|\n|') +
-		chalk.magenta(' http://www.headstart.io/upgrading.html   ') +
+		chalk.magenta(' http://headstart.io/upgrading-guide   ') +
 		chalk.yellow('|\n') +
 		chalk.yellow('└──────────────────────────────────────────┘\n')
 	);
