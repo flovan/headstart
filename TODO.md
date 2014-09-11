@@ -3,6 +3,7 @@
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Dry out modules
+  - [ ] Fix jshint logs appearing in the middle of the progressbar
 
 ### A list of things to explore:
 
