@@ -156,7 +156,7 @@ gulp.task('build', function (cb) {
 			});
 			updateBar();
 		} else {
-			console.log(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'dev') + ' version...'));
+			console.log(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'development') + ' version...'));
 		}
 
 		// Run build tasks
@@ -471,24 +471,16 @@ gulp.task('images', function (cb) {
 
 	// Grab all image files, filter out the new ones and copy over
 	// In --production mode, optimize them first
-	gulp.src([
+	return gulp.src([
 			'assets/images/**/*',
 			'!_*'
 		])
 		.pipe(plugins.newer(config.export_assets + '/assets/images'))
-		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }).on('end', function () {
-			updateBar();
-			cb(null);
-		})))
+		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
 		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets/images'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
-
-	// When making a dev build, call the end of this task manually
-	if (!isProduction) {
-		cb(null);
-	}
 });
 
 // OTHER ----------------------------------------------------------------------
