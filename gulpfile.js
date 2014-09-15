@@ -731,8 +731,9 @@ gulp.task('browsersync', function (cb) {
 		},
 		logConnections: false,
 		debugInfo:      false,
-		browser:        'none'
-	}, function ( err, data) {
+		browser:        'none',
+		port:           config.port || 3000
+	}, function (err, data) {
 
 		if (err !== null) {
 			console.log(
