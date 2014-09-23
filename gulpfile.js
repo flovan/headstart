@@ -1063,6 +1063,12 @@ console.log = (function () {
 				} else {
 					return;
 				}
+			} else {
+				if (/[^/n]$/.test(args[0]) && args[0].indexOf('.js') > -1) {
+					// Catch JSHint errors and push them into the queue
+					queue.push(args[0]);
+					return;
+				}
 			}
 			
 			return cl.apply(console, args);
