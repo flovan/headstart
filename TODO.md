@@ -1,7 +1,5 @@
 ### TODO's:
 
-  - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
-  - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Dry out modules
   - [ ] Fix jshint logs appearing in the middle of the progressbar
 
@@ -23,6 +21,8 @@
   - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
   - [ ] Drop `open` in favour of opening the browser through `browsersync`
   - [ ] Replace Ender by Cash when it gets out of alpha (https://github.com/kenwheeler/cash)
+  - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
+  - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
 
 
   ### Take a look at these plugins also
