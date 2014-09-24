@@ -151,7 +151,6 @@ gulp.task('build', function (cb) {
 			bar = new ProgressBar(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'development') + ' version [:bar] :percent done'), {
 				complete:   '#',
 				incomplete: '-',
-				//width:      44,
 				total:      8
 			});
 			updateBar();
@@ -303,7 +302,10 @@ gulp.task('sass-ie', function (cb) {
 				name:       'SCSS-IE',
 				silent:     true
 			})
-				.pipe(plugins.plumber())
+				.pipe(plugins.plumber(function (err) {
+					// Do nothing, just adding plumber will make
+					// gulp-ruby-sass output the error 
+				}))
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
@@ -591,6 +593,7 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
+				.pipe(plugins.plumber())
 				.pipe(plugins.ignore.include(function (file) {
 
 					var fileBase = path.basename(file.path);
@@ -727,13 +730,14 @@ gulp.task('browsersync', function (cb) {
 
 	// Serve files and connect browsers
 	browserSync.init(null, {
-		server:         {
-			baseDir: config.export_templates
-		},
+		server:         _.isUndefined(config.proxy) ? {
+							baseDir: config.export_templates
+						} : false,
 		logConnections: false,
 		debugInfo:      false,
 		browser:        'none',
-		port:           config.port || 3000
+		port:           config.port || 3000,
+		proxy:          config.proxy || false
 	}, function (err, data) {
 
 		if (err !== null) {
@@ -745,8 +749,6 @@ gulp.task('browsersync', function (cb) {
 		}
 
 		// Store started state globally
-		connection.external = data.options.external;
-		connection.port     = data.options.port;
 		lrStarted           = true;
 
 		// Sass watch is integrated into task with a switch
@@ -755,8 +757,8 @@ gulp.task('browsersync', function (cb) {
 		gulp.start('sass-ie');
 
 		// Show some logs
-		console.log(chalk.cyan('🌐  Local access at'), chalk.magenta('http://localhost:' + connection.port));
-		console.log(chalk.cyan('🌐  Network access at'), chalk.magenta('http://' + connection.external + ':' + connection.port));
+		console.log(chalk.cyan('🌐  Local access at'), chalk.magenta(data.options.urls.local));
+		console.log(chalk.cyan('🌐  Network access at'), chalk.magenta(data.options.urls.external));
 
 		// Process flags
 		if (isOpen) openBrowser();
