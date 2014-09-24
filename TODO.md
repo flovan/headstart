@@ -3,7 +3,8 @@
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Dry out modules
-  - [ ] Fix jshint logs appearing in the middle of the progressbar
+  - [ ] A build starting with a Sass error will result in pages without (a) css file(s)
+  - [ ] Fix crash when missing `// requires` file is found 
 
 ### A list of things to explore:
 
@@ -23,6 +24,7 @@
   - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
   - [ ] Drop `open` in favour of opening the browser through `browsersync`
   - [ ] Replace Ender by Cash when it gets out of alpha (https://github.com/kenwheeler/cash)
+  - [ ] Check out HeadJS (http://headjs.com)
 
 
   ### Take a look at these plugins also
@@ -55,4 +57,5 @@
   - [x] Remove ender and underscore map from underscore.js
   - [x] Turn aliasing into state, and extend to doc/button/form module
   - [x] Fix url in update notice
+  - [x] Fix jshint logs appearing in the middle of the progressbar
   

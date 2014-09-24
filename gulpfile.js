@@ -307,7 +307,8 @@ gulp.task('sass-ie', function (cb) {
 				.pipe(plugins.sassGraph(['assets/sass']))
 		)
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
-		.pipe(gulp.dest(config.export_assets + '/assets/css/ie.min.css'))
+		.pipe(plugins.rename({suffix: '.min'}))
+		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 	;
 });
 
