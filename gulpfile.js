@@ -16,11 +16,9 @@ var
 	sequence            = require('run-sequence'),
 	ProgressBar         = require('progress'),
 	stylish             = require('jshint-stylish'),
-	open                = require('open'),
 	ghdownload          = require('github-download'),
 	browserSync         = require('browser-sync'),
 	psi                 = require('psi'),
-	ngrok               = require('ngrok'),
 	gulp                = require('gulp'),
 	plugins             = require('gulp-load-plugins')({
 		config: path.join(__dirname, 'package.json')
@@ -728,6 +726,11 @@ gulp.task('browsersync', function (cb) {
 	
 	verbose(chalk.grey('☞  Running task "browsersync"'));
 
+	// Grab the event emitter and add some listeners
+	var evt = browserSync.emitter;
+	evt.on('init', bsInitHandler);
+	evt.on('service:running', bsRunningHandler);
+
 	// Serve files and connect browsers
 	browserSync.init(null, {
 		server:         _.isUndefined(config.proxy) ? {
@@ -735,11 +738,14 @@ gulp.task('browsersync', function (cb) {
 						} : false,
 		logConnections: false,
 		debugInfo:      false,
-		browser:        'none',
+		browser:        isOpen ? (config.browser || 'none') : 'none',
 		port:           config.port || 3000,
-		proxy:          config.proxy || false
+		proxy:          config.proxy || false,
+		tunnel:         isTunnel || null
 	}, function (err, data) {
 
+		// Use this callback to catch errors, which aren't transmitted
+		// through `init`
 		if (err !== null) {
 			console.log(
 				chalk.red('✘  Setting up a local server failed... Please try again. Aborting.\n') +
@@ -747,82 +753,18 @@ gulp.task('browsersync', function (cb) {
 			);
 			process.exit(0);
 		}
-
-		// Store started state globally
-		lrStarted           = true;
-
-		// Sass watch is integrated into task with a switch
-		// based on the flag above
-		gulp.start('sass-main');
-		gulp.start('sass-ie');
-
-		// Show some logs
-		console.log(chalk.cyan('🌐  Local access at'), chalk.magenta(data.options.urls.local));
-		console.log(chalk.cyan('🌐  Network access at'), chalk.magenta(data.options.urls.external));
-
-		// Process flags
-		if (isOpen) openBrowser();
-		if (isEdit) openEditor();
-		if (isTunnel) gulp.start('tunnel');
-		if (isPSI) {
-			isTunnel = true;
-			gulp.start('psi');
-		}
 	});
 
 	cb(null);
 });
 
-// NGROK ----------------------------------------------------------------------
-//
-// https://ngrok.com
-
-gulp.task('tunnel', function (cb) {
-
-	// Quit this task if no flag was set or if the url is already set to
-	// prevent a "task completion callback called too many times" error
-	if(!isTunnel || tunnelUrl !== null) {
-		cb(null);
-		return;
-	}
-
-	console.log(chalk.grey('☞  Tunneling local server to the web...'));
-	verbose(chalk.grey('☞  Running task "tunnel"'));
-
-	// Expose local server to web through tunnel
-	// with Ngrok
-	ngrok.connect(connection.port, function (err, url) {
-
-		// If there was an error, log it and exit
-		if (err !== null) {
-			console.log(
-				chalk.red('✘  Tunneling failed, please try again. Aborting.\n') +
-				chalk.red(err)
-			);
-			process.exit(0);
-		}
-
-		tunnelUrl = url;
-		console.log(chalk.cyan('🌐  Public access at'), chalk.magenta(tunnelUrl));
-
-		cb(null);
-	});
-});
-
 // PAGESPEED INSIGHTS ---------------------------------------------------------
 //
 
-gulp.task('psi', ['tunnel'], function (cb) {
+gulp.task('psi', function (cb) {
 
 	// Quit this task if no flag was set
 	if(!isPSI) {
-		cb(null);
-		return;
-	}
-
-	// Quit this task if ngrok somehow didn't run correctly
-	if(tunnelUrl === null) {
-		console.log(chalk.red('✘  Running PSI cancelled because Ngrok didn\'t initiate correctly...'));
 		cb(null);
 		return;
 	}
@@ -980,14 +922,47 @@ function updateBar () {
 	}
 }
 
-// Open served files in browser
-function openBrowser () {
+// Browser Sync `init` event handler
+function bsInitHandler (data) {
 
-	console.log(
-		chalk.cyan('☞  Opening in'),
-		chalk.magenta(config.browser)
-	);
-	open('http://' + connection.local + ':' + connection.port, config.browser);
+	// Store started state globally
+	lrStarted           = true;
+
+	// Sass watch is integrated into task with a switch
+	// based on the flag above
+	gulp.start('sass-main');
+	gulp.start('sass-ie');
+
+	if (isOpen) {
+		console.log(
+			chalk.cyan('☞  Opening in'),
+			chalk.magenta(config.browser)
+		);
+	}
+
+	// Show some logs
+	console.log(chalk.cyan('🌐  Local access at'), chalk.magenta(data.options.urls.local));
+	console.log(chalk.cyan('🌐  Network access at'), chalk.magenta(data.options.urls.external));
+
+	// Open an editor if needed
+	if (isEdit) {
+		openEditor();
+	}
+}
+
+// Browser Sync `service:running event handler
+function bsRunningHandler (data) {
+
+	if (data.tunnel) {
+		tunnelUrl = data.tunnel;
+		console.log(chalk.cyan('🌐  Public access at'), chalk.magenta(tunnelUrl));
+
+		if (isPSI) {
+			gulp.start('psi');
+		}
+	} else if (isPSI) {
+		console.log(chalk.red('✘  Running PSI cannot be started without a tunnel. Please restart Headstart with the `--tunnel` or `t` flag.'));
+	}
 }
 
 // Open files in editor
