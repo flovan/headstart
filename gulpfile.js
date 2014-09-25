@@ -502,7 +502,7 @@ gulp.task('other', ['misc'], function (cb) {
 			'!_*'
 		])
 		.pipe(plugins.plumber())
-		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
+		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(gulp.dest(config.export_assets + '/assets'))
 		.on('end', updateBar)
 	;
