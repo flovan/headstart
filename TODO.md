@@ -1,9 +1,9 @@
 ### TODO's:
 
-  - [ ] Dry out modules
   - [ ] A build starting with a Sass error will result in pages without (a) css file(s)
   - [ ] Fix crash when missing `// requires` file is found 
-  - [ ] Drop `open` in favour of opening the browser through `browsersync`
+  - [ ] Adding new view js files doesn't seem to add them to gaze
+  - [ ] Disable (and warn about disabling of) w3c validation when not ".html"
 
 ### A list of things to explore:
 
@@ -58,4 +58,6 @@
   - [x] Turn aliasing into state, and extend to doc/button/form module
   - [x] Fix url in update notice
   - [x] Fix jshint logs appearing in the middle of the progressbar
+  - [x] Dry out modules
+  - [x] Drop `open` in favour of opening the browser through `browsersync`
   

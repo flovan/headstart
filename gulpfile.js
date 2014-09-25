@@ -170,7 +170,7 @@ gulp.task('build', function (cb) {
 			'manifest',
 			'uncss',
 			function () {
-				console.log((isVerbose ? '' : '\n') + chalk.green('✔  Build complete'));
+				console.log(chalk.green('✔  Build complete'));
 				if(isServe) {
 					gulp.start('server');
 				}
@@ -634,17 +634,22 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 				})))
 				.pipe(plugins.if(config.minifyHTML, plugins.htmlmin(htmlminOptions)))
 				.pipe(gulp.dest(config.export_templates))
-				.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
+				.on('end', function () {
+					// Since above changes are made in a tapped stream
+					// We have to count to make sure everything is parsed
+					count = count + 1;
+					if (count == numTemplates) {
+						// Reload when serving
+						if (lrStarted) {
+							browserSync.reload(/*{stream:true}*/);
+						}
+						// Update the loadbar
+						updateBar();
+						// Report the end of this task
+						cb(null);
+					}
+				})
 			;
-
-			// Since above changes are made in a tapped stream
-			// We have to count to make sure everything is parsed
-			// before continuing the build task
-			count = count + 1;
-			if (count == numTemplates) {
-				updateBar();
-				cb(null);
-			}
 		}))
 	;
 });
