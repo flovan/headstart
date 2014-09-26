@@ -4,6 +4,7 @@
   - [ ] Fix crash when missing `// requires` file is found 
   - [ ] Adding new view js files doesn't seem to add them to gaze
   - [ ] Disable (and warn about disabling of) w3c validation when not ".html"
+  - [ ] Re-add `open` because openEditor won't work otherwise..
 
 ### A list of things to explore:
 
