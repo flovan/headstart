@@ -237,20 +237,12 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
-	return ( !lrStarted ?
-			gulp.src([
+	return gulp.src([
 				'assets/sass/*.{scss, sass, css}',
 				'!assets/sass/*ie.{scss, sass, css}'
 			])
-			:
-			plugins.watch({
-				glob:       'assets/sass/**/*.{scss, sass, css}',
-				emitOnGlob: false,
-				name:       'SCSS-MAIN',
-				silent:     true
-			})
-				.pipe(plugins.sassGraph(['assets/sass']))
-		)
+		.pipe(plugins.watch('assets/sass/**/*.{scss, sass, css}', { name: 'SCSS-MAIN' }))
+		.pipe(plugins.if(lrStarted, plugins.sassGraph(['assets/sass'])))
 		.pipe(plugins.plumber(function (err) {
 			// Do nothing, just adding plumber will make
 			// gulp-ruby-sass output the error 
@@ -289,23 +281,15 @@ gulp.task('sass-ie', function (cb) {
 
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
-	return ( !lrStarted ?
-			gulp.src([
+	return gulp.src([
 				'assets/sass/ie.{scss, sass, css}'
 			])
-			:
-			plugins.watch({
-				glob:       'assets/sass/**/ie.{scss, sass, css}',
-				emitOnGlob: false,
-				name:       'SCSS-IE',
-				silent:     true
-			})
-				.pipe(plugins.plumber(function (err) {
-					// Do nothing, just adding plumber will make
-					// gulp-ruby-sass output the error 
-				}))
-				.pipe(plugins.sassGraph(['assets/sass']))
-		)
+		.pipe(plugins.watch('assets/sass/**/ie.{scss, sass, css}', { name: 'SCSS-IE' }))
+		.pipe(plugins.plumber(function (err) {
+			// Do nothing, just adding plumber will make
+			// gulp-ruby-sass output the error 
+		}))
+		.pipe(plugins.if(lrStarted, plugins.sassGraph(['assets/sass'])))
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(plugins.rename({suffix: '.min'}))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
@@ -691,21 +675,11 @@ gulp.task('server', ['browsersync'], function (cb) {
 
 	// JS specific watches to also detect removing/adding of files
 	// Note: Will also run the HTML task again to update the linked files
-	plugins.watch({
-		glob:       ['assets/js/**/view-*.js'],
-		emitOnGlob: false,
-		name:       'JS-VIEW',
-		silent:     true
-	}, function() {
+	plugins.watch('assets/js/**/view-*.js', { name: 'JS-VIEW' }, function() {
 		sequence('scripts-view', 'templates');
 	});
 
-	plugins.watch({
-		glob:       ['assets/js/**/*.js', '!**/view-*.js'],
-		emitOnGlob: false,
-		name:       'JS-MAIN',
-		silent:     true
-	}, function() {
+	plugins.watch(['assets/js/**/*.js', '!**/view-*.js'], { name: 'JS-MAIN' }, function() {
 		sequence('scripts-main', 'scripts-ie', 'templates');
 	});
 
@@ -715,12 +689,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 	});
 
 	// Watch templates and call its task
-	plugins.watch({
-		glob:       ['templates/**/*'],
-		emitOnGlob: false,
-		name:       'TEMPLATE',
-		silent:     true
-	}, function() {
+	plugins.watch('templates/**/*', {name: 'TEMPLATE'}, function() {
 		sequence('templates');
 	});
 
@@ -988,7 +957,7 @@ function verbose (msg) {
 
 // Mute all console logs outside of --verbose (gulp-util)
 // except for some
-var cl = console.log;
+/*var cl = console.log;
 console.log = (function () {
 
 	var queue = [];
@@ -1059,13 +1028,13 @@ console.log = (function () {
 			return cl.apply(console, args);
 		}
 	}
-})();
+})();*/
 
 // Same, but for console warns (gulp-sass-graph)
-var cw = console.warn;
+/*var cw = console.warn;
 console.warn = function () {
 	if(!isVerbose) {
 		return;
 	}
 	return cw.apply(console, args);
-}
+}*/
