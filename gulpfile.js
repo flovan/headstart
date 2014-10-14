@@ -16,6 +16,7 @@ var
 	sequence            = require('run-sequence'),
 	ProgressBar         = require('progress'),
 	stylish             = require('jshint-stylish'),
+	open                = require('open'),
 	ghdownload          = require('github-download'),
 	browserSync         = require('browser-sync'),
 	psi                 = require('psi'),
@@ -36,12 +37,8 @@ var
 	},
 	cwd                 = process.cwd(),
 	tmpFolder           = '.tmp',
+	stdoutBuffer        = [],
 	lrStarted           = false,
-	connection          = {
-		local:    'localhost',
-		external: null,
-		port:     null
-	},
 	htmlminOptions      = {
 		removeComments:                true,
 		collapseWhitespace:            true,
@@ -64,6 +61,62 @@ var
 	config              = null,
 	bar                 = null
 ;
+
+// LOGGING --------------------------------------------------------------------
+//
+
+if (!isVerbose) {
+	// To get a better grip on logging by either gulp-util, console.log or direct
+	// writing to process.stdout, a hook is applied to stdout when not running
+	// in --vebose mode
+	require('./lib/hook.js')(process.stdout).hook('write', function (msg, encoding, fd, write) {
+
+		// Validate message
+		msg = validForWrite(msg);
+
+		// If the message is not suited for output, block it
+		if (!msg) {
+			return;
+		}
+
+		if (msg.length === 1) return;
+		
+		// There is no progress bar, so just write
+		if (_.isNull(bar)) {
+			write(msg);
+			return;
+		}
+		
+		// There is a progress bar, but it hasn't completed yet, so buffer
+		if (!bar.complete) {
+			stdoutBuffer.push(msg);
+			return;
+		}
+
+		// There is a buffer, prepend a newline to the array
+		if(stdoutBuffer.length) {
+			stdoutBuffer.unshift('\n');
+		}
+
+		// Write out the buffer untill its empty
+		while (stdoutBuffer.length) {
+			write(stdoutBuffer.shift());
+		}
+
+		// Finally, just write out
+		write(msg);
+	});
+
+	// Map console.warn to console.log to make sure gulp-sassgraph errors
+	// get validated by the code above
+	/*console.warn = console.log; /*function () {
+
+		var args = Array.prototype.slice.call(arguments);
+		console.error('passing this to console.log: ', args);
+		console.log.apply(console, args);
+	}*/
+
+}
 
 // INIT -----------------------------------------------------------------------
 //
@@ -123,7 +176,7 @@ gulp.task('init', function (cb) {
 gulp.task('build', function (cb) {
 
 	// Load the config.json file
-	console.log(chalk.grey('\n☞  Loading config.json...'));
+	console.log(chalk.grey('\nLoading config.json...'));
 	fs.readFile('config.json', 'utf8', function (err, data) {
 
 		if (err) {
@@ -146,14 +199,14 @@ gulp.task('build', function (cb) {
 
 		// Instantiate a progressbar when not in verbose mode
 		if (!isVerbose) {
-			bar = new ProgressBar(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'development') + ' version [:bar] :percent done'), {
+			bar = new ProgressBar(chalk.grey('Building ' + (isProduction ? 'production' : 'development') + ' version [:bar] :percent done'), {
 				complete:   '#',
 				incomplete: '-',
 				total:      8
 			});
 			updateBar();
 		} else {
-			console.log(chalk.grey('☞  Building ' + (isProduction ? 'production' : 'development') + ' version...'));
+			console.log(chalk.grey('Building ' + (isProduction ? 'production' : 'development') + ' version...'));
 		}
 
 		// Run build tasks
@@ -170,7 +223,7 @@ gulp.task('build', function (cb) {
 			'manifest',
 			'uncss',
 			function () {
-				console.log(chalk.green('✔  Build complete'));
+				console.log(chalk.green('\n✔  Build complete'));
 				if(isServe) {
 					gulp.start('server');
 				}
@@ -213,7 +266,7 @@ gulp.task('clean-tmp', function (cb) {
 
 gulp.task('clean-rev', function (cb) {
 
-	verbose(chalk.grey('☞  Running task "clean-rev"'));
+	verbose(chalk.grey('Running task "clean-rev"'));
 
 	// Clean all revision files but the latest ones
 	return gulp.src(config.export_assets + '/assets/**/*.*', {read: false})
@@ -228,25 +281,19 @@ gulp.task('clean-rev', function (cb) {
 
 gulp.task('sass-main', ['sass-ie'], function (cb) {
 
-	verbose(chalk.grey('☞  Running task "sass-main"'));
-	
-	// Continuous watch never ends, so end it manually
-	if (lrStarted) {
-		cb(null);
-	}
+	// Flag to catch empty streams
+	// https://github.com/floatdrop/gulp-watch/issues/87
+	var isEmptyStream = true;
 
+	verbose(chalk.grey('Running task "sass-main"'));
+	
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return gulp.src([
 				'assets/sass/*.{scss, sass, css}',
 				'!assets/sass/*ie.{scss, sass, css}'
 			])
-		.pipe(plugins.watch('assets/sass/**/*.{scss, sass, css}', { name: 'SCSS-MAIN' }))
-		.pipe(plugins.if(lrStarted, plugins.sassGraph(['assets/sass'])))
-		.pipe(plugins.plumber(function (err) {
-			// Do nothing, just adding plumber will make
-			// gulp-ruby-sass output the error 
-		}))
+		.pipe(plugins.plumber())
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(plugins.if(config.combineMediaQueries, plugins.combineMediaQueries()))
 		.pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
@@ -271,25 +318,19 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 });
 
 gulp.task('sass-ie', function (cb) {
-	
-	verbose(chalk.grey('☞  Running task "sass-ie"'));
-	
-	// Continuous watch never ends, so end it manually
-	if (lrStarted) {
-		cb(null);
-	}
 
+	// Flag to catch empty streams
+	// https://github.com/floatdrop/gulp-watch/issues/87
+	var isEmptyStream = true;
+	
+	verbose(chalk.grey('Running task "sass-ie"'));
+	
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return gulp.src([
-				'assets/sass/ie.{scss, sass, css}'
+				'assets/sass/*ie.{scss, sass, css}'
 			])
-		.pipe(plugins.watch('assets/sass/**/ie.{scss, sass, css}', { name: 'SCSS-IE' }))
-		.pipe(plugins.plumber(function (err) {
-			// Do nothing, just adding plumber will make
-			// gulp-ruby-sass output the error 
-		}))
-		.pipe(plugins.if(lrStarted, plugins.sassGraph(['assets/sass'])))
+		.pipe(plugins.plumber())
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(plugins.rename({suffix: '.min'}))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
@@ -309,7 +350,7 @@ gulp.task('uncss', function (cb) {
 		return;
 	}
 
-	verbose(chalk.grey('☞  Running task "uncss-main"'));
+	verbose(chalk.grey('Running task "uncss-main"'));
 
 	// Grab all templates / partials / layout parts / etc
 	var templates = globule.find([config.export_templates + '/**/*.*']);
@@ -328,7 +369,7 @@ gulp.task('uncss', function (cb) {
 			data.percent = Math.round(data.percent*100);
 			data.savings = Math.round(data.savings/1024);
 
-			return chalk.grey('☞  ' + data.fileName + ' is now ') + chalk.green(data.percent + '% ' + (data.savings > 0 ? 'smaller' : 'larger')) + chalk.grey(' (saved ' + data.savings + 'KB)');
+			return chalk.grey('' + data.fileName + ' is now ') + chalk.green(data.percent + '% ' + (data.savings > 0 ? 'smaller' : 'larger')) + chalk.grey(' (saved ' + data.savings + 'KB)');
 		}))
 		.pipe(gulp.dest(config.export_assets + '/assets/css'))
 	;
@@ -346,7 +387,7 @@ gulp.task('hint-scripts', function (cb) {
 		return;
 	}
 	
-	verbose(chalk.grey('☞  Running task "hint-scripts"'));
+	verbose(chalk.grey('Running task "hint-scripts"'));
 
 	// Hint all non-lib js files and exclude _ prefixed files
 	return gulp.src([
@@ -362,7 +403,7 @@ gulp.task('hint-scripts', function (cb) {
 
 gulp.task('scripts-main', ['hint-scripts', 'scripts-view', 'scripts-ie'], function () {
 	
-	verbose(chalk.grey('☞  Running task "scripts-main"'));
+	verbose(chalk.grey('Running task "scripts-main"'));
 
 	// Process .js files
 	// Files are ordered for dependency sake
@@ -394,7 +435,7 @@ gulp.task('scripts-main', ['hint-scripts', 'scripts-view', 'scripts-ie'], functi
 
 gulp.task('scripts-view', function (cb) {
 	
-	verbose(chalk.grey('☞  Running task "scripts-view"'));
+	verbose(chalk.grey('Running task "scripts-view"'));
 
 	return gulp.src('assets/js/view-*.js')
 		.pipe(plugins.plumber())
@@ -408,7 +449,7 @@ gulp.task('scripts-view', function (cb) {
 
 gulp.task('scripts-ie', function (cb) {
 	
-	verbose(chalk.grey('☞  Running task "scripts-ie"'));
+	verbose(chalk.grey('Running task "scripts-ie"'));
 
 	// Process .js files
 	// Files are ordered for dependency sake
@@ -444,7 +485,7 @@ gulp.task('scripts-ie', function (cb) {
 
 gulp.task('images', function (cb) {
 	
-	verbose(chalk.grey('☞  Running task "images"'));
+	verbose(chalk.grey('Running task "images"'));
 
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
@@ -473,7 +514,7 @@ gulp.task('images', function (cb) {
 
 gulp.task('other', ['misc'], function (cb) {
 	
-	verbose(chalk.grey('☞  Running task "other"'));
+	verbose(chalk.grey('Running task "other"'));
 
 	// Make sure other files and folders are copied over
 	// eg. fonts, videos, ...
@@ -499,7 +540,7 @@ gulp.task('misc', function (cb) {
 	
 	// In --production mode, copy over all the other stuff
 	if (isProduction) {
-		verbose(chalk.grey('☞  Running task "misc"'));
+		verbose(chalk.grey('Running task "misc"'));
 
 		// Make a functional version of the htaccess.txt
 		gulp.src('misc/htaccess.txt')
@@ -520,7 +561,7 @@ gulp.task('misc', function (cb) {
  
 gulp.task('templates', ['clean-rev'], function (cb) {
 	
-	verbose(chalk.grey('☞  Running task "templates"'));
+	verbose(chalk.grey('Running task "templates"'));
 
 	// If assebly is off, export all folders and files
 	if (!config.assemble_templates) {
@@ -650,7 +691,7 @@ gulp.task('manifest', function (cb) {
 		return;
 	}
 
-	verbose(chalk.grey('☞  Running task "manifest"'));
+	verbose(chalk.grey('Running task "manifest"'));
 
 	return gulp.src([
 		config.export_assets + '/assets/js/*',
@@ -670,17 +711,19 @@ gulp.task('manifest', function (cb) {
 
 gulp.task('server', ['browsersync'], function (cb) {
 	
-	verbose(chalk.grey('☞  Running task "server"'));
-	console.log(chalk.grey('☞  Launching server...'));
+	verbose(chalk.grey('Running task "server"'));
+	console.log(chalk.grey('Launching server...'));
 
-	// JS specific watches to also detect removing/adding of files
-	// Note: Will also run the HTML task again to update the linked files
-	plugins.watch('assets/js/**/view-*.js', { name: 'JS-VIEW' }, function() {
+	plugins.watch(['assets/sass/**/*.{scss, sass, css}', '!assets/sass/*ie.{scss, sass, css}'], function() {
+		gulp.start('sass-main');
+	});
+
+	plugins.watch('assets/js/**/view-*.js', function() {
 		sequence('scripts-view', 'templates');
 	});
 
-	plugins.watch(['assets/js/**/*.js', '!**/view-*.js'], { name: 'JS-MAIN' }, function() {
-		sequence('scripts-main', 'scripts-ie', 'templates');
+	plugins.watch(['assets/js/**/*.js', '!**/view-*.js'], function() {
+		sequence('scripts-main', 'templates');
 	});
 
 	// Watch images and call their task
@@ -689,7 +732,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 	});
 
 	// Watch templates and call its task
-	plugins.watch('templates/**/*', {name: 'TEMPLATE'}, function() {
+	plugins.watch('templates/**/*', function() {
 		sequence('templates');
 	});
 
@@ -698,7 +741,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 
 gulp.task('browsersync', function (cb) {
 	
-	verbose(chalk.grey('☞  Running task "browsersync"'));
+	verbose(chalk.grey('Running task "browsersync"'));
 
 	// Grab the event emitter and add some listeners
 	var evt = browserSync.emitter;
@@ -743,8 +786,8 @@ gulp.task('psi', function (cb) {
 		return;
 	}
 
-	verbose(chalk.grey('☞  Running task "psi"'));
-	console.log(chalk.grey('☞  Running PageSpeed Insights...'));
+	verbose(chalk.grey('Running task "psi"'));
+	console.log(chalk.grey('Running PageSpeed Insights...'));
 
 	// Define PSI options
 	var opts = {
@@ -780,7 +823,7 @@ gulp.task('psi', function (cb) {
 // Download the boilerplate files
 function downloadBoilerplateFiles () {
 
-	console.log(chalk.grey('\n☞  Downloading boilerplate files...'));
+	console.log(chalk.grey('\nDownloading boilerplate files...'));
 
 	// If a custom repo was passed in, use it
 	if (!!flags.base) {
@@ -828,7 +871,7 @@ function downloadBoilerplateFiles () {
 		.on('end', function () {
 			console.log(
 				chalk.green('✔ Download complete!\n') +
-				chalk.grey('☞  Cleaning up...')
+				chalk.grey('Cleaning up...')
 			);
 
 			// Move to working directory, clean temp, finish init
@@ -900,12 +943,11 @@ function updateBar () {
 function bsInitHandler (data) {
 
 	// Store started state globally
-	lrStarted           = true;
+	lrStarted = true;
 
-	// Sass watch is integrated into task with a switch
-	// based on the flag above
-	gulp.start('sass-main');
-	gulp.start('sass-ie');
+	// Show some logs
+	console.log(chalk.cyan('🌐  Local access at'), chalk.magenta(data.options.urls.local));
+	console.log(chalk.cyan('🌐  Network access at'), chalk.magenta(data.options.urls.external));
 
 	if (isOpen) {
 		console.log(
@@ -913,10 +955,6 @@ function bsInitHandler (data) {
 			chalk.magenta(config.browser)
 		);
 	}
-
-	// Show some logs
-	console.log(chalk.cyan('🌐  Local access at'), chalk.magenta(data.options.urls.local));
-	console.log(chalk.cyan('🌐  Network access at'), chalk.magenta(data.options.urls.external));
 
 	// Open an editor if needed
 	if (isEdit) {
@@ -955,86 +993,32 @@ function verbose (msg) {
 	if(isVerbose) console.log(msg);
 }
 
-// Mute all console logs outside of --verbose (gulp-util)
-// except for some
-/*var cl = console.log;
-console.log = (function () {
+// Check if the passed in string may be logged out
+function validForWrite (msg, cleanMsg) {
 
-	var queue = [];
+	cleanMsg = chalk.stripColor(msg);
 
-	return function () {
-
-		var args = Array.prototype.slice.call(arguments);
-
-		if (args.length && !isVerbose) {
-			// If there is a queue and the bar is complete, output it
-			// and reset queue
-			if (!_.isNull(bar) && queue.length && bar.complete) {
-				_.each(queue, function (queueItem, key) {
-					cl.apply(console, [queueItem]);
-				});
-				queue = [];
-			}
-
-			// If the first argument matches [...] (gulp-util)
-			if (/^\[.*\]$/.test(args[0])) {
-				// Make sure there is a second argument before continuing
-				if (args.length > 1) {
-					// If not gulp-ruby sass and
-					// no customized output (gulp-bytediff),
-					// block it
-					if (!/^\[gulp-ruby-sass\]$/.test(args[1]) && args[1].indexOf('☞') < 0) {
-						return;
-					} else {
-						// If not gulp-ruby-sass, push some stuff to que queue
-						// This could be done more elegantly, but there is only
-						// one case where this would go through (gulp-uncss) and
-						// that module will be removed in v2.0
-						if (!/^\[gulp-ruby-sass\]$/.test(args[1])) {
-							queue.push(
-								'\n',
-								chalk.yellow.inverse('Note: Uncss doesn\'t play well with Sass @extend and usually breaks a lot of things. This feature will be deprecated in the next major release (v2.0).') + '\n',
-								args[1]
-							);
-
-							return;
-						} else {
-							// Color the gulp-ruby-sass error red
-							args[2] = chalk.red(args[2]);
-
-							// If the bar hasn't completed yet, push into the queue
-							// This will only happen when starting Headstart while
-							// an error is already present
-							if (_.isUndefined(bar.complete) || !bar.complete) {
-								args.unshift('\n');
-								queue = queue.concat(args);
-								return;
-							}
-						}
-					}
-				} else {
-					return;
-				}
-			} else {
-				if (/[^/n]$/.test(args[0]) && args[0].indexOf('.js') > -1) {
-					// Catch JSHint errors and push them into the queue
-					queue.push(args[0]);
-					return;
-				}
-			}
-			
-			return cl.apply(console, args);
-		} else if (isVerbose) {
-			return cl.apply(console, args);
+	// Detect gulp-util "[XX:XX:XX] ..." logs, 
+	if (/^\[[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\]/.test(cleanMsg)) {
+		// Block all but the "[gulp] [gulp-ruby-sass] ..."
+		if (cleanMsg.indexOf('was changed') < 0) {
+			return false;
 		}
-	}
-})();*/
 
-// Same, but for console warns (gulp-sass-graph)
-/*var cw = console.warn;
-console.warn = function () {
-	if(!isVerbose) {
-		return;
+		msg = cleanMsg.split(' ');
+		msg.shift();
+		msg[0] = msg[0].split('/').pop();
+		msg = msg.join(' ');
+		msg = chalk.grey(msg);
 	}
-	return cw.apply(console, args);
-}*/
+
+	// Block sass-graph errors
+	var graphMatches = _.filter(['failed to resolve', 'failed to add'], function (part) {
+		return cleanMsg.indexOf(part) > -1;
+	});
+	if (/^failed to resolve|failed to add/.test(msg)) {
+		return false;
+	}
+
+	return msg;
+}
