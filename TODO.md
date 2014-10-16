@@ -32,6 +32,12 @@
 
   - https://www.npmjs.org/package/del/ instead of gulp-rimraf
   - CDN Solution https://www.npmjs.org/package/gulp-cdnizer/
+  - https://www.npmjs.org/package/gulp-log-capture
+  - https://www.npmjs.org/package/gulp-static-handlebars
+  - https://www.npmjs.org/package/gulp-if-else
+  - https://www.npmjs.org/package/gulp-headerfooter
+  - https://www.npmjs.org/package/gulp-htmlrefs OR https://www.npmjs.org/package/gulp-rev-replace
+  - https://www.npmjs.org/package/favicons
 
 ### Done
 
