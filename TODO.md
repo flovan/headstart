@@ -1,10 +1,7 @@
 ### TODO's:
 
-  - [ ] A build starting with a Sass error will result in pages without (a) css file(s)
   - [ ] Fix crash when missing `// requires` file is found 
   - [ ] Adding new view js files doesn't seem to add them to gaze
-  - [ ] Disable (and warn about disabling of) w3c validation when not ".html"
-  - [ ] Re-add `open` because openEditor won't work otherwise..
 
 ### A list of things to explore:
 
@@ -68,4 +65,7 @@
   - [x] Fix jshint logs appearing in the middle of the progressbar
   - [x] Dry out modules
   - [x] Drop `open` in favour of opening the browser through `browsersync`
+  - [x] A build starting with a Sass error will result in pages without (a) css file(s)
+  - [x] Disable (and warn about disabling of) w3c validation when not ".html"
+  - [x] Re-add `open` because openEditor won't work otherwise..
   

@@ -573,7 +573,8 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 
 	// Find number of "root" templates to parse and keep count
 	var numTemplates = globule.find(['templates/*.*', '!_*']).length,
-		count = 0;
+		count = 0,
+		unvalidatedFiles = [];
 
 	// Go over all root template files
 	gulp.src(['templates/*.*', '!_*'])
@@ -655,7 +656,7 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 					addRootSlash: false,
 					addPrefix:    config.template_asset_prefix || ''
 				}))
-				.pipe(plugins.if(config.w3c, plugins.w3cjs({
+				.pipe(plugins.if(config.w3c && ext === 'html', plugins.w3cjs({
 					doctype: 'HTML5',
 					charset: 'utf-8'
 				})))
@@ -670,13 +671,25 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 						if (lrStarted) {
 							browserSync.reload(/*{stream:true}*/);
 						}
+
 						// Update the loadbar
 						updateBar();
+
+						// Report unvalidated files
+						if (unvalidatedFiles.length) {
+							console.log(chalk.yellow('✘  Couldn\'t validate: ' + unvalidatedFiles.join(', ')));
+							console.log(chalk.yellow.inverse('W3C validation only works for HTML files'));
+						}
+
 						// Report the end of this task
 						cb(null);
 					}
 				})
 			;
+
+			if (config.w3c && ext !== 'html') {
+				unvalidatedFiles.push(baseName);
+			}
 		}))
 	;
 });
