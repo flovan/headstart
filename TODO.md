@@ -26,6 +26,7 @@
   - [ ] Check out HeadJS (http://headjs.com)
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
+  - [ ] Simpler watch setup > https://gist.github.com/Snugug/2dc9ff47ce4b4acb28f6
 
 
   ### Take a look at these plugins also

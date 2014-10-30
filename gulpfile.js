@@ -756,8 +756,9 @@ gulp.task('browsersync', function (cb) {
 							baseDir: config.export_templates
 						} : false,
 		logConnections: false,
-		debugInfo:      false,
-		browser:        isOpen ? (config.browser || 'none') : 'none',
+		logLevel:       'silent', // 'debug'
+		browser:        config.browser || 'default',
+		open:           isOpen,
 		port:           config.port || 3000,
 		proxy:          config.proxy || false,
 		tunnel:         isTunnel || null
