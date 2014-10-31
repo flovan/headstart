@@ -33,7 +33,7 @@ var
 	gitConfig           = {
 		user: 'flovan',
 		repo: 'headstart-boilerplate',
-		ref:  '1.1.0'
+		ref:  '1.2.0'
 	},
 	cwd                 = process.cwd(),
 	tmpFolder           = '.tmp',
