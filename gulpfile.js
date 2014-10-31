@@ -222,7 +222,7 @@ gulp.task('build', function (cb) {
 			'manifest',
 			'uncss',
 			function () {
-				console.log(chalk.green('\n✔  Build complete'));
+				console.log(chalk.green((!isProduction ? '\n' : '') + '✔  Build complete'));
 				if(isServe) {
 					gulp.start('server');
 				}
@@ -345,7 +345,7 @@ gulp.task('sass-ie', function (cb) {
 gulp.task('uncss', function (cb) {
 	
 	// Quit this task if not configured through config
-	if (!config.useUncss) {
+	if (!isProduction || !config.useUncss) {
 		updateBar();
 		cb(null);
 		return;
@@ -810,7 +810,7 @@ gulp.task('psi', function (cb) {
 	}
 
 	verbose(chalk.grey('Running task "psi"'));
-	console.log(chalk.grey('Running PageSpeed Insights...'));
+	console.log(chalk.grey('Running PageSpeed Insights (might take a while)...'));
 
 	// Define PSI options
 	var opts = {
@@ -1031,8 +1031,8 @@ function validForWrite (msg, cleanMsg) {
 			msg = cleanMsg.split(' ');
 			msg.shift();
 			msg[0] = msg[0].split('/').pop();
-			msg = msg.join(' ');
-			msg = chalk.grey(msg);
+			msg = msg.join(' ').trim();
+			msg = chalk.grey(msg) + '\n';
 
 			allowFlag = true;
 		}
@@ -1041,7 +1041,7 @@ function validForWrite (msg, cleanMsg) {
 		// but format them a bit
 		if (!allowFlag && cleanMsg.indexOf('Plumber found') > - 1) {
 			msg = cleanMsg.split('Plumber found unhandled error:').pop().trim();
-			msg = '\n' + chalk.red.inverse('ERROR') + ' ' + msg + '\n';
+			msg = chalk.red.inverse('ERROR') + ' ' + msg + '\n';
 
 			allowFlag = true;
 		}
@@ -1049,7 +1049,7 @@ function validForWrite (msg, cleanMsg) {
 		// Grab the result of gulp-imagemin
 		if (!allowFlag && cleanMsg.indexOf('gulp-imagemin: Minified') > -1) {
 			msg = cleanMsg.split('gulp-imagemin:').pop().trim();
-			msg = chalk.green('✄  ' + msg);
+			msg = chalk.green('✄  ' + msg) + '\n';
 
 			allowFlag = true;
 		}
@@ -1066,7 +1066,7 @@ function validForWrite (msg, cleanMsg) {
 		// Grab the result of CSSMin
 		if (!allowFlag && cleanMsg.indexOf('.css is now') > -1) {
 			msg = cleanMsg.split(' ').slice(1).join(' ').trim();
-			msg = chalk.green('✄  ' + msg);
+			msg = chalk.green('✄  ' + msg) + '\n';
 
 			allowFlag = true;
 		}
