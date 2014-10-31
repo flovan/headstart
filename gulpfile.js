@@ -403,26 +403,32 @@ gulp.task('hint-scripts', function (cb) {
 });
 
 gulp.task('scripts-main', ['hint-scripts', 'scripts-view', 'scripts-ie'], function () {
+
+	var files = [
+		'assets/js/libs/jquery*.js',
+		'assets/js/libs/ender*.js',
+
+		(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
+
+		'assets/js/libs/**/*.js',
+		// TODO: remove later
+		'assets/js/core/**/*.js',
+		//
+		'assets/js/*.js',
+		'!assets/js/view-*.js',
+		'!**/_*.js'
+	];
 	
 	verbose(chalk.grey('Running task "scripts-main"'));
 
+	if (isProduction) {
+		var numFiles = globule.find(files).length;
+		console.log(chalk.green('✄  Concatenated ' + numFiles + ' JS files'));
+	}
+
 	// Process .js files
 	// Files are ordered for dependency sake
-	return gulp.src([
-				'assets/js/libs/jquery*.js',
-				'assets/js/libs/ender*.js',
-
-				(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
-
-				'assets/js/libs/**/*.js',
-				// TODO: remove later
-				'assets/js/core/**/*.js',
-				//
-				'assets/js/*.js',
-				'!assets/js/view-*.js',
-				'!**/_*.js'
-			], {base: '' + 'assets/js'}
-		)
+	return gulp.src(files, {base: '' + 'assets/js'})
 		.pipe(plugins.plumber())
 		.pipe(plugins.deporder())
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
@@ -1030,6 +1036,10 @@ function validForWrite (msg, cleanMsg) {
 			// but prune it a little bit
 			msg = cleanMsg.split('Plumber found unhandled error:').pop().trim();
 			msg = chalk.red('\n' + msg + '\n');
+		} else if (cleanMsg.indexOf('gulp-imagemin: Minified') > -1) {
+			// Grab the result of gulp-imagemin
+			msg = cleanMsg.split('gulp-imagemin:').pop().trim();
+			msg = chalk.green('✄  ' + msg);
 		} else {
 			// Block all the others
 			return false;
