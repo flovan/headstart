@@ -1023,25 +1023,56 @@ function validForWrite (msg, cleanMsg) {
 
 	// Detect gulp-util "[XX:XX:XX] ..." logs, 
 	if (/^\[[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\]/.test(cleanMsg)) {
+		var allowFlag = false;
+
+		// Allow gulp-ruby-sass errors,
+		// but format them a bit
 		if (cleanMsg.indexOf('was changed') > -1) {
-			// Allow gulp-ruby-sass output,
-			// but prune it a little bit
 			msg = cleanMsg.split(' ');
 			msg.shift();
 			msg[0] = msg[0].split('/').pop();
 			msg = msg.join(' ');
 			msg = chalk.grey(msg);
-		} else if (cleanMsg.indexOf('Plumber found') > - 1) {
-			// Allow gulp-plumber output,
-			// but prune it a little bit
+
+			allowFlag = true;
+		}
+
+		// Allow gulp-plumber errors,
+		// but format them a bit
+		if (!allowFlag && cleanMsg.indexOf('Plumber found') > - 1) {
 			msg = cleanMsg.split('Plumber found unhandled error:').pop().trim();
-			msg = chalk.red('\n' + msg + '\n');
-		} else if (cleanMsg.indexOf('gulp-imagemin: Minified') > -1) {
-			// Grab the result of gulp-imagemin
+			msg = '\n' + chalk.red.inverse('ERROR') + ' ' + msg + '\n';
+
+			allowFlag = true;
+		}
+
+		// Grab the result of gulp-imagemin
+		if (!allowFlag && cleanMsg.indexOf('gulp-imagemin: Minified') > -1) {
 			msg = cleanMsg.split('gulp-imagemin:').pop().trim();
 			msg = chalk.green('✄  ' + msg);
-		} else {
-			// Block all the others
+
+			allowFlag = true;
+		}
+
+		// Allow W3C validation errors,
+		// but format them a bit
+		if (!allowFlag && cleanMsg.indexOf('HTML Error:') > -1) {
+			msg = cleanMsg.split('HTML Error:').pop().trim();
+			msg = chalk.red.inverse('HTML ERROR') + ' ' + msg + '\n';
+
+			allowFlag = true;
+		}
+
+		// Grab the result of CSSMin
+		if (!allowFlag && cleanMsg.indexOf('.css is now') > -1) {
+			msg = cleanMsg.split(' ').slice(1).join(' ').trim();
+			msg = chalk.green('✄  ' + msg);
+
+			allowFlag = true;
+		}
+
+		// Block all the others
+		if (!allowFlag) {
 			return false;
 		}
 	}
