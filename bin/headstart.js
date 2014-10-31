@@ -169,7 +169,7 @@ function logTasks () {
 		chalk.white('--t, --tunnel') +
 		chalk.grey('\t\tTunnel your served files to the web (requires --serve)\n') +
 		chalk.white('--psi') +
-		chalk.grey('\t\t\tRun PageSpeed Insights after building (requires --serve)\n') +
+		chalk.grey('\t\t\tRun PageSpeed Insights (requires --serve and --tunnel)\n') +
 		//chalk.white('--key <key>') +
 		//chalk.grey('\t\tOptional, an API key for PSI\n') +
 		chalk.white('--strategy <type>') +

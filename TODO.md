@@ -28,7 +28,7 @@
 
   ### Take a look at these plugins also
 
-  - https://www.npmjs.org/package/del/ instead of gulp-rimraf
+  - https://www.npmjs.org/package/del/ instead of gulp-rimraf (will prolly have to use https://www.npmjs.org/package/gulp-filenames)
   - CDN Solution https://www.npmjs.org/package/gulp-cdnizer/
   - https://www.npmjs.org/package/gulp-log-capture
   - https://www.npmjs.org/package/gulp-static-handlebars

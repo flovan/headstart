@@ -115,7 +115,6 @@ if (!isVerbose) {
 		console.error('passing this to console.log: ', args);
 		console.log.apply(console, args);
 	}*/
-
 }
 
 // INIT -----------------------------------------------------------------------
@@ -425,6 +424,7 @@ gulp.task('scripts-main', ['hint-scripts', 'scripts-view', 'scripts-ie'], functi
 			], {base: '' + 'assets/js'}
 		)
 		.pipe(plugins.plumber())
+		.pipe(plugins.deporder())
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
 		.pipe(plugins.if(isProduction, plugins.concat('core-libs.js')))
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
@@ -503,6 +503,7 @@ gulp.task('images', function (cb) {
 			'assets/images/**/*',
 			'!_*'
 		])
+		.pipe(plugins.plumber())
 		.pipe(plugins.newer(config.export_assets + '/assets/images'))
 		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
 		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
