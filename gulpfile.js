@@ -338,44 +338,6 @@ gulp.task('sass-ie', function (cb) {
 	;
 });
 
-// UNCSS ----------------------------------------------------------------------
-// 
-// Clean up unused CSS styles
-
-gulp.task('uncss', function (cb) {
-	
-	// Quit this task if not configured through config
-	if (!isProduction || !config.useUncss) {
-		updateBar();
-		cb(null);
-		return;
-	}
-
-	verbose(chalk.grey('Running task "uncss-main"'));
-
-	// Grab all templates / partials / layout parts / etc
-	var templates = globule.find([config.export_templates + '/**/*.*']);
-
-	// Grab all css files and run them through Uncss, then overwrite
-	// the originals with the new ones
-	return gulp.src(config.export_assets + '/assets/css/*.css')
-		.pipe(plugins.bytediff.start())
-		.pipe(plugins.uncss({
-			html:   templates || [],
-			ignore: config.uncssIgnore || []
-		}))
-		.pipe(plugins.bytediff.stop(function (data) {
-			updateBar();
-
-			data.percent = Math.round(data.percent*100);
-			data.savings = Math.round(data.savings/1024);
-
-			return chalk.grey('' + data.fileName + ' is now ') + chalk.green(data.percent + '% ' + (data.savings > 0 ? 'smaller' : 'larger')) + chalk.grey(' (saved ' + data.savings + 'KB)');
-		}))
-		.pipe(gulp.dest(config.export_assets + '/assets/css'))
-	;
-});
-
 // SCRIPTS --------------------------------------------------------------------
 //
 
