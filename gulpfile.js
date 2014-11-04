@@ -696,29 +696,13 @@ gulp.task('manifest', function (cb) {
 gulp.task('server', ['browsersync'], function (cb) {
 	
 	verbose(chalk.grey('Running task "server"'));
-	console.log(chalk.grey('Launching server...'));
+	console.log(chalk.grey('Watching files...'));
 
-	plugins.watch(['assets/sass/**/*.{scss, sass, css}', '!assets/sass/*ie.{scss, sass, css}'], function() {
-		gulp.start('sass-main');
-	});
-
-	plugins.watch('assets/js/**/view-*.js', function() {
-		sequence('scripts-view', 'templates');
-	});
-
-	plugins.watch(['assets/js/**/*.js', '!**/view-*.js'], function() {
-		sequence('scripts-main', 'templates');
-	});
-
-	// Watch images and call their task
-	gulp.watch('assets/images/**/*', function () {
-		gulp.start('images');
-	});
-
-	// Watch templates and call its task
-	plugins.watch('templates/**/*', function() {
-		sequence('templates');
-	});
+	gulp.watch(['assets/sass/**/*.{scss, sass, css}', '!assets/sass/*ie.{scss, sass, css}'], ['sass-main']);
+	gulp.watch(['assets/js/**/view-*.js'], ['scripts-view', 'templates']);
+	gulp.watch(['assets/js/**/*.js', '!**/view-*.js'], ['scripts-main', 'templates']);
+	gulp.watch(['assets/images/**/*'], ['images']);
+	gulp.watch(['templates/**/*'], ['templates']);
 
 	cb(null);
 });
@@ -726,6 +710,7 @@ gulp.task('server', ['browsersync'], function (cb) {
 gulp.task('browsersync', function (cb) {
 	
 	verbose(chalk.grey('Running task "browsersync"'));
+	console.log(chalk.grey('Launching server...'));
 
 	// Grab the event emitter and add some listeners
 	var evt = browserSync.emitter;
@@ -755,9 +740,9 @@ gulp.task('browsersync', function (cb) {
 			);
 			process.exit(0);
 		}
-	});
 
-	cb(null);
+		cb(null);
+	});
 });
 
 // PAGESPEED INSIGHTS ---------------------------------------------------------
