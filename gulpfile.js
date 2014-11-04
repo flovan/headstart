@@ -106,15 +106,6 @@ if (!isVerbose) {
 		// Finally, just write out
 		write(msg);
 	});
-
-	// Map console.warn to console.log to make sure gulp-sassgraph errors
-	// get validated by the code above
-	/*console.warn = console.log; /*function () {
-
-		var args = Array.prototype.slice.call(arguments);
-		console.error('passing this to console.log: ', args);
-		console.log.apply(console, args);
-	}*/
 }
 
 // INIT -----------------------------------------------------------------------
