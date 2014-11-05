@@ -28,7 +28,6 @@
     "gulp-concat": "^2.4.1",
     "gulp-deporder": "^1.0.0",
     "gulp-htmlmin": "^0.2.0",
-    "gulp-hub": "^0.6.1",
     "gulp-if": "^1.2.4",
     "gulp-ignore": "^1.2.0",
     "gulp-imagemin": "^1.0.1",
@@ -59,9 +58,9 @@
     "open": "0.0.5",
     "progress": "^1.1.8",
     "psi": "^0.1.2",
+    "require-dir": "^0.1.0",
     "run-sequence": "^0.3.7",
-    "update-notifier": "^0.2.1",
-    "require-dir": "^0.1.0"
+    "update-notifier": "^0.2.1"
   },
   "devDependencies": {
     "gulp-debug": "^1.0.1",

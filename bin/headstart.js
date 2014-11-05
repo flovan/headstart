@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-// To see an extended Error Stack Trace, uncomment
-// Error.stackTraceLimit = 9000;
-
 // REQUIRES -------------------------------------------------------------------
 //
 // Note: Gulp related requires are made further down to speed up the first

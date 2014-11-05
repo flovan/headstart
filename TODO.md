@@ -8,7 +8,6 @@
   - [ ] Think about fixed size columns for eg ads
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all, maybe https://www.npmjs.org/package/gulp-hash/ + https://www.npmjs.org/package/gulp-hash-references/)
   - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
-  - [ ] See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)
   - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
   - [ ] See if scripts tasks can be made faster with gulp-remember (https://github.com/ahaurw01/gulp-remember)
   - [ ] Maybe do something with icon fonts from SVG files (https://www.npmjs.org/package/gulp-fontcustom/ or https://github.com/nfroidure/gulp-iconfont or https://github.com/nfroidure/gulp-svgicons2svgfont)
@@ -68,4 +67,5 @@
   - [x] A build starting with a Sass error will result in pages without (a) css file(s)
   - [x] Disable (and warn about disabling of) w3c validation when not ".html"
   - [x] Re-add `open` because openEditor won't work otherwise..
+  - [x] ~~See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)~~ Nope
   
