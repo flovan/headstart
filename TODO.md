@@ -23,6 +23,9 @@
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] Simpler watch setup > https://gist.github.com/Snugug/2dc9ff47ce4b4acb28f6
+  - [ ] CLI option to generate Ender builds
+  - [ ] Find out how to check for dependencies (such as Ender, see above, or maybe imagemagick)
+  - [ ] Add Quail as a dev lib (http://quailjs.org)
 
 
   ### Take a look at these plugins also
