@@ -51,7 +51,6 @@
     "gulp-watch": "^1.0.7",
     "inquirer": "^0.7.3",
     "jshint-stylish": "^1.0.0",
-    "liftoff": "^0.13.2",
     "lodash": "^2.4.1",
     "minimist": "1.1.0",
     "ncp": "^1.0.0",

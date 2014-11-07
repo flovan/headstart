@@ -1,22 +1,14 @@
 'use strict';
 
-// REQUIRES -------------------------------------------------------------------
-
-var
-	path                = require('path'),
-	globule             = require('globule'),
-	fs                  = require('fs'),
-	ncp                 = require('ncp').ncp,
-	chalk               = require('chalk'),
-	ProgressBar         = require('progress'),
-	utils               = require('./lib/utils')
-;
+/*var
+	
+;*/
 
 // GLOBAL SETTINGS ------------------------------------------------------------
 //
-// This object gets shared with the task partials
+// This object gets shared with the task partials to make sure
 
-require('./lib/settings');
+
 
 // LOGGING --------------------------------------------------------------------
 //
@@ -28,14 +20,4 @@ if (!isVerbose) {
 // TASK REQUIRES --------------------------------------------------------------
 //
 
-require('./lib/tasks/init');
-require('./lib/tasks/build');
-require('./lib/tasks/clean');
-require('./lib/tasks/styles');
-require('./lib/tasks/scripts');
-require('./lib/tasks/graphics');
-require('./lib/tasks/misc');
-require('./lib/tasks/templates');
-require('./lib/tasks/manifest');
-require('./lib/tasks/server');
-require('./lib/tasks/services');
+

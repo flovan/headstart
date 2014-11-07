@@ -1,42 +1,46 @@
 #!/usr/bin/env node
 'use strict';
 
-// REQUIRES -------------------------------------------------------------------
-//
-// Note: Gulp related requires are made further down to speed up the first
-// part of this script
+// Require modules
+// ----------------------------------------------------------------------------
 
 var 
 	path                = require('path'),
 	fs                  = require('fs'),
 	chalk               = require('chalk'),
 	_                   = require('lodash'),
-
-	pkg                 = require('../package.json'),
-	Liftoff             = require('liftoff'),
 	updateNotifier      = require('update-notifier'),
 	argv                = require('minimist')(process.argv.slice(2)),
-	gulp,
-	gulpFile
+
+	utils               = require('./lib/utils'),
+	settings			= requiire('./lib/settings')(argv),
+	pkg                 = require('../package.json')
 ;
 
-// CLI CONFIGURATION ----------------------------------------------------------
-//
+// Define variables
+// ----------------------------------------------------------------------------
 
-var cli = new Liftoff({
-	name: 'headstart'
-});
+var
+	deps,
+	notifier,
+	versionFlag         = argv.v || argv.version,
+	infoFlag            = argv.i || argv.info || argv.h || argv.help,
 
-// CHECK FOR UPDATES ----------------------------------------------------------
-//
+	allowedTasks        = ['init', 'build'],
+	task                = argv._,
+	numTasks            = task.length
+;
 
-var notifier = updateNotifier({
+// Check for updates
+// ----------------------------------------------------------------------------
+
+notifier = updateNotifier({
 	packageName:    pkg.name,
 	packageVersion: pkg.version
 });
 
+// If there is an update ...
 if (notifier.update) {
-	// Inlined from the update-notifier source for more control
 	console.log(
 		chalk.yellow('\n\n┌──────────────────────────────────────────┐\n|') +
 		chalk.white(' Update available: ') +
@@ -51,137 +55,67 @@ if (notifier.update) {
 	);
 }
 
-// LAUNCH CLI -----------------------------------------------------------------
-//
+// Check if any info needs to be written out
+// Doing this as early as possible to have near instant feedback
+// ----------------------------------------------------------------------------
 
-cli.launch({}, launcher);
-
-function launcher (env) {
-
-	var 
-		versionFlag  = argv.v || argv.version,
-		infoFlag     = argv.i || argv.info || argv.h || argv.help,
-
-		allowedTasks = ['init', 'build'],
-		task         = argv._,
-		numTasks     = task.length
-	;
-
-	// Check for version flag
-	if (versionFlag) {
-		logHeader(pkg);
-		process.exit(0);
-	}
-
-	// Log info if no tasks are passed in
-	if (!numTasks) {
-		logInfo(pkg);
-		process.exit(0);
-	}
-
-	// Warn if more than one tasks has been passed in
-	if (numTasks > 1) {
-		console.log(chalk.red('\nOnly one task can be provided. Aborting.\n'));
-		logTasks();
-		process.exit(0);
-	}
-
-	// We are now sure we only have 1 task
-	task = task[0];
-
-	// Print info if needed
-	if(infoFlag) {
-		logInfo(pkg);
-		process.exit(0);
-	}
-
-	// Check if task is valid
-	if (_.indexOf(allowedTasks, task) < 0) {
-		console.log(chalk.red('\nThe provided task "' + task + '" was not recognized. Aborting.\n'));
-		logTasks();
-		process.exit(0);
-	}
-
-	// Change directory to where Headstart was called from
-	if (process.cwd() !== env.cwd) {
-		process.chdir(env.cwd);
-		console.log(chalk.cyan('Working directory changed to', chalk.magenta(env.cwd)));
-	}
-	
-	// Require gulp assets
-	gulp     = require('gulp');
-	gulpFile = require(path.join(path.dirname(fs.realpathSync(__filename)), '../gulpfile.js'));
-
-	// Start the task through Gulp
-	process.nextTick(function () {
-		gulp.start.apply(gulp, [task]);
-	});
+// Check for version flag
+if (versionFlag) {
+	utils.logHeader(pkg);
+	process.exit(0);
 }
 
-// HELPER FUNCTIONS -----------------------------------------------------------
-//
-
-function logInfo (pkg) {
-	logHeader(pkg);
-	logTasks();
+// Print info if needed
+if(infoFlag) {
+	utils.logHeader(pkg);
+	utils.logTasks();
+	process.exit(0);
 }
 
-function logHeader (pkg) {
-	console.log(
-		chalk.cyan(
-			'\n' +
-			'|                  |     |              |\n' +
-			'|---.,---.,---.,---|,---.|--- ,---.,---.|---\n' +
-			'|   ||---\',---||   |`---.|    ,---||    |\n' +
-			'`   \'`---\'`---^`---\'`---\'`---\'`---^`    `---\'\n\n'
-		) +
-		chalk.cyan.inverse('➳  http://headstart.io') +
-		'                 ' +
-		chalk.yellow.inverse('v' + pkg.version) + '\n'
-	);
+// Log info if no tasks are passed in
+if (!numTasks) {
+	utils.logHeader(pkg);
+	utils.logTasks();
+	process.exit(0);
 }
 
-function logTasks () {
-	console.log(
-		chalk.grey.underline('To start a new project, run:\n\n') +
-		chalk.magenta('headstart init [flags]') +
-		chalk.grey(' or ') +
-		chalk.magenta('hs init [flags]\n\n') +
-		chalk.white('--base <source>') +
-		chalk.grey('\t\tUse a custom boilerplate repo, eg. user/repo#branch\n')
-	);
-	console.log(
-		chalk.grey.underline('To build the project, run:\n\n') +
-		chalk.magenta('headstart build [flags]') +
-		chalk.grey(' or ') +
-		chalk.magenta('hs build [flags]\n\n') +
-		chalk.white('--s, --serve') +
-		chalk.grey('\t\tServe the files on a static address\n') +
-		chalk.white('--o, --open') +
-		chalk.grey('\t\tOpen up a browser for you (default Google Chrome)\n') +
-		chalk.white('--e, --edit') +
-		chalk.grey('\t\tOpen the files in your editor (default Sublime Text)\n') +
-		chalk.white('--p, --production') +
-		chalk.grey('\tMake a production ready build\n') +
-		chalk.white('--t, --tunnel') +
-		chalk.grey('\t\tTunnel your served files to the web (requires --serve)\n') +
-		chalk.white('--psi') +
-		chalk.grey('\t\t\tRun PageSpeed Insights (requires --serve and --tunnel)\n') +
-		//chalk.white('--key <key>') +
-		//chalk.grey('\t\tOptional, an API key for PSI\n') +
-		chalk.white('--strategy <type>') +
-		chalk.grey('\tRun PSI in either "desktop" (default) or "mobile" mode\n\n') +
-		chalk.white('--verbose') +
-		chalk.grey('\t\tOutput extra information while building\n')
-	);
-	console.log(
-		chalk.grey.underline('For information, run:\n\n') +
-		chalk.magenta('headstart [flags]') +
-		chalk.grey(' or ') +
-		chalk.magenta('hs [flags]\n\n') +
-		chalk.white('--i, --info,\n--h, --help') +
-		chalk.grey('\t\tPrint out this message\n') +
-		chalk.white('--v, --version') +
-		chalk.grey('\t\tPrint out version\n')
-	);
+// Make sure the passed in tasks are known and can be run
+// ----------------------------------------------------------------------------
+
+// Warn if more than one tasks has been passed in
+if (numTasks > 1) {
+	console.log(chalk.red('\nOnly one task can be provided. Aborting.\n'));
+	utils.logTasks();
+	process.exit(0);
 }
+
+// We are now sure we only have 1 task
+task = task[0];
+
+// Check if task is valid
+if (_.indexOf(allowedTasks, task) < 0) {
+	console.log(chalk.red('\nThe provided task "' + task + '" was not recognized. Aborting.\n'));
+	utils.logTasks();
+	process.exit(0);
+}
+
+// Prepare tasks, Gulp, and run the task
+// ----------------------------------------------------------------------------
+
+// Register Gulp tasks through external files
+require('./lib/tasks/init');
+require('./lib/tasks/build');
+require('./lib/tasks/clean');
+require('./lib/tasks/styles');
+require('./lib/tasks/scripts');
+require('./lib/tasks/graphics');
+require('./lib/tasks/misc');
+require('./lib/tasks/templates');
+require('./lib/tasks/manifest');
+require('./lib/tasks/server');
+require('./lib/tasks/services');
+
+// Start the task through Gulp
+process.nextTick(function () {
+	require('gulp').start(task);
+});
