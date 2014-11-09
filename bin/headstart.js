@@ -12,8 +12,8 @@ var
 	updateNotifier      = require('update-notifier'),
 	argv                = require('minimist')(process.argv.slice(2)),
 
-	utils               = require('./lib/utils'),
-	settings			= requiire('./lib/settings')(argv),
+	settings			= require('../lib/settings'),
+	utils               = require('../lib/utils'),
 	pkg                 = require('../package.json')
 ;
 
@@ -41,18 +41,7 @@ notifier = updateNotifier({
 
 // If there is an update ...
 if (notifier.update) {
-	console.log(
-		chalk.yellow('\n\n┌──────────────────────────────────────────┐\n|') +
-		chalk.white(' Update available: ') +
-		chalk.green(notifier.update.latest) +
-		chalk.grey(' (current: ' + notifier.update.current + ') ') +
-		chalk.yellow('|\n|') +
-		chalk.white(' Instructions can be found on:            ') +
-		chalk.yellow('|\n|') +
-		chalk.magenta(' http://headstart.io/upgrading-guide   ') +
-		chalk.yellow('|\n') +
-		chalk.yellow('└──────────────────────────────────────────┘\n')
-	);
+	utils.logUpdate(notifier.update);
 }
 
 // Check if any info needs to be written out
@@ -99,21 +88,16 @@ if (_.indexOf(allowedTasks, task) < 0) {
 	process.exit(0);
 }
 
-// Prepare tasks, Gulp, and run the task
+// Prepare tasks, output, and run the task
 // ----------------------------------------------------------------------------
 
 // Register Gulp tasks through external files
-require('./lib/tasks/init');
-require('./lib/tasks/build');
-require('./lib/tasks/clean');
-require('./lib/tasks/styles');
-require('./lib/tasks/scripts');
-require('./lib/tasks/graphics');
-require('./lib/tasks/misc');
-require('./lib/tasks/templates');
-require('./lib/tasks/manifest');
-require('./lib/tasks/server');
-require('./lib/tasks/services');
+fs.readdirSync(path.join(__dirname, '../lib/tasks')).forEach(function(file) {
+	require('../lib/tasks/' + file);
+});
+
+// Patch the output
+utils.patchOutput();
 
 // Start the task through Gulp
 process.nextTick(function () {
