@@ -2,6 +2,7 @@
 
   - [ ] Fix crash when missing `// requires` file is found 
   - [ ] Adding new view js files doesn't seem to add them to gaze
+  - [ ] Add a sass module that generates ready-to-use class-names (eg columns)
 
 ### A list of things to explore:
 
