@@ -27,6 +27,7 @@
   - [ ] CLI option to generate Ender builds
   - [ ] Find out how to check for dependencies (such as Ender, see above, or maybe imagemagick)
   - [ ] Add Quail as a dev lib (http://quailjs.org)
+  - [ ] Look into patternlab.io way of managing text/content through JSON (eg automatic HTML parsing to find variables and putting them into a JSON file)
 
 
   ### Take a look at these plugins also
