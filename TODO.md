@@ -6,7 +6,6 @@
 
 ### A list of things to explore:
 
-  - [ ] Think about fixed size columns for eg ads
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all, maybe https://www.npmjs.org/package/gulp-hash/ + https://www.npmjs.org/package/gulp-hash-references/)
   - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
   - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
@@ -73,4 +72,6 @@
   - [x] Re-add `open` because openEditor won't work otherwise..
   - [x] ~~See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)~~ Nope
   - [x] https://www.npmjs.org/package/del/ instead of gulp-rimraf (will prolly have to use https://www.npmjs.org/package/gulp-filenames)
+  - ~~[ ] Think about fixed size columns for eg ads~
+  
   
