@@ -96,8 +96,10 @@ fs.readdirSync(path.join(__dirname, '../lib/tasks')).forEach(function(file) {
 	require('../lib/tasks/' + file);
 });
 
-// Patch the output
-utils.patchOutput();
+// Patch the output when not running verbose mode
+if (!settings.isVerbose) {
+	utils.patchOutput();
+}
 
 // Start the task through Gulp
 process.nextTick(function () {
