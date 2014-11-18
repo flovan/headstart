@@ -2,7 +2,7 @@
 
 > Headstart is an all-in-one task runner that frees front-end developers of the little worries that come along with modern web development. If you ever wanted to use tools like [Grunt](http://gruntjs.com/) or [Gulp](http://gulpjs.com/), but found the configuration too troublesome, you will probably like this pre-configured setup better.
 
-[![NPM version][npm-image]][npm-url] [![NPM Downloads][downloads-image]][downloads-url]
+[![NPM version][npm-image]][npm-url] [![NPM Downloads][downloads-image]][downloads-url] [![Gitter][gitter-image]][gitter-url]
 
 ## Documentation
 
@@ -38,3 +38,5 @@ Changes can be found on [the changelog page][changelog-url].
 [downloads-image]: http://img.shields.io/npm/dm/headstart.svg
 [david-url]: https://david-dm.org/flovan/headstart
 [david-image]: https://david-dm.org/flovan/headstart.png?theme=shields.io
+[gitter-url]: https://gitter.im/flovan/headstart?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
