@@ -1,4 +1,5 @@
 # [Headstart](website-url), an automated front-end setup
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/flovan/headstart?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Headstart is an all-in-one task runner that frees front-end developers of the little worries that come along with modern web development. If you ever wanted to use tools like [Grunt](http://gruntjs.com/) or [Gulp](http://gulpjs.com/), but found the configuration too troublesome, you will probably like this pre-configured setup better.
 
