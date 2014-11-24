@@ -29,7 +29,7 @@
   - [ ] Look into patternlab.io way of managing text/content through JSON (eg automatic HTML parsing to find variables and putting them into a JSON file)
 
 
-  ### Take a look at these plugins also
+  ### Take a look at these plugins/libs also
 
   - CDN Solution https://www.npmjs.org/package/gulp-cdnizer/
   - https://www.npmjs.org/package/gulp-log-capture
@@ -38,6 +38,7 @@
   - https://www.npmjs.org/package/gulp-headerfooter
   - https://www.npmjs.org/package/gulp-htmlrefs OR https://www.npmjs.org/package/gulp-rev-replace
   - https://www.npmjs.org/package/favicons
+  - https://github.com/jakecleary/elf-scss
 
 ### Done
 
