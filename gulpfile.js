@@ -33,10 +33,11 @@ var
 	gitConfig           = {
 		user: 'flovan',
 		repo: 'headstart-boilerplate',
-		ref:  '1.2.0'
+		ref:  '1.2.1'
 	},
 	cwd                 = process.cwd(),
 	tmpFolder           = '.tmp',
+	assetsFolder        = 'assets',
 	stdoutBuffer        = [],
 	lrStarted           = false,
 	htmlminOptions      = {
@@ -152,7 +153,7 @@ gulp.task('init', function (cb) {
 
 					if (answer.overridconfirm) {
 						// Clean up directory, then start downloading
-						console.log(chalk.grey('Emptying current directory'));
+						console.log(chalk.grey('\nEmptying current directory'));
 						sequence('clean-tmp', 'clean-cwd', downloadBoilerplateFiles);
 					}
 					// User is unsure, quit process
@@ -164,7 +165,10 @@ gulp.task('init', function (cb) {
 		});
 	}
 	// No files, start downloading
-	else downloadBoilerplateFiles();
+	else {
+		console.log('\n');
+		downloadBoilerplateFiles();
+	}
 
 	cb(null);
 });
@@ -195,6 +199,8 @@ gulp.task('build', function (cb) {
 		if (!_.isNull(config.htmlminOptions)) {
 			htmlminOptions = _.assign({}, htmlminOptions, config.htmlminOptions);
 		}
+
+		assetsFolder = config.assetsFolder || assetsFolder;
 
 		// Instantiate a progressbar when not in verbose mode
 		if (!isVerbose) {
@@ -240,7 +246,7 @@ gulp.task('clean-export', function (cb) {
 	// Remove export folder and files
 	return gulp.src([
 			config.export_templates,
-			config.export_assets + '/assets'
+			config.export_assets + '/' + assetsFolder
 		], {read: false})
 		.pipe(plugins.rimraf({force: true}))
 		.on('end', updateBar)
@@ -268,7 +274,7 @@ gulp.task('clean-rev', function (cb) {
 	verbose(chalk.grey('Running task "clean-rev"'));
 
 	// Clean all revision files but the latest ones
-	return gulp.src(config.export_assets + '/assets/**/*.*', {read: false})
+	return gulp.src(config.export_assets + '/' + assetsFolder + '/**/*.*', {read: false})
 		.pipe(plugins.revOutdated(1))
 		.pipe(plugins.rimraf({force: true}))
 	;
@@ -289,8 +295,8 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return gulp.src([
-				'assets/sass/*.{scss, sass, css}',
-				'!assets/sass/*ie.{scss, sass, css}'
+				assetsFolder + '/sass/*.{scss, sass, css}',
+				'!' + assetsFolder + '/sass/*ie.{scss, sass, css}'
 			])
 		.pipe(plugins.plumber())
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
@@ -301,7 +307,7 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 		// (https://github.com/jakubpawlowicz/clean-css/issues/375)
 		.pipe(plugins.if(isProduction, plugins.minifyCss({ compatibility: 'ie8', noAdvanced: true })))
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
-		.pipe(gulp.dest(config.export_assets + '/assets/css'))
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/css'))
 		.on('data', function (cb) {
 
 			// If revisioning is on, run templates again so the refresh contains
@@ -329,12 +335,12 @@ gulp.task('sass-ie', function (cb) {
 	// Process the .scss files
 	// While serving, this task opens a continuous watch
 	return gulp.src([
-				'assets/sass/*ie.{scss, sass, css}'
+				assetsFolder + '/sass/*ie.{scss, sass, css}'
 			])
 		.pipe(plugins.plumber())
 		.pipe(plugins.rubySass({ style: (isProduction ? 'compressed' : 'nested') }))
 		.pipe(plugins.rename({suffix: '.min'}))
-		.pipe(gulp.dest(config.export_assets + '/assets/css'))
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/css'))
 	;
 });
 
@@ -358,7 +364,7 @@ gulp.task('uncss', function (cb) {
 
 	// Grab all css files and run them through Uncss, then overwrite
 	// the originals with the new ones
-	return gulp.src(config.export_assets + '/assets/css/*.css')
+	return gulp.src(config.export_assets + '/' + assetsFolder + '/css/*.css')
 		.pipe(plugins.bytediff.start())
 		.pipe(plugins.uncss({
 			html:   templates || [],
@@ -372,7 +378,7 @@ gulp.task('uncss', function (cb) {
 
 			return chalk.grey('' + data.fileName + ' is now ') + chalk.green(data.percent + '% ' + (data.savings > 0 ? 'smaller' : 'larger')) + chalk.grey(' (saved ' + data.savings + 'KB)');
 		}))
-		.pipe(gulp.dest(config.export_assets + '/assets/css'))
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/css'))
 	;
 });
 
@@ -392,8 +398,8 @@ gulp.task('hint-scripts', function (cb) {
 
 	// Hint all non-lib js files and exclude _ prefixed files
 	return gulp.src([
-			'assets/js/*.js',
-			'assets/js/core/*.js',
+			assetsFolder + '/js/*.js',
+			assetsFolder + '/js/core/*.js',
 			'!_*.js'
 		])
 		.pipe(plugins.plumber())
@@ -405,17 +411,17 @@ gulp.task('hint-scripts', function (cb) {
 gulp.task('scripts-main', ['hint-scripts', 'scripts-view', 'scripts-ie'], function () {
 
 	var files = [
-		'assets/js/libs/jquery*.js',
-		'assets/js/libs/ender*.js',
+		assetsFolder + '/js/libs/jquery*.js',
+		assetsFolder + '/js/libs/ender*.js',
 
-		(isProduction ? '!' : '') + 'assets/js/libs/dev/*.js',
+		(isProduction ? '!' : '') + assetsFolder + '/js/libs/dev/*.js',
 
-		'assets/js/libs/**/*.js',
+		assetsFolder + '/js/libs/**/*.js',
 		// TODO: remove later
-		'assets/js/core/**/*.js',
+		assetsFolder + '/js/core/**/*.js',
 		//
-		'assets/js/*.js',
-		'!assets/js/view-*.js',
+		assetsFolder + '/js/*.js',
+		'!' + assetsFolder + '/js/view-*.js',
 		'!**/_*.js'
 	];
 	
@@ -428,7 +434,7 @@ gulp.task('scripts-main', ['hint-scripts', 'scripts-view', 'scripts-ie'], functi
 
 	// Process .js files
 	// Files are ordered for dependency sake
-	return gulp.src(files, {base: '' + 'assets/js'})
+	return gulp.src(files, {base: '' + assetsFolder + '/js'})
 		.pipe(plugins.plumber())
 		.pipe(plugins.deporder())
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
@@ -436,7 +442,7 @@ gulp.task('scripts-main', ['hint-scripts', 'scripts-view', 'scripts-ie'], functi
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(plugins.if(isProduction, plugins.rename({extname: '.min.js'})))
 		.pipe(plugins.if(isProduction, plugins.uglify()))
-		.pipe(gulp.dest(config.export_assets + '/assets/js'))
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/js'))
 		.on('end', updateBar)
 	;
 });
@@ -445,13 +451,13 @@ gulp.task('scripts-view', function (cb) {
 	
 	verbose(chalk.grey('Running task "scripts-view"'));
 
-	return gulp.src('assets/js/view-*.js')
+	return gulp.src(assetsFolder + '/js/view-*.js')
 		.pipe(plugins.plumber())
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
 		.pipe(plugins.if(isProduction, plugins.uglify()))
-		.pipe(gulp.dest(config.export_assets + '/assets/js'))
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/js'))
 	;
 });
 
@@ -462,7 +468,7 @@ gulp.task('scripts-ie', function (cb) {
 	// Process .js files
 	// Files are ordered for dependency sake
 	gulp.src([
-		'assets/js/ie/head/**/*.js',
+		assetsFolder + '/js/ie/head/**/*.js',
 		'!**/_*.js'
 	])
 		.pipe(plugins.plumber())
@@ -471,10 +477,10 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
 		.pipe(plugins.rename({extname: '.min.js'}))
 		.pipe(plugins.uglify())
-		.pipe(gulp.dest(config.export_assets + '/assets/js'));
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/js'));
 
 	gulp.src([
-		'assets/js/ie/body/**/*.js',
+		assetsFolder + '/js/ie/body/**/*.js',
 		'!**/_*.js'
 	])
 		.pipe(plugins.plumber())
@@ -483,7 +489,7 @@ gulp.task('scripts-ie', function (cb) {
 		.pipe(plugins.if(isProduction, plugins.stripDebug()))
 		.pipe(plugins.rename({extname: '.min.js'}))
 		.pipe(plugins.uglify())
-		.pipe(gulp.dest(config.export_assets + '/assets/js'));
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/js'));
 
 	cb(null);
 });
@@ -497,7 +503,7 @@ gulp.task('images', function (cb) {
 
 	// Make a copy of the favicon.png, and make a .ico version for IE
 	// Move to root of export folder
-	gulp.src('assets/images/icons/favicon.png')
+	gulp.src(assetsFolder + '/images/icons/favicon.png')
 		.pipe(plugins.rename({extname: '.ico'}))
 		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
 		.pipe(gulp.dest(config.export_misc))
@@ -506,14 +512,14 @@ gulp.task('images', function (cb) {
 	// Grab all image files, filter out the new ones and copy over
 	// In --production mode, optimize them first
 	return gulp.src([
-			'assets/images/**/*',
+			assetsFolder + '/images/**/*',
 			'!_*'
 		])
 		.pipe(plugins.plumber())
-		.pipe(plugins.newer(config.export_assets + '/assets/images'))
+		.pipe(plugins.newer(config.export_assets + '/' + assetsFolder + '/images'))
 		.pipe(plugins.if(isProduction, plugins.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
 		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
-		.pipe(gulp.dest(config.export_assets + '/assets/images'))
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/images'))
 		.pipe(plugins.if(lrStarted, browserSync.reload({stream:true})))
 	;
 });
@@ -528,16 +534,16 @@ gulp.task('other', ['misc'], function (cb) {
 	// Make sure other files and folders are copied over
 	// eg. fonts, videos, ...
 	return gulp.src([
-			'assets/**/*',
-			'!assets/sass',
-			'!assets/sass/**/*',
-			'!assets/js/**/*',
-			'!assets/images/**/*',
+			assetsFolder + '/**/*',
+			'!' + assetsFolder + '/sass',
+			'!' + assetsFolder + '/sass/**/*',
+			'!' + assetsFolder + '/js/**/*',
+			'!' + assetsFolder + '/images/**/*',
 			'!_*'
 		])
 		.pipe(plugins.plumber())
 		//.pipe(plugins.if(config.revisionCaching, plugins.rev()))
-		.pipe(gulp.dest(config.export_assets + '/assets'))
+		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder))
 		.on('end', updateBar)
 	;
 });
@@ -601,28 +607,28 @@ gulp.task('templates', ['clean-rev'], function (cb) {
 				// Development gets raw base files 
 				injectItems =  isProduction ?
 					[
-						config.export_assets + '/assets/js/core-libs*.min.js',
-						config.export_assets + '/assets/js/view-' + viewBaseName + '*.min.js'
+						config.export_assets + '/' + assetsFolder + '/js/core-libs*.min.js',
+						config.export_assets + '/' + assetsFolder + '/js/view-' + viewBaseName + '*.min.js'
 					]
 					:
 					[
-						config.export_assets + '/assets/js/libs/jquery*.js',
-						config.export_assets + '/assets/js/libs/ender*.js',
+						config.export_assets + '/' + assetsFolder + '/js/libs/jquery*.js',
+						config.export_assets + '/' + assetsFolder + '/js/libs/ender*.js',
 
-						(isProduction ? '!' : '') + config.export_assets + '/assets/js/libs/dev/*.js',
+						(isProduction ? '!' : '') + config.export_assets + '/' + assetsFolder + '/js/libs/dev/*.js',
 
-						config.export_assets + '/assets/js/libs/*.js',
-						config.export_assets + '/assets/js/core/*.js',
-						config.export_assets + '/assets/js/**/*.js',
+						config.export_assets + '/' + assetsFolder + '/js/libs/*.js',
+						config.export_assets + '/' + assetsFolder + '/js/core/*.js',
+						config.export_assets + '/' + assetsFolder + '/js/**/*.js',
 
-						'!' + config.export_assets + '/assets/**/_*.js',
-						'!' + config.export_assets + '/assets/js/ie*.js'
+						'!' + config.export_assets + '/' + assetsFolder + '/**/_*.js',
+						'!' + config.export_assets + '/' + assetsFolder + '/js/ie*.js'
 					]
 			;
 
 			// Include the css
-			injectItems.push(config.export_assets + '/assets/css/main*.css');
-			injectItems.push(config.export_assets + '/assets/css/view-' + viewBaseName + '*.css');
+			injectItems.push(config.export_assets + '/' + assetsFolder + '/css/main*.css');
+			injectItems.push(config.export_assets + '/' + assetsFolder + '/css/view-' + viewBaseName + '*.css');
 
 			// Put items in a stream and order dependencies
 			injectItems = gulp.src(injectItems)
@@ -716,8 +722,8 @@ gulp.task('manifest', function (cb) {
 	verbose(chalk.grey('Running task "manifest"'));
 
 	return gulp.src([
-		config.export_assets + '/assets/js/*',
-		config.export_assets + '/assets/css/*'
+		config.export_assets + '/' + assetsFolder + '/js/*',
+		config.export_assets + '/' + assetsFolder + '/css/*'
 	])
 		.pipe(plugins.manifest({
 			filename: 'app.manifest',
@@ -736,11 +742,11 @@ gulp.task('server', ['browsersync'], function (cb) {
 	verbose(chalk.grey('Running task "server"'));
 	console.log(chalk.grey('Watching files...'));
 
-	gulp.watch(['assets/sass/**/*.{scss, sass, css}', '!assets/sass/*ie.{scss, sass, css}'], ['sass-main']);
-	gulp.watch(['assets/js/**/view-*.js'], ['scripts-view', 'templates']);
-	gulp.watch(['assets/js/**/*.js', '!**/view-*.js'], ['scripts-main', 'templates']);
-	gulp.watch(['assets/images/**/*'], ['images']);
-	gulp.watch(['templates/**/*'], ['templates']);
+	gulp.watch([assetsFolder + '/sass/**/*.{scss, sass, css}', '!' + assetsFolder + '/sass/*ie.{scss, sass, css}'], ['sass-main']).on('change', watchHandler);
+	gulp.watch([assetsFolder + '/js/**/view-*.js'], ['scripts-view', 'templates']).on('change', watchHandler);
+	gulp.watch([assetsFolder + '/js/**/*.js', '!**/view-*.js'], ['scripts-main', 'templates']).on('change', watchHandler);
+	gulp.watch([assetsFolder + '/images/**/*'], ['images']).on('change', watchHandler);
+	gulp.watch(['templates/**/*'], ['templates']).on('change', watchHandler);
 
 	cb(null);
 });
@@ -831,7 +837,7 @@ gulp.task('psi', function (cb) {
 // Download the boilerplate files
 function downloadBoilerplateFiles () {
 
-	console.log(chalk.grey('\nDownloading boilerplate files...'));
+	console.log(chalk.grey('Downloading boilerplate files...'));
 
 	// If a custom repo was passed in, use it
 	if (!!flags.base) {
@@ -945,6 +951,11 @@ function updateBar () {
 	if (!isVerbose && bar !== null) {
 		bar.tick();
 	}
+}
+
+// Handle change events for Gulp watch instances
+function watchHandler (e) {
+	console.log(chalk.grey('"' + e.path.split('/').pop() + '" was ' + e.type));
 }
 
 // Browser Sync `init` event handler
