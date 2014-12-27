@@ -3,29 +3,24 @@
   - [ ] Fix crash when missing `// requires` file is found 
   - [ ] Adding new view js files doesn't seem to add them to gaze
   - [ ] Add a sass module that generates ready-to-use class-names (eg columns)
+  - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all, maybe https://www.npmjs.org/package/gulp-hash/ + https://www.npmjs.org/package/gulp-hash-references/)
+  - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
+  - [ ] Try having critical css inlined (http://css-tricks.com/authoring-critical-fold-css/ & https://github.com/pocketjoso/penthouse/#as-a-node-module OR https://github.com/filamentgroup/criticalcss)
+  - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
+  - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
+  - [ ] Use RealFaviconGenerator module to generate favicons / touch icons etc (https://github.com/RealFaviconGenerator/real-favicon/blob/master/index.js)
 
 ### A list of things to explore:
 
-  - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all, maybe https://www.npmjs.org/package/gulp-hash/ + https://www.npmjs.org/package/gulp-hash-references/)
-  - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
   - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
   - [ ] See if scripts tasks can be made faster with gulp-remember (https://github.com/ahaurw01/gulp-remember)
-  - [ ] Maybe do something with icon fonts from SVG files (https://www.npmjs.org/package/gulp-fontcustom/ or https://github.com/nfroidure/gulp-iconfont or https://github.com/nfroidure/gulp-svgicons2svgfont)
   - [ ] Make it possible to use LESS (https://www.npmjs.org/package/gulp-less/)
   - [ ] Make it possible to use Stylus (https://www.npmjs.org/package/gulp-stylus/)
   - [ ] Maybe replace some CSS processing modules with gulp-pleeease (https://www.npmjs.org/package/gulp-pleeease/)
-  - [ ] Try having critical css inlined (http://css-tricks.com/authoring-critical-fold-css/ & https://github.com/pocketjoso/penthouse/#as-a-node-module OR https://github.com/filamentgroup/criticalcss)
-  - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
-  - [ ] Split up gulpfile into task files (https://github.com/whitneyit/gulp-taskify or https://www.npmjs.org/package/gulp-hub/)
-  - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
   - [ ] Replace Ender by Cash when it gets out of alpha (https://github.com/kenwheeler/cash)
-  - [ ] Check out HeadJS (http://headjs.com)
   - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
-  - [ ] Simpler watch setup > https://gist.github.com/Snugug/2dc9ff47ce4b4acb28f6
   - [ ] CLI option to generate Ender builds
-  - [ ] Find out how to check for dependencies (such as Ender, see above, or maybe imagemagick)
-  - [ ] Add Quail as a dev lib (http://quailjs.org)
   - [ ] Look into patternlab.io way of managing text/content through JSON (eg automatic HTML parsing to find variables and putting them into a JSON file)
 
 
@@ -36,7 +31,6 @@
   - https://www.npmjs.org/package/gulp-static-handlebars
   - https://www.npmjs.org/package/gulp-headerfooter
   - https://www.npmjs.org/package/gulp-htmlrefs OR https://www.npmjs.org/package/gulp-rev-replace
-  - https://www.npmjs.org/package/favicons
   - https://github.com/jakecleary/elf-scss
 
 ### Done
@@ -73,5 +67,8 @@
   - [x] ~~See if Commander is a better alternative to LiftOff (https://github.com/visionmedia/commander.js)~~ Nope
   - [x] https://www.npmjs.org/package/del/ instead of gulp-rimraf (will prolly have to use https://www.npmjs.org/package/gulp-filenames)
   - ~~[ ] Think about fixed size columns for eg ads~
-  
+  - [x] Split up gulpfile into task files (https://github.com/whitneyit/gulp-taskify or https://www.npmjs.org/package/gulp-hub/)
+  - [x] Simpler watch setup > https://gist.github.com/Snugug/2dc9ff47ce4b4acb28f6
+  - [ ] ~Add Quail as a dev lib (http://quailjs.org)~~
+  - [ ] ~~Find out how to check for dependencies (such as Ender, see above, or maybe imagemagick (http://stackoverflow.com/questions/11703973/imagemagick-with-nodejs-not-working))~~
   
