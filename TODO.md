@@ -9,6 +9,7 @@
   - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
   - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
   - [ ] Use RealFaviconGenerator module to generate favicons / touch icons etc (https://github.com/RealFaviconGenerator/real-favicon/blob/master/index.js)
+  - [ ] Generate a .headstartrc file with defaults or customize
 
 ### A list of things to explore:
 
