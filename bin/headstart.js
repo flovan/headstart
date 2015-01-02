@@ -22,7 +22,6 @@ var
 	versionFlag         = argv.v || argv.version,
 	infoFlag            = argv.i || argv.info || argv.h || argv.help,
 
-	allowedTasks        = ['init', 'build'],
 	task                = argv._,
 	numTasks            = task.length
 ;
@@ -67,7 +66,7 @@ task = task[0];
 
 // Check if task is valid
 
-if (allowedTasks.indexOf(task) < 0) {
+if (cli.tasks.indexOf(task) < 0) {
 	console.log(chalk.red('\nThe provided task "' + task + '" was not recognized. Aborting.\n'));
 	cli.logTasks();
 	process.exit(0);
@@ -75,9 +74,13 @@ if (allowedTasks.indexOf(task) < 0) {
 
 // Register Gulp tasks through external files
 
+//cli.toggleTaskSpinner('Loading modules...');
+
 fs.readdirSync(path.join(__dirname, '../lib/tasks')).forEach(function(file) {
 	require('../lib/tasks/' + file);
 });
+
+//cli.toggleTaskSpinner(false);
 
 // Patch the output when not running verbose mode
 
@@ -88,5 +91,5 @@ if (!settings.isVerbose) {
 // Start the task through Gulp
 
 process.nextTick(function () {
-	require('gulp').start(task);
+	require('gulp').parallel(task)();
 });
