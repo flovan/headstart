@@ -1,3 +1,5 @@
+> **Disclaimer:** Very much WIP. V2 is depending on Gulp 4 (not released yet), as well as waiting for 2 PRs before this branch can even be tested on your machine. For now, patience is a virtue ;)
+
 # [Headstart](website-url), an automated front-end setup
 
 > Headstart is an all-in-one task runner that frees front-end developers of the little worries that come along with modern web development. If you ever wanted to use tools like [Grunt](http://gruntjs.com/) or [Gulp](http://gulpjs.com/), but found the configuration too troublesome, you will probably like this pre-configured setup better.
