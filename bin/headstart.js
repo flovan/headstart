@@ -74,13 +74,9 @@ if (cli.tasks.indexOf(task) < 0) {
 
 // Register Gulp tasks through external files
 
-//cli.toggleTaskSpinner('Loading modules...');
-
 fs.readdirSync(path.join(__dirname, '../lib/tasks')).forEach(function(file) {
 	require('../lib/tasks/' + file);
 });
-
-//cli.toggleTaskSpinner(false);
 
 // Patch the output when not running verbose mode
 
