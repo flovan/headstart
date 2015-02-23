@@ -12,6 +12,7 @@
   - [ ] Generate a .headstartrc file with defaults or customize
   - [ ] Add HTML Inspector as a dev dependency (http://www.sitepoint.com/write-better-markup-html-inspector + https://github.com/philipwalton/html-inspector)
   - [ ] Check Fastclick init function
+  - [ ] Replace Handlebars with [doT](https://github.com/olado/doT) (fast, but no layouting) or [nunjucks](https://github.com/mozilla/nunjucks) (huge API)
 
 ### A list of things to explore:
 
