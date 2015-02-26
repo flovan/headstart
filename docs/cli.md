@@ -76,6 +76,15 @@ headstart build --serve --open --edit
 hs build --s --o --e
 ````
 
+If you want to use features of Sass that aren't yet supported by libsass, the default compiler of Headstart, you can use this flag to use the Ruby gem instead:
+
+````
+headstart build --rs
+hs build --rs
+````
+
+> **Note:** Don't forget that you need to have [both Ruby and Sass](getting-started.md#ruby-and-sass) on your system for this flag to work.
+
 ## Making a production-ready build
 
 Prepare your files for deployment by running the build engine in production mode:
@@ -110,7 +119,7 @@ headstart build --serve --tunnel
 hs build --s --t
 ````
 
-If you'd like to get a friendlier subdomain, you can try requesting one by passing a value to the tunnel flag:
+If you'd like to get a custom subdomain, you can try requesting one by passing a value to the tunnel flag:
 
 ````
 headstart build --serve --tunnel=cool-project
@@ -138,3 +147,7 @@ hs build --s --t --psi --strategy=mobile
 [boilerplate-url]: https://github.com/flovan/headstart-boilerplate
 [localtunnel-twitter]: https://twitter.com/defunctzombie
 [gpi-link]: https://developers.google.com/speed/pagespeed/insights/
+
+## What's next?
+
+You now know how to start a new project and how build it. A good next step would be to learn the ins and outs of what is included in the [boilerplate project](boilerplate.md).

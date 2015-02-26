@@ -8,6 +8,14 @@
 
 ## Guides
 
-- [Customise the default boilerplate](customize-the-default-boilerplate.md) — How to make a custom boilerplate for your preferences
-- [Integrate a project into a back-end](integrate-a-back-end.md) — How to integrate Headstart into a back-end
-- [Upgrading](upgrade-your-installation.md) — How to upgrade your installation or individual projects to a newer version
+- [Customise the default boilerplate](guides/customize-the-default-boilerplate.md) — How to make a custom boilerplate for your preferences
+- [Integrate a project into a back-end](guides/integrate-a-back-end.md) — How to integrate Headstart into a back-end
+- [Upgrading](guides/upgrade-your-installation.md) — How to upgrade your installation or individual projects to a newer version
+
+## License
+
+All the documentation is covered by the CC0 license *(do whatever you want with it - public domain)*.
+
+[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
+
+To the extent possible under law, [Florian Vanthuyne](http://flovan.me) has waived all copyright and related or neighboring rights to this work.

@@ -6,9 +6,7 @@
 
 > **First-time users:** Check the [prerequisites](#prerequisites) below before continuing.
 
-### 1. Install globally
-
-Run:
+Install Headstart globally:
 
 ````
 npm install -g headstart
@@ -16,8 +14,6 @@ npm install -g headstart
 
 And sit back while NPM downloads, builds and installs Headstart.  
 If you see `Permission denied` or `Error: EACCES`, run the command again with `sudo` added at the start.
-
-### 2. CLI
 
 Open up the [CLI documentation](cli.md) and get to know all of the available commands.
 
