@@ -58,85 +58,79 @@ This is the main configuration for any project. Here's a commented version of al
 
 ````json
 {
-    // Which browser to open when the `--open` flag is set
-    // Depending on your OS, this could also be:
-    // "google-chrome" or "chrome" or "google chrome"
-    
-    "browser": "Google Chrome",
-
-    // Which editor to open when the `--edit` flag is set
-    // Depending on your OS and version, this could also be:
-    // "Sublime Text 2" or ... (no further tests done)
-    
-    "editor": "Sublime Text",
-
     // Minify your templates
     // eg. remove comments, collapse whitespace, ...
-    
+
     "minifyHTML": false,
 
     // Combine media queries where possible
     // Gzipping takes care of repeating strings, so this isn't
     // really necessary
-    
+
     "combineMediaQueries": false,
+
+    // Which browsers to autoprefix
+    // More examples here: https://github.com/postcss/autoprefixer#browsers
+
+    "prefixBrowsers": ["> 1%", "last 2 versions", "Firefox ESR", "Opera 12.1"],
+
 
     // Check your javascript syntax and output the results
     // Configured through `./.jshintrc`
     // All options here: http://www.jshint.com/docs/options/
-    
+
     "hint": true,
 
     // Validate your files through W3C and ouput the results
-    
+
     "w3c": false,
 
     // Folder where the assets folder should be built to
-    
+
     "export_assets": "export",
 
     // Folder where the individual templates should be built to
-    
+
     "export_templates": "export",
 
     // Folder where the miscellaneous assets should be built to
     // Usually identical to "export_assets"
-    
+
     "export_misc": "export",
 
     // Assemple templates during build
     // Turn this off when eg. a back-end will do the assembly
-    
+
     "assemble_templates": true,
 
     // Prefix injected script and link tags
     // eg. "{{Url::asset('/')}}" for Laravel
-    
+
     "template_asset_prefix": "",
 
     // Turn on revisioning to get better caching
-    
+
     "revisionCaching": false,
 
     // You can set a custom port if want to or need to because
     // the default port (3000) is already taken
-    
+
     "port": 1234,
 
     // You can enable a proxy if you want browser-sync to work
     // through a different host (eg. when viewing your project
     // through your MAMP/XAMP localhost)
-    
+
     "proxy": "localhost/my-laravel-project/public",
 
     // Use a different name for the assets folder
-    
+
     "assetsFolder": "assets",
-    
+
     // Configure how your HTML will be minified
     // Default settings show below
     // All options here: https://github.com/kangax/html-minifier#options-quick-reference
-    
+
     "htmlminOptions" : {
         "removeComments":                true,
         "collapseWhitespace":            true,
