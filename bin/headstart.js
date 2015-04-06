@@ -22,7 +22,12 @@ var
 	task        = argv._,
 	taskDir     = deps.path.join(__dirname, '../lib/tasks'),
 
-	notifier, spacer, current, latest, instructions, link
+	notifier,
+	spacer,
+	current,
+	latest,
+	instructions,
+	link
 ;
 
 // Define functions
@@ -51,7 +56,6 @@ function cleanTask (task) {
 function checkUpdates () {
 	notifier = deps.updateNotifier({pkg: pkg, updateCheckInterval: 0});
 	if (notifier.update) {
-
 		spacer = c.yellow('| '),
 		current = c.gray('(current: ' + notifier.update.current + ')'),
 		latest = c.green(notifier.update.latest),

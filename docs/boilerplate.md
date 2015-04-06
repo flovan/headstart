@@ -141,7 +141,14 @@ This is the main configuration for any project. Here's a commented version of al
         "removeStyleLinkTypeAttributes": true,
         "minifyJS":                      true,
         "minifyCSS":                     true
-    }
+    },
+
+    // Configure how your CSS will be minified
+    // No custom settings are used, but a list of the available
+    // options can be found here:
+    // https://www.npmjs.com/package/gulp-minify-css/#options
+
+    "cssMinifyOptions" : {}
 }
 ````
 
