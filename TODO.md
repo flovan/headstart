@@ -27,6 +27,7 @@
   - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
   - [ ] CLI option to generate Ender builds
   - [ ] Look into patternlab.io way of managing text/content through JSON (eg automatic HTML parsing to find variables and putting them into a JSON file)
+  - [ ] Add more dev scripts (eg https://github.com/derekshull/nines)
 
 
   ### Take a look at these plugins/libs also
