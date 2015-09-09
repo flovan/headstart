@@ -28,9 +28,11 @@
   - [ ] CLI option to generate Ender builds
   - [ ] Look into patternlab.io way of managing text/content through JSON (eg automatic HTML parsing to find variables and putting them into a JSON file)
   - [ ] Add more dev scripts (eg https://github.com/derekshull/nines)
+  - [ ] Always combine media queries and dry out CSS
+  - [ ] Add "perf" command for performance checks
+  - [ ] `.headstartrc` file should have a 'dest' key in the favicons part to override exporting to root (export:root)
 
-
-  ### Take a look at these plugins/libs also
+### Take a look at these plugins/libs also
 
   - CDN Solution https://www.npmjs.org/package/gulp-cdnizer/
   - https://www.npmjs.org/package/gulp-log-capture
