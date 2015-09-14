@@ -34,7 +34,6 @@ if(infoFlag || !task) {
 
 var
 	c           = deps.chalk,
-	taskDir     = deps.path.join(__dirname, '../lib/tasks'),
 	notifier    = deps.updateNotifier({pkg: pkg, updateCheckInterval: 0})
 ;
 
@@ -50,12 +49,13 @@ if (cli.tasks.indexOf(task) < 0) {
 }
 
 // Register all tasks
-require(taskDir);
+require('../lib/tasks');
 
 // If there are no global settings and we are not configuring,
 // run the config task. Otherwise, just run the task
 if (task !== 'config' && !settings.global.size) {
-	deps.taker.series('config', task);
+	console.log('should config');
+	deps.taker.series('config', task)();
 } else {
 	deps.taker.parallel(task)();
 }
