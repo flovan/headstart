@@ -14,6 +14,7 @@
   - [ ] Check Fastclick init function
   - [ ] Replace Handlebars with [doT](https://github.com/olado/doT) (fast, but no layouting) or [nunjucks](https://github.com/mozilla/nunjucks) (huge API)
   - [ ] Add Hound files (https://houndci.com/configuration)
+  - [ ] Use https://www.npmjs.com/package/gulp-shell to make calls to headstart-old
 
 ### A list of things to explore:
 
