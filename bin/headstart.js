@@ -11,10 +11,9 @@ var
 	settings	= require('../lib/settings'),
 	utils       = require('../lib/utils'),
 
-	argv        = deps.minimist(process.argv.slice(2)),
-	task        = argv._[0],
-	versionFlag = argv.v || argv.version,
-	infoFlag    = argv.i || argv.info || argv.h || argv.help || task === 'help' || task === 'info'
+	task        = settings.flags._[0],
+	versionFlag = settings.flags.v || settings.flags.version,
+	infoFlag    = settings.flags.i || settings.flags.info || settings.flags.h || settings.flags.help || task === 'help' || task === 'info'
 ;
 
 // Check for version flag
@@ -54,7 +53,6 @@ require('../lib/tasks');
 // If there are no global settings and we are not configuring,
 // run the config task. Otherwise, just run the task
 if (task !== 'config' && !settings.global.size) {
-	console.log('should config');
 	deps.taker.series('config', task)();
 } else {
 	deps.taker.parallel(task)();

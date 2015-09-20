@@ -22,6 +22,7 @@
     "del": "^2.0.2",
     "fs": "0.0.2",
     "github-download": "^0.4.0",
+    "inquirer": "^0.10.0",
     "lodash": "^3.10.1",
     "minimist": "^1.2.0",
     "ncp": "^2.0.0",
