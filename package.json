@@ -22,6 +22,10 @@
     "del": "^2.0.2",
     "fs": "0.0.2",
     "github-download": "^0.4.0",
+    "gulp-autoprefixer": "^3.0.1",
+    "gulp-combine-media-queries": "^0.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.4",
     "inquirer": "^0.10.0",
     "lodash": "^3.10.1",
     "minimist": "^1.2.0",
@@ -30,7 +34,8 @@
     "pretty-hrtime": "^1.0.0",
     "prompt": "^0.2.14",
     "undertaker": "^0.12.0",
-    "update-notifier": "^0.5.0"
+    "update-notifier": "^0.5.0",
+    "vinyl-fs": "^1.0.0"
   },
   "devDependencies": {
     "gulp-debug": "^2.1.0",
