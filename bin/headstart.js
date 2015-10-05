@@ -43,7 +43,7 @@ if (notifier.update) {
 
 // Check if it is valid by comparing it the the CLI
 if (cli.tasks.indexOf(task) < 0) {
-	console.log(c.red('\nThe provided task "' + task + '" was not recognized. Aborting.\n'));
+	console.log(c.red(`\nThe provided task "${task}" was not recognized. Aborting.\n`));
 	process.exit(1);
 }
 
