@@ -1,45 +1,26 @@
 ### TODO's:
 
-  - [ ] Fix crash when missing `// requires` file is found 
+  - [ ] Fix crash when missing `// requires` file is found
   - [ ] Adding new view js files doesn't seem to add them to gaze
-  - [ ] Add a sass module that generates ready-to-use class-names (eg columns)
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all, maybe https://www.npmjs.org/package/gulp-hash/ + https://www.npmjs.org/package/gulp-hash-references/)
   - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
   - [ ] Try having critical css inlined (http://css-tricks.com/authoring-critical-fold-css/ & https://github.com/pocketjoso/penthouse/#as-a-node-module OR https://github.com/filamentgroup/criticalcss)
   - [ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)
   - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
   - [ ] Use RealFaviconGenerator module to generate favicons / touch icons etc (https://github.com/RealFaviconGenerator/real-favicon/blob/master/index.js)
-  - [ ] Generate a .headstartrc file with defaults or customize
   - [ ] Add HTML Inspector as a dev dependency (http://www.sitepoint.com/write-better-markup-html-inspector + https://github.com/philipwalton/html-inspector)
-  - [ ] Check Fastclick init function
-  - [ ] Replace Handlebars with [doT](https://github.com/olado/doT) (fast, but no layouting) or [nunjucks](https://github.com/mozilla/nunjucks) (huge API)
   - [ ] Add Hound files (https://houndci.com/configuration)
   - [ ] Use https://www.npmjs.com/package/gulp-shell to make calls to headstart-old
 
 ### A list of things to explore:
 
-  - [ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)
   - [ ] See if scripts tasks can be made faster with gulp-remember (https://github.com/ahaurw01/gulp-remember)
-  - [ ] Make it possible to use LESS (https://www.npmjs.org/package/gulp-less/)
-  - [ ] Make it possible to use Stylus (https://www.npmjs.org/package/gulp-stylus/)
-  - [ ] Maybe replace some CSS processing modules with gulp-pleeease (https://www.npmjs.org/package/gulp-pleeease/)
-  - [ ] Replace Ender by Cash when it gets out of alpha (https://github.com/kenwheeler/cash)
-  - [ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)
-  - [ ] Make sure a key can be used with PSI (without any uncaught TypeError)
-  - [ ] CLI option to generate Ender builds
   - [ ] Look into patternlab.io way of managing text/content through JSON (eg automatic HTML parsing to find variables and putting them into a JSON file)
   - [ ] Add more dev scripts (eg https://github.com/derekshull/nines)
-  - [ ] Always combine media queries and dry out CSS
   - [ ] Add "perf" command for performance checks
-  - [ ] `.headstartrc` file should have a 'dest' key in the favicons part to override exporting to root (export:root)
 
 ### Take a look at these plugins/libs also
 
-  - CDN Solution https://www.npmjs.org/package/gulp-cdnizer/
-  - https://www.npmjs.org/package/gulp-log-capture
-  - https://www.npmjs.org/package/gulp-static-handlebars
-  - https://www.npmjs.org/package/gulp-headerfooter
-  - https://www.npmjs.org/package/gulp-htmlrefs OR https://www.npmjs.org/package/gulp-rev-replace
   - https://github.com/jakecleary/elf-scss
 
 ### Done
@@ -80,4 +61,16 @@
   - [x] Simpler watch setup > https://gist.github.com/Snugug/2dc9ff47ce4b4acb28f6
   - [ ] ~Add Quail as a dev lib (http://quailjs.org)~~
   - [ ] ~~Find out how to check for dependencies (such as Ender, see above, or maybe imagemagick (http://stackoverflow.com/questions/11703973/imagemagick-with-nodejs-not-working))~~
-  
+  - [x] Add a sass module that generates ready-to-use class-names (eg columns)
+  - ~~[] Generate a .headstartrc file with defaults or customize~
+  - ~~[ ] Replace Handlebars with [doT](https://github.com/olado/doT) (fast, but no layouting) or [nunjucks](https://github.com/mozilla/nunjucks) (huge API)~~
+  - ~~[ ] Try replacing gulp-inject with gulp-include-source (https://www.npmjs.org/package/gulp-include-source/)~~
+  - ~~[ ] Make it possible to use LESS (https://www.npmjs.org/package/gulp-less/)~~
+  - ~~[ ] Make it possible to use Stylus (https://www.npmjs.org/package/gulp-stylus/)~~
+  - ~~[ ] Maybe replace some CSS processing modules with gulp-pleeease (https://www.npmjs.org/package/gulp-pleeease/)~~
+  - ~~[ ] Replace Ender by Cash when it gets out of alpha (https://github.com/kenwheeler/cash)~~
+  - ~~[ ] Implement gulp-foreach (https://www.npmjs.org/package/gulp-foreach/)~~
+  - ~~[ ] Make sure a key can be used with PSI (without any uncaught TypeError)~~
+  - ~~[ ] CLI option to generate Ender builds~~
+  - ~~[ ] `.headstartrc` file should have a 'dest' key in the favicons part to override exporting to root (export:root)~~
+  - [x] Always combine media queries and dry out CSS
