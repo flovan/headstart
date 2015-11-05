@@ -18,6 +18,8 @@
   - [ ] Add HTML Inspector as a dev dependency (http://www.sitepoint.com/write-better-markup-html-inspector + https://github.com/philipwalton/html-inspector)
   - [ ] Add Hound files (https://houndci.com/configuration)
   - [ ] Is `--verbose` necessairy?
+  - [ ] More checks in add/change events to prevent unneeded reload (eg change _*.js)
+  - [ ] Browsersync plugins? (eg https://www.npmjs.com/package/bs-html-injector, )
 
 ### Take a look at these plugins/libs also
 
