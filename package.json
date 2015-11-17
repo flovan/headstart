@@ -28,6 +28,7 @@
     "gulp-hb": "^2.6.5",
     "gulp-if": "^2.0.0",
     "gulp-jshint": "^1.12.0",
+    "gulp-minify-css": "^1.2.1",
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.1.0",
@@ -39,8 +40,10 @@
     "map-stream": "0.0.6",
     "minimist": "^1.2.0",
     "ncp": "^2.0.0",
+    "pretty-bytes": "^2.0.1",
     "pretty-hrtime": "^1.0.1",
     "prompt": "^0.2.14",
+    "through2": "^2.0.0",
     "undertaker": "^0.12.0",
     "update-notifier": "^0.5.0",
     "vinyl-fs": "^2.1.1"
