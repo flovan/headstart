@@ -5,17 +5,10 @@
 
 ### A list of things to explore:
 
-  - [ ] See if scripts tasks can be made faster with gulp-remember (https://github.com/ahaurw01/gulp-remember)
   - [ ] Look into patternlab.io way of managing text/content through JSON (eg automatic HTML parsing to find variables and putting them into a JSON file)
-  - [ ] Add more dev scripts (eg https://github.com/derekshull/nines)
-  - [ ] Add "perf" command for performance checks
-  - [ ] Adding new view js files doesn't seem to add them to gaze
   - [ ] Try to have revisioned images, even though updating references in other files will be hard (https://github.com/smysnk/gulp-rev-all, maybe https://www.npmjs.org/package/gulp-hash/ + https://www.npmjs.org/package/gulp-hash-references/)
-  - [ ] Watch changes on config and folders like fonts/video, and rebuild (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
+  - [ ] Rebuild/Reserve on crash (https://github.com/leny/gulp-supervisor & https://github.com/JacksonGariety/gulp-nodemon & https://www.npmjs.org/package/keepup/)
   - [ ] Try having critical css inlined (http://css-tricks.com/authoring-critical-fold-css/ & https://github.com/pocketjoso/penthouse/#as-a-node-module OR https://github.com/filamentgroup/criticalcss)
-  - [ ] Remove deleted / renamed files from export folder with gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)
-  - [ ] Use RealFaviconGenerator module to generate favicons / touch icons etc (https://github.com/RealFaviconGenerator/real-favicon/blob/master/index.js)
-  - [ ] Add HTML Inspector as a dev dependency (http://www.sitepoint.com/write-better-markup-html-inspector + https://github.com/philipwalton/html-inspector)
   - [ ] Add Hound files (https://houndci.com/configuration)
   - [ ] Is `--verbose` necessairy?
   - [ ] More checks in add/change events to prevent unneeded reload (eg change _*.js)
@@ -24,6 +17,7 @@
 ### Take a look at these plugins/libs also
 
   - https://github.com/jakecleary/elf-scss
+  - [ ] Add more dev scripts (eg https://github.com/derekshull/nines)
 
 ### Done
 
@@ -78,3 +72,10 @@
   - [x] Always combine media queries and dry out CSS
   - ~~[ ] Fix crash when missing `// requires` file is found~~
   - ~~[ ] Use SassDoc (https://github.com/SassDoc/gulp-sassdoc)~~
+  - ~~[ ] Adding new view js files doesn't seem to add them to gaze~~
+  - [x] Remove deleted / renamed files from export folder with ~~gulp-sync-files (https://www.npmjs.org/package/gulp-sync-files/)~~ custom script
+  - ~~[ ] Use RealFaviconGenerator module to generate favicons / touch icons etc (https://github.com/RealFaviconGenerator/real-favicon/blob/master/index.js)~
+  - ~~[ ] Add HTML Inspector as a dev dependency (http://www.sitepoint.com/write-better-markup-html-inspector + https://github.com/philipwalton/html-inspector)~~
+  - [x] Watch changes on config and folders like fonts/video
+  - [x] Add "perf" command for performance checks
+  - ~~[ ] See if scripts tasks can be made faster with gulp-remember (https://github.com/ahaurw01/gulp-remember)~~
