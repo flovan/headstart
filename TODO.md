@@ -1,7 +1,7 @@
 ### TODO's:
 
-  - [ ] Watch "other" and "root" files
   - [ ] Use https://www.npmjs.com/package/gulp-shell to make calls to headstart-old
+  - [ ] Try to merge file watches
 
 ### A list of things to explore:
 
@@ -79,3 +79,4 @@
   - [x] Watch changes on config and folders like fonts/video
   - [x] Add "perf" command for performance checks
   - ~~[ ] See if scripts tasks can be made faster with gulp-remember (https://github.com/ahaurw01/gulp-remember)~~
+  - [x] Watch "other" and "root" files
