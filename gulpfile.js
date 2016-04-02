@@ -303,9 +303,7 @@ gulp.task('sass-main', ['sass-ie'], function (cb) {
 		.pipe(plugins.if(config.combineMediaQueries, plugins.combineMediaQueries()))
 		.pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(plugins.if(config.revisionCaching, plugins.rev()))
-		// TODO: When minifyCSS bug is fixed, drop the noAdvanced feature
-		// (https://github.com/jakubpawlowicz/clean-css/issues/375)
-		.pipe(plugins.if(isProduction, plugins.minifyCss({ compatibility: 'ie8', noAdvanced: true })))
+		.pipe(plugins.if(isProduction, plugins.cleanCSS({ compatibility: 'ie8' })))
 		.pipe(plugins.if(isProduction, plugins.rename({suffix: '.min'})))
 		.pipe(gulp.dest(config.export_assets + '/' + assetsFolder + '/css'))
 		.on('data', function (cb) {
